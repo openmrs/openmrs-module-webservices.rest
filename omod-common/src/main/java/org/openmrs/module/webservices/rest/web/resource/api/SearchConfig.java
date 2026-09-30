@@ -18,7 +18,11 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 
 /**
- * Stores {@link SearchHandler}'s configuration.
+ * Stores {@link SearchHandler}'s configuration, namely:
+ * - id - a unique identifier for the search handler
+ * - supportedResource - the resource that this search handler supports
+ * - supportedOpenmrsVersions - the OpenMRS versions that this search handler supports
+ * - searchQueries - the required and optional parameters for this search handler
  */
 public class SearchConfig {
 	
