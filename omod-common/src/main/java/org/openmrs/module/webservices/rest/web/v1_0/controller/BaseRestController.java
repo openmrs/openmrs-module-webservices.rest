@@ -22,6 +22,7 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.api.ValidationException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -115,6 +116,11 @@ public class BaseRestController {
 			}
 			
 		} else if (RestUtil.hasCause(ex, APIAuthenticationException.class)) {
+			return apiAuthenticationExceptionHandler(ex, request, response);
+		} else if (RestUtil.hasCause(ex, AuthorizationDeniedException.class)) {
+			// same 401/403 split as APIAuthenticationException - the OpenMRS core Spring Security
+			// integration throws this from @PreAuthorize-annotated service methods, alongside the
+			// legacy @Authorized/APIAuthenticationException path this controller already handles
 			return apiAuthenticationExceptionHandler(ex, request, response);
 		} else if (ex.getClass() == HttpRequestMethodNotSupportedException.class) {
 			errorCode = HttpServletResponse.SC_METHOD_NOT_ALLOWED;

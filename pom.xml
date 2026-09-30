@@ -122,6 +122,15 @@
 				<type>jar</type>
 				<scope>compile</scope>
 			</dependency>
+			<!-- provided by openmrs-core at runtime; declared explicitly here because Maven does not
+			     propagate a provided-scope dependency's own transitive dependencies, and openmrs-api
+			     depends on this with provided scope itself -->
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-core</artifactId>
+				<version>7.1.1</version>
+				<scope>provided</scope>
+			</dependency>
 			<dependency>
 				<groupId>jakarta.servlet</groupId>
 				<artifactId>jakarta.servlet-api</artifactId>
@@ -195,6 +204,12 @@
 			<groupId>org.openmrs.test</groupId>
 			<artifactId>openmrs-test</artifactId>
 			<type>pom</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
