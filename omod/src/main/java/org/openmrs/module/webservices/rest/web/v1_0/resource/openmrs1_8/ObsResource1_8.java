@@ -574,7 +574,12 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 			if (enc == null)
 				return new EmptySearchResult();
 			
-			List<Obs> obs = new ArrayList<Obs>(enc.getAllObs(context.getIncludeAll()));
+			List<Obs> obs;
+			if (context.getIncludeAll()) {
+				obs = new ArrayList<Obs>(enc.getAllObsIncludingArchived());
+			} else {
+				obs = new ArrayList<Obs>(enc.getAllObs(false));
+			}
 			return new NeedsPaging<Obs>(obs, context);
 		}
 		
