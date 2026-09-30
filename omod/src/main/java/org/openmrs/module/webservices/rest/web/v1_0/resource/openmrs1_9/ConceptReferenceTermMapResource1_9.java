@@ -116,7 +116,10 @@ public class ConceptReferenceTermMapResource1_9 extends DelegatingCrudResource<C
 	
 	@Override
 	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl(); //FIXME missing props
+		return new ModelImpl()
+				.property("termA", new RefProperty("#/definitions/ConceptreferencetermCreate"))
+				.property("termB", new RefProperty("#/definitions/ConceptreferencetermCreate"))
+				.property("conceptMapType", new RefProperty("#/definitions/ConceptmaptypeCreate"));
 	}
 	
 	/**

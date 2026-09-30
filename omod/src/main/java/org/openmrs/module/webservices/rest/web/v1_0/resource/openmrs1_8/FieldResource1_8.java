@@ -71,8 +71,14 @@ public class FieldResource1_8 extends MetadataDelegatingCrudResource<Field> {
 	}
 	
 	@Override
-	public Model getUPDATEModel(Representation representation) {
-		return new ModelImpl(); //FIXME missing props
+	public Model getUPDATEModel(Representation rep) {
+		return ((ModelImpl) super.getUPDATEModel(rep))
+				.property("fieldType", new RefProperty("#/definitions/FieldtypeCreate"))
+				.property("selectMultiple", new BooleanProperty()._default(false))
+				.property("concept", new RefProperty("#/definitions/ConceptCreate"))
+				.property("tableName", new StringProperty())
+				.property("attributeName", new StringProperty())
+				.property("defaultValue", new StringProperty());
 	}
 	
 	/**

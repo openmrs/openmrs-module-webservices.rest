@@ -148,7 +148,12 @@ public class ProgramWorkflowStateResource1_8 extends DelegatingSubResource<Progr
 	
 	@Override
 	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl(); //FIXME missing props
+		return new ModelImpl()
+				.property("concept", new RefProperty("#/definitions/ConceptCreate"))
+				.property("initial", new BooleanProperty())
+				.property("terminal", new BooleanProperty())
+
+				.required("concept");
 	}
 
 	@Override
