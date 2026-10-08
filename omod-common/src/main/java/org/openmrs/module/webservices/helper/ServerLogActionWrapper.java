@@ -11,7 +11,7 @@ package org.openmrs.module.webservices.helper;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.util.MemoryAppender;
+import org.openmrs.logging.MemoryAppender;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
