@@ -52,7 +52,9 @@ public class BaseRestController {
 	 * Handles a failed privilege check. {@link AccessDeniedException} is mapped here, not only found
 	 * in a cause chain by {@link #handleException}, because Spring picks the handler mapped to the
 	 * closest exception type: a subclass's own handler for RuntimeException would otherwise outrank
-	 * it.
+	 * it. For the same reason a subclass must not map {@link AccessDeniedException} under a method
+	 * name of its own, which fails with "Ambiguous @ExceptionHandler method mapped" on the first
+	 * exception that controller handles; override this method instead to customize the response.
 	 * <strong>Should</strong> return unauthorized if not logged in
 	 * <strong>Should</strong> return forbidden if logged in
 	 */
