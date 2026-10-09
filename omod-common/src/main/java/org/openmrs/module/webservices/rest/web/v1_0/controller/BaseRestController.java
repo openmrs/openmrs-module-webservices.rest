@@ -49,10 +49,14 @@ public class BaseRestController {
 	private final Log log = LogFactory.getLog(getClass());
 	
 	/**
+	 * Handles a failed privilege check. {@link AccessDeniedException} is mapped here, not only found
+	 * in a cause chain by {@link #handleException}, because Spring picks the handler mapped to the
+	 * closest exception type: a subclass's own handler for RuntimeException would otherwise outrank
+	 * it.
 	 * <strong>Should</strong> return unauthorized if not logged in
 	 * <strong>Should</strong> return forbidden if logged in
 	 */
-	@ExceptionHandler(APIAuthenticationException.class)
+	@ExceptionHandler({ APIAuthenticationException.class, AccessDeniedException.class })
 	@ResponseBody
 	public SimpleObject apiAuthenticationExceptionHandler(Exception ex, HttpServletRequest request,
 	        HttpServletResponse response) throws Exception {
