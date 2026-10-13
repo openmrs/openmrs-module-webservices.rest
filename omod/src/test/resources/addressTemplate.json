@@ -7,7 +7,7 @@
         "displayText" : ""
     }, {
         "isToken" : "IS_ADDR_TOKEN",
-        "displayText" : "Location.address1",
+        "displayText" : "Address",
         "codeName" : "address1",
         "displaySize" : "40"
     } ], [ {
@@ -15,7 +15,7 @@
         "displayText" : ""
     }, {
         "isToken" : "IS_ADDR_TOKEN",
-        "displayText" : "Location.address2",
+        "displayText" : "Address 2",
         "codeName" : "address2",
         "displaySize" : "40"
     } ], [ {
@@ -23,7 +23,7 @@
         "displayText" : ""
     }, {
         "isToken" : "IS_ADDR_TOKEN",
-        "displayText" : "Location.cityVillage",
+        "displayText" : "City/Village",
         "codeName" : "cityVillage",
         "displaySize" : "10"
     }, {
@@ -31,7 +31,7 @@
         "displayText" : " "
     }, {
         "isToken" : "IS_ADDR_TOKEN",
-        "displayText" : "Location.stateProvince",
+        "displayText" : "State/Province",
         "codeName" : "stateProvince",
         "displaySize" : "10"
     }, {
@@ -39,7 +39,7 @@
         "displayText" : " "
     }, {
         "isToken" : "IS_ADDR_TOKEN",
-        "displayText" : "Location.country",
+        "displayText" : "Country",
         "codeName" : "country",
         "displaySize" : "10"
     }, {
@@ -47,18 +47,18 @@
         "displayText" : " "
     }, {
         "isToken" : "IS_ADDR_TOKEN",
-        "displayText" : "Location.postalCode",
+        "displayText" : "Postal Code",
         "codeName" : "postalCode",
         "displaySize" : "10"
     } ] ],
     "lineByLineFormat" : [ "address1", "address2", "cityVillage stateProvince country postalCode" ],
     "nameMappings" : {
-        "stateProvince" : "Location.stateProvince",
-        "country" : "Location.country",
-        "cityVillage" : "Location.cityVillage",
-        "address2" : "Location.address2",
-        "address1" : "Location.address1",
-        "postalCode" : "Location.postalCode"
+        "stateProvince" : "State/Province",
+        "country" : "Country",
+        "cityVillage" : "City/Village",
+        "address2" : "Address 2",
+        "address1" : "Address",
+        "postalCode" : "Postal Code"
     },
     "sizeMappings" : {
         "address2" : "40",
