@@ -22,6 +22,7 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.api.ValidationException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -48,10 +49,16 @@ public class BaseRestController {
 	private final Log log = LogFactory.getLog(getClass());
 	
 	/**
+	 * Handles a failed privilege check. {@link AccessDeniedException} is mapped here, not only found
+	 * in a cause chain by {@link #handleException}, because Spring picks the handler mapped to the
+	 * closest exception type: a subclass's own handler for RuntimeException would otherwise outrank
+	 * it. For the same reason a subclass must not map {@link AccessDeniedException} under a method
+	 * name of its own, which fails with "Ambiguous @ExceptionHandler method mapped" on the first
+	 * exception that controller handles; override this method instead to customize the response.
 	 * <strong>Should</strong> return unauthorized if not logged in
 	 * <strong>Should</strong> return forbidden if logged in
 	 */
-	@ExceptionHandler(APIAuthenticationException.class)
+	@ExceptionHandler({ APIAuthenticationException.class, AccessDeniedException.class })
 	@ResponseBody
 	public SimpleObject apiAuthenticationExceptionHandler(Exception ex, HttpServletRequest request,
 	        HttpServletResponse response) throws Exception {
@@ -115,6 +122,10 @@ public class BaseRestController {
 			}
 			
 		} else if (RestUtil.hasCause(ex, APIAuthenticationException.class)) {
+			return apiAuthenticationExceptionHandler(ex, request, response);
+		} else if (RestUtil.hasCause(ex, AccessDeniedException.class)) {
+			// same 401/403 split as APIAuthenticationException; as of core 3.0.0 both @Authorized and
+			// @PreAuthorize deny with an AccessDeniedException (AuthorizationDeniedException extends it)
 			return apiAuthenticationExceptionHandler(ex, request, response);
 		} else if (ex.getClass() == HttpRequestMethodNotSupportedException.class) {
 			errorCode = HttpServletResponse.SC_METHOD_NOT_ALLOWED;
