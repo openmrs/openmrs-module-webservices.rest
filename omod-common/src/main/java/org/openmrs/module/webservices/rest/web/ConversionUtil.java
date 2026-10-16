@@ -15,6 +15,7 @@ import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.openmrs.Auditable;
+import org.openmrs.OpenmrsObject;
 import org.openmrs.Retireable;
 import org.openmrs.Voidable;
 import org.openmrs.api.APIException;
@@ -31,6 +32,8 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription.Property;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.security.Authorize;
+import org.openmrs.security.DomainObjectAuthorizationRule;
 import org.openmrs.util.HandlerUtil;
 import org.openmrs.util.LocaleUtility;
 
@@ -65,6 +68,13 @@ public class ConversionUtil {
 	public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 
 	public static final Object PRIVILEGE_DENIED = new Object();
+	
+	/**
+	 * The property a representation carries in place of an object a
+	 * {@link DomainObjectAuthorizationRule} refused, so a reader can tell data that is hidden from data
+	 * that does not exist.
+	 */
+	public static final String MASKED_PROPERTY = "masked";
 	
 	// This would better be a Map<Pair<Class, String>, Type> but adding the dependency for
 	//  org.apache.commons.lang3.tuple.Pair (through omrs-api) messed up other tests
@@ -419,6 +429,17 @@ public class ConversionUtil {
 			return ret;
 		} else {
 			Converter<S> converter = specificConverter != null ? specificConverter : (Converter) getConverter(o.getClass());
+			if (converter instanceof BaseDelegatingResource) {
+				String requiredPrivilege = ((BaseDelegatingResource<?>) converter).getRequiredGetPrivilege();
+				if (requiredPrivilege != null && !Context.hasPrivilege(requiredPrivilege)) {
+					return PRIVILEGE_DENIED;
+				}
+			}
+			// after the privilege check, so a privilege denial keeps dropping the property as it always has,
+			// but before the no-converter shortcut, which would otherwise hand the object to the serializer whole
+			if (isRefusedByARule(o)) {
+				return maskedRepresentation();
+			}
 			if (converter == null) {
 				// try a few known datatypes
 				if (o instanceof Date) {
@@ -427,12 +448,6 @@ public class ConversionUtil {
 				// otherwise we have no choice but to return the plain object
 				return o;
 			}
-			if (converter instanceof BaseDelegatingResource) {
-				String requiredPrivilege = ((BaseDelegatingResource<?>) converter).getRequiredGetPrivilege();
-				if (requiredPrivilege != null && !Context.hasPrivilege(requiredPrivilege)) {
-					return PRIVILEGE_DENIED;
-				}
-			}
 			try {
 				return converter.asRepresentation(o, rep);
 			}
@@ -440,6 +455,37 @@ public class ConversionUtil {
 				throw new ConversionException("converting " + o.getClass() + " to " + rep, ex);
 			}
 		}
+	}
+	
+	/**
+	 * Whether a registered {@link DomainObjectAuthorizationRule} refuses this object to the current
+	 * user. Asked here because this is the one place every object a representation contains passes
+	 * through, nested ones included, and by the time they do they have been unwrapped to real entities.
+	 * <p>
+	 * A service method has usually applied the same rules already, through {@code @PostFilter} or a
+	 * {@code hasPermission} guard, and then this agrees with it and changes nothing. It earns its place
+	 * on what the service never saw: a nested object reached by following a property off the object the
+	 * service returned.
+	 * <p>
+	 * {@code Authorize.maskIfDenied} returns its argument unchanged unless a rule refuses it, and
+	 * returns the argument itself when no rule is registered at all, so identity is the test and an
+	 * installation using no rules pays a single reference comparison.
+	 */
+	private static boolean isRefusedByARule(Object o) {
+		return o instanceof OpenmrsObject && Authorize.maskIfDenied((OpenmrsObject) o) != o;
+	}
+	
+	/**
+	 * What stands in for a refused object: a marker and nothing else.
+	 * <p>
+	 * Deliberately not the object's own representation with the fields blanked. Converting the stand-in
+	 * through its resource would hand a client a uuid and a self link for a record it may not read and
+	 * which resolves to nothing, and the type is itself a disclosure. A marker also keeps a collection's
+	 * size honest, where {@link #PRIVILEGE_DENIED} drops the element and leaves the reader unable to
+	 * tell six observations with two hidden from four observations.
+	 */
+	private static SimpleObject maskedRepresentation() {
+		return new SimpleObject().add(MASKED_PROPERTY, Boolean.TRUE);
 	}
 	
 	/**
