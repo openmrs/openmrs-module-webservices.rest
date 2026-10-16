@@ -18,6 +18,7 @@ import io.swagger.models.properties.StringProperty;
 import org.openmrs.Provider;
 import org.openmrs.ProviderAttribute;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -240,11 +241,17 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 	
 	/**
 	 * @param provider
-	 * @return identifier + name (for concise display purposes)
+	 * @return identifier + name (for concise display purposes), or
+	 *         {@link ConversionUtil#MASKED_DISPLAY} when a rule refuses the person the name comes from
 	 */
 	@Override
 	@PropertyGetter("display")
 	public String getDisplayString(Provider provider) {
+		// Provider.getName() reads the linked person's name, so a Person rule refusing that person has
+		// to hide this string too - the provider itself is not what a rule was written about
+		if (ConversionUtil.isRefusedByARule(provider.getPerson())) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
 		if (provider.getIdentifier() == null) {
 			return provider.getName();
 		}

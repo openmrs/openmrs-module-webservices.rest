@@ -18,6 +18,7 @@ import io.swagger.models.properties.StringProperty;
 import org.openmrs.Person;
 import org.openmrs.Relationship;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -120,10 +121,17 @@ public class RelationshipResource1_8 extends DataDelegatingCrudResource<Relation
 	
 	/**
 	 * @param relationship
-	 * @return relationship type and start date
+	 * @return relationship type and start date, or {@link ConversionUtil#MASKED_DISPLAY} when a rule
+	 *         refuses either person
 	 */
 	@PropertyGetter("display")
 	public String getDisplayString(Relationship relationship) {
+		// both names are read below, so refusing either hides the whole string: naming only the allowed
+		// half would say which one is hidden and spell out the other
+		if (ConversionUtil.isRefusedByARule(relationship.getPersonA())
+		        || ConversionUtil.isRefusedByARule(relationship.getPersonB())) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
 		String relType = relationship.getRelationshipType() == null ? "NULL" : relationship.getRelationshipType()
 		        .getaIsToB();
 		return relationship.getPersonA().getGivenName() + " is the " + relType + " of "

@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+
+    This Source Code Form is subject to the terms of the Mozilla Public License,
+    v. 2.0. If a copy of the MPL was not distributed with this file, You can
+    obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+    the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+
+    Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+    graphic logo is a trademark of OpenMRS Inc.
+
+-->
+<!--
+    An observation answered with a drug, which no dataset in core or this module had.
+
+    Obs.getValueAsString takes its CWE branch only when the question concept's datatype is Coded and
+    value_coded is set, and within that branch prefers value_drug over the coded answer's name. So
+    all three columns are needed for the drug to be what the display prints:
+
+      concept_id="21"  FOOD ASSISTANCE FOR ENTIRE FAMILY, datatype Coded
+      value_coded="22" UNKNOWN, the answer the drug stands in for
+      value_drug="2"   Triomune-30, whose concept is 792 STAVUDINE LAMIVUDINE AND NEVIRAPINE
+
+    Drug.getFullName renders "Triomune-30 (STAVUDINE LAMIVUDINE AND NEVIRAPINE)", so this fixture
+    covers a rule refusing the drug and a rule refusing the concept behind it.
+-->
+<dataset>
+	<obs obs_id="5200" person_id="7" concept_id="21" value_coded="22" value_drug="2" status="FINAL"
+		 obs_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0" voided="false"
+		 uuid="8d0f5b2e-1c4a-4f3d-9a7b-6e2c0d15f840"/>
+</dataset>

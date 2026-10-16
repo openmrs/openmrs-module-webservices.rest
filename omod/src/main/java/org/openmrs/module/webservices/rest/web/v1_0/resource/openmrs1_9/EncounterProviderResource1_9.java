@@ -20,6 +20,7 @@ import org.openmrs.EncounterRole;
 import org.openmrs.Provider;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -206,19 +207,28 @@ public class EncounterProviderResource1_9 extends DelegatingSubResource<Encounte
 	
 	/**
 	 * Display string for EncounterProvider
-	 * 
+	 *
 	 * @param encounterProvider
-	 * @return String uuid
+	 * @return String uuid, or {@link ConversionUtil#MASKED_DISPLAY} when a rule refuses the person the
+	 *         provider's name comes from
 	 */
 	@PropertyGetter("display")
 	public String getDisplayString(EncounterProvider encounterProvider) {
 		if (encounterProvider == null) {
 			return "";
 		}
-		
+
 		Provider provider = encounterProvider.getProvider();
 		EncounterRole rolePlayed = encounterProvider.getEncounterRole();
-		
+
+		// the provider and the person its name is read from. Both are needed: unlike
+		// ProviderResource1_9, where the provider is the delegate and a refused one never reaches the
+		// display at all, here it is a record of its own, so a Provider rule has to be asked too
+		if (provider != null && (ConversionUtil.isRefusedByARule(provider)
+		        || ConversionUtil.isRefusedByARule(provider.getPerson()))) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
+
 		if (rolePlayed == null) {
 			if (provider == null) {
 				return null;

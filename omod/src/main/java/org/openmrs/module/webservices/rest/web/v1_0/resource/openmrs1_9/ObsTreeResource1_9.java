@@ -42,6 +42,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ObsResource1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
 
 @Resource(name = RestConstants.VERSION_1 + "/obstree", supportedClass = SimpleObject.class, supportedOpenmrsVersions = {
@@ -151,9 +152,20 @@ public class ObsTreeResource1_9 extends BaseDelegatingResource<SimpleObject> imp
 	private HashMap<String, Object> getObsMap(List<Person> whom, Concept concept, Date fromDate, Date toDate, 
 			ObsService obsService, ConceptService conceptService) {
 		
+		// as in getSetMap: these maps are built by hand, so nothing has asked the rules about the concept
+		if (ConversionUtil.isRefusedByARule(concept)) {
+			HashMap<String, Object> masked = new HashMap<String, Object>();
+			masked.put(ConversionUtil.MASKED_PROPERTY, Boolean.TRUE);
+			return masked;
+		}
+
 		List<Obs> obsList = obsService.getObservations(whom, null, Arrays.asList(concept), null, null, null, 
 				null, null, null, fromDate, toDate, false);
 		
+		// The @PostFilter on getObservations drops an observation a rule refuses, so those never arrive to
+		// be masked and a reader cannot tell one of those from a reading never taken. It does not drop an
+		// observation whose *answer* a rule refuses, though - the obs itself is authorized - and that one
+		// does arrive, with the refused concept's name in its value. Hence the check below.
 		List<HashMap<String, Object>> mapList = new ArrayList<HashMap<String, Object>>();
 		for (Obs obs : obsList) {
 			HashMap<String, Object> valueMap = new HashMap<String, Object>();
@@ -167,7 +179,11 @@ public class ObsTreeResource1_9 extends BaseDelegatingResource<SimpleObject> imp
 				}
 			}
 			else {
-				value = obs.getValueAsString(Context.getLocale());
+				// via ObsResource1_8 so this stays in step with the obs display, which reads the same
+				// records: the answer concept, the drug and its concept, and any group members. The
+				// datetime branch above needs no check, since it formats a date off the obs itself
+				value = ObsResource1_8.readsARefusedRecord(obs) ? ConversionUtil.MASKED_DISPLAY
+				        : obs.getValueAsString(Context.getLocale());
 			}
 			valueMap.put("value", value);
 			valueMap.put("obsDatetime", new SimpleDateFormat(DATETIME_FORMAT).format(obs.getObsDatetime()));
@@ -203,6 +219,9 @@ public class ObsTreeResource1_9 extends BaseDelegatingResource<SimpleObject> imp
 	
 
 	private SimpleObject getSetMap(Concept concept, List<Map<String, Object>> subSets) {
+		if (ConversionUtil.isRefusedByARule(concept)) {
+			return new SimpleObject().add(ConversionUtil.MASKED_PROPERTY, Boolean.TRUE);
+		}
 		SimpleObject map = new SimpleObject();
 		map.put("display", concept.getDisplayString());
 		map.put("subSets", subSets);
