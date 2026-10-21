@@ -15,6 +15,7 @@ import org.openmrs.ConceptSet;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -86,6 +87,13 @@ public class ConceptTreeResource1_9 extends BaseDelegatingResource<SimpleObject>
 	}
 
 	private SimpleObject buildConceptTree(Concept concept, Set<String> visitedUuids, ConceptService conceptService) {
+		// built by hand rather than through ConversionUtil, so the funnel's check never sees this concept.
+		// A refused one becomes the same marker a representation would carry: the node stays, keeping the
+		// tree's shape, and carries neither the name nor the uuid
+		if (ConversionUtil.isRefusedByARule(concept)) {
+			return new SimpleObject().add(ConversionUtil.MASKED_PROPERTY, Boolean.TRUE);
+		}
+
 		SimpleObject map = new SimpleObject();
 		map.put("uuid", concept.getUuid());
 		map.put("display", concept.getDisplayString());

@@ -13,6 +13,7 @@ import org.openmrs.Order;
 import org.openmrs.OrderGroup;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -167,11 +168,21 @@ public class OrderGroupResource1_12 extends DataDelegatingCrudResource<OrderGrou
 		    new ArrayProperty(new RefProperty("#/definitions/OrderCreate")));
 	}
 	
+	/**
+	 * @return the patient's identifier and name with the order set's name, or
+	 *         {@link ConversionUtil#MASKED_DISPLAY} when a rule refuses the patient
+	 */
 	@PropertyGetter("display")
 	public String getDisplayString(OrderGroup group) {
 		if (group.getOrders() == null)
 			return "[No Orders]";
 		Patient patient = group.getPatient();
+		// the identifier is as much a disclosure as the name, and both are read below. Testing before
+		// reading also keeps this from throwing on a patient the service layer already masked, whose
+		// getPatientIdentifier() answers null
+		if (ConversionUtil.isRefusedByARule(patient)) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
 		return patient.getPatientIdentifier().getIdentifier() + " - " + patient.getPersonName().getFullName() + " - "
 		        + group.getOrderSet().getName();
 	}

@@ -155,7 +155,8 @@ public class DiagnosisResource2_2 extends DataDelegatingCrudResource<Diagnosis> 
 	
 	/**
 	 * @param diagnosis
-	 * @return Diagnosis's name
+	 * @return Diagnosis's name, or {@link ConversionUtil#MASKED_DISPLAY} when a rule refuses the coded
+	 *         concept the name is read from
 	 */
 	@PropertyGetter("display")
 	public String getDisplayString(Diagnosis diagnosis) {
@@ -163,6 +164,12 @@ public class DiagnosisResource2_2 extends DataDelegatingCrudResource<Diagnosis> 
 			return "";
 		} else {
 			if (diagnosis.getDiagnosis().getCoded() != null) {
+				// see ConditionResource2_2.getDisplayString: the name is derived, so masking the concept
+				// under "diagnosis" does nothing for it
+				if (ConversionUtil.isRefusedByARule(diagnosis.getDiagnosis().getCoded())
+				        || ConversionUtil.isRefusedByARule(diagnosis.getDiagnosis().getCoded().getName())) {
+					return ConversionUtil.MASKED_DISPLAY;
+				}
 				return diagnosis.getDiagnosis().getCoded().getName().getName();
 			}
 			return diagnosis.getDiagnosis().getNonCoded();

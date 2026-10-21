@@ -187,7 +187,13 @@ public class OrderableResource1_10 extends BaseDelegatingResource<ConceptSearchR
 	
 	@PropertyGetter("display")
 	public String getDisplayString(ConceptSearchResult csr) {
+		if (ConversionUtil.isRefusedByARule(csr.getConcept())) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
 		ConceptName cn = csr.getConcept().getName();
+		if (ConversionUtil.isRefusedByARule(cn)) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
 		return cn == null ? null : cn.getName();
 	}
 }

@@ -185,6 +185,14 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 	 */
 	@PropertyGetter("display")
 	public static String getDisplay(DrugOrder delegate) {
+		// a drug order's display comes from here rather than from OrderResource1_8, so the check there
+		// does nothing for it. Drug and concept both, as in MedicationDispenseResource2_6: whichever is
+		// printed, the pair is one clinical fact
+		if (ConversionUtil.isRefusedByARule(delegate.getDrug())
+		        || ConversionUtil.isRefusedByARule(delegate.getConcept())) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
+
 		StringBuilder ret = new StringBuilder();
 		ret.append("(" + delegate.getAction() + ") ");
 		if (delegate.getDrug() != null) {
