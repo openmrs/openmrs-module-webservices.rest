@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+
+    This Source Code Form is subject to the terms of the Mozilla Public License,
+    v. 2.0. If a copy of the MPL was not distributed with this file, You can
+    obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+    the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+
+    Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+    graphic logo is a trademark of OpenMRS Inc.
+
+-->
+<!--
+    An attribute whose value is a record rather than a literal. Every visit attribute type in core
+    and in this module is a DateDatatype, whose value is its own content and discloses nothing
+    beyond itself; ConceptDatatype stores a reference and hands back the Concept it resolves to,
+    which is what BaseAttributeCrudResource1_9's display prints beside the mask of that same
+    concept.
+
+    value_reference is concept 22's uuid, "UNKNOWN": ConceptDatatype deserializes a uuid, not an id.
+-->
+<dataset>
+	<visit_attribute_type visit_attribute_type_id="20" name="Primary Diagnosis"
+						  description="A concept-valued visit attribute type"
+						  datatype="org.openmrs.customdatatype.datatype.ConceptDatatype" min_occurs="0" max_occurs="1"
+						  creator="1" date_created="2005-01-01 00:00:00.0" retired="0"
+						  uuid="b2d8f4c1-5e37-4a90-8f6b-7c1e0a9d3b54"/>
+	<visit_attribute visit_attribute_id="20" visit_id="1" attribute_type_id="20"
+					 value_reference="e10ffe54-5184-4efe-8960-cd565ec1cdf8" creator="1"
+					 date_created="2005-02-01 00:00:00.0" voided="0"
+					 uuid="c7a1e9b6-0d42-4f85-b3c9-8a5f2e6d1074"/>
+</dataset>

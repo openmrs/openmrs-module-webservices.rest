@@ -14,8 +14,10 @@ import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Attributable;
 import org.openmrs.Location;
+import org.openmrs.OpenmrsObject;
 import org.openmrs.Person;
 import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
@@ -293,7 +295,8 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 	 * Gets the display string for a person attribute.
 	 * 
 	 * @param pa the person attribute.
-	 * @return value (for concise display purposes)
+	 * @return value (for concise display purposes), or {@link ConversionUtil#MASKED_DISPLAY} when a
+	 *         rule refuses the attribute type or the record the value refers to
 	 */
 	@PropertyGetter("display")
 	public String getDisplayString(PersonAttribute pa) {
@@ -302,9 +305,50 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 			return pa.getValue() != null ? pa.getValue() : "";
 		}
 
+		Object hydrated = pa.getHydratedObject();
+		if (ConversionUtil.isRefusedByARule(pa.getAttributeType()) || ConversionUtil.isRefusedByARule(hydrated)
+		        || referencesARecordThatDidNotResolve(pa, hydrated)) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
+
 		// PersonAttribute#toString() calls PersonAttribute#hydrateObject() and Attributable#getDisplayString()
 		String value = pa.toString();
 		return value == null ? "" : value;
+	}
+
+	/**
+	 * Whether this attribute's value names a record that hydration did not produce, in which case the
+	 * raw value must not be printed in its place.
+	 * <p>
+	 * A refusal reaches this getter as nothing else. The value of a concept-typed attribute is a
+	 * concept id, {@code Concept.hydrate} resolves it through {@code ConceptService}, whose
+	 * {@code hasPermission} guard throws when a rule refuses what it was about to return - and
+	 * {@code hydrate} catches that and answers null. {@code PersonAttribute.toString()} then falls back
+	 * to printing {@code value} itself, which is the refused concept's own id, so the response carried
+	 * {@code "display": "6"} with nothing under {@code value} at all. There is no object left for
+	 * {@link ConversionUtil#isRefusedByARule(Object)} to judge by then, only the null.
+	 * <p>
+	 * A reference that did not resolve for the other reason - the record is gone - is masked too, since
+	 * the two are indistinguishable from here. That is the side to err on: {@code value} is null either
+	 * way, so this keeps the two properties telling one story, and a dangling key was never a display
+	 * string. Narrowed to a format naming a record so that it stays that choice and not a wider one: a
+	 * value that is its own content rather than a reference ({@code AttributableDate}) hydrates to null
+	 * when it is malformed, and printing that back is all this getter can do.
+	 */
+	private static boolean referencesARecordThatDidNotResolve(PersonAttribute pa, Object hydrated) {
+		if (hydrated != null || StringUtils.isBlank(pa.getValue())) {
+			return false;
+		}
+		try {
+			return OpenmrsObject.class.isAssignableFrom(OpenmrsClassLoader.getInstance().loadClass(
+			    pa.getAttributeType().getFormat()));
+		}
+		catch (Exception e) {
+			// a format naming no loadable class never hydrates to anything either, and
+			// PersonAttribute#getHydratedObject answers the raw value rather than null for it, so this
+			// branch is not the state above
+			return false;
+		}
 	}
 
 	/**

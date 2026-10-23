@@ -15,6 +15,7 @@ import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.openmrs.Auditable;
+import org.openmrs.ConceptName;
 import org.openmrs.OpenmrsObject;
 import org.openmrs.Retireable;
 import org.openmrs.Voidable;
@@ -425,6 +426,10 @@ public class ConversionUtil {
 				ret.add(converted);
 			}
 			return ret;
+		} else if (isAMask(o)) {
+			// a getter that resolved its own record and found it refused: already the stand-in, and the
+			// Map branch below would take it apart. See maskedRepresentation()
+			return o;
 		} else if (o instanceof Map) {
 			if (rep instanceof CustomRepresentation) {
 				return convertToCustomRepresentation(o, (CustomRepresentation) rep);
@@ -488,12 +493,13 @@ public class ConversionUtil {
 	 * is not covered by anything.
 	 * <p>
 	 * Deliberately no list of the getters that do: there are too many to keep in step with, and a list
-	 * that falls behind reads as a complete one. Closing them is also not the same as closing the gap -
-	 * {@code CodedOrFreeText.specificName} is a {@code ConceptName}, which no {@code Concept} rule
-	 * reaches, so refusing a concept still leaves the name hanging off it visible.
+	 * that falls behind reads as a complete one.
+	 * <p>
+	 * A {@link ConceptName} is judged by the concept it names as well as by itself: see below.
 	 *
 	 * @param o the object to ask the rules about, may be null or of any type
-	 * @return true if a registered rule refuses {@code o} to the current user
+	 * @return true if a registered rule refuses {@code o} to the current user, or refuses the concept
+	 *         {@code o} names when it is a {@link ConceptName}
 	 */
 	public static boolean isRefusedByARule(Object o) {
 		if (!(o instanceof OpenmrsObject)) {
@@ -514,7 +520,17 @@ public class ConversionUtil {
 		if (!Context.isSessionOpen() && SecurityContextHolder.getContext().getAuthentication() == null) {
 			return false;
 		}
-		return Authorize.maskIfDenied((OpenmrsObject) o) != o;
+		if (Authorize.maskIfDenied((OpenmrsObject) o) != o) {
+			return true;
+		}
+		// A ConceptName is how the concept it hangs off is spelled, and it is a record a response puts
+		// on its own: obs.valueCodedName and CodedOrFreeText.specificName are both ConceptName
+		// properties. Rules are matched by type and judge nothing reachable through what they are
+		// handed, so no Concept rule reaches one - without this, a refused concept came back masked
+		// under value and spelled out in full under valueCodedName in the same response.
+		// Asked here rather than at those two properties so that every ConceptName a representation
+		// contains is covered, whichever resource put it there.
+		return o instanceof ConceptName && isRefusedByARule(((ConceptName) o).getConcept());
 	}
 	
 	/**
@@ -525,9 +541,28 @@ public class ConversionUtil {
 	 * which resolves to nothing, and the type is itself a disclosure. A marker also keeps a collection's
 	 * size honest, where {@link #PRIVILEGE_DENIED} drops the element and leaves the reader unable to
 	 * tell six observations with two hidden from four observations.
+	 * <p>
+	 * Public for the same reason {@link #MASKED_DISPLAY} is, and it is the counterpart of it for a
+	 * property that is not a string: <strong>a getter that resolves a record itself, rather than handing
+	 * one to this funnel, has to substitute the mask on its own</strong>. The case that needs it is a
+	 * getter whose resolution <em>fails</em> - an attribute's value comes back from a service whose
+	 * guard throws rather than masking, so there is no object left for
+	 * {@link #isRefusedByARule(Object)} to judge, only an exception. Whatever this returns is treated as
+	 * final by {@link #convertToRepresentation(Object, Representation, Converter)}, so a getter may
+	 * return it under any representation.
 	 */
-	private static SimpleObject maskedRepresentation() {
+	public static SimpleObject maskedRepresentation() {
 		return new SimpleObject().add(MASKED_PROPERTY, Boolean.TRUE);
+	}
+
+	/**
+	 * Whether this is already the stand-in {@link #maskedRepresentation()} builds, in which case there
+	 * is nothing left to convert: it holds a marker and no record. Converting it again would take the
+	 * marker for the record - a custom representation asks the mask for the properties it named and
+	 * gets {@code {"uuid": null}} back, which has lost the one thing the mask was there to say.
+	 */
+	private static boolean isAMask(Object o) {
+		return o instanceof Map && Boolean.TRUE.equals(((Map<?, ?>) o).get(MASKED_PROPERTY));
 	}
 	
 	/**
