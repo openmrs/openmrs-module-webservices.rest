@@ -48,6 +48,7 @@ import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientProgram;
 import org.openmrs.Person;
 import org.openmrs.PersonAttribute;
+import org.openmrs.PersonAttributeType;
 import org.openmrs.Provider;
 import org.openmrs.User;
 import org.openmrs.Relationship;
@@ -235,6 +236,9 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	private static final String CIVIL_STATUS_ATTRIBUTE_TYPE_UUID = "a0f5521c-dbbd-4c10-81b2-1b7ab18330df";
 
 	private static final int MARRIED_CONCEPT_ID = 6;
+
+	/** Concept 6's only name, which is what its display string prints. */
+	private static final String MARRIED_CONCEPT_NAME_UUID = "f74e3673-983b-41e3-b872-56f0e6f7696e";
 
 	/** The concept-valued visit attribute type {@code visitAttributeWithConceptValue.xml} adds. */
 	private static final String VISIT_ATTRIBUTE_TYPE_UUID = "b2d8f4c1-5e37-4a90-8f6b-7c1e0a9d3b54";
@@ -1009,6 +1013,61 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		String display = (String) display(attribute, DEFAULT);
 		assertNotEquals(String.valueOf(MARRIED_CONCEPT_ID), display, "the raw value is the concept's own id");
 		assertEquals(MASKED_DISPLAY, display);
+	}
+
+	/**
+	 * A user-valued attribute, where the record the value names is not the end of it:
+	 * {@code User.getDisplayString()} prints the linked person's name, which a {@code User} rule does
+	 * not cover. Asking about the hydrated user alone left that name in the display.
+	 */
+	@Test
+	public void getDisplayString_shouldMaskAUserValuedPersonAttributeWhenThePersonBehindItIsRefused()
+	        throws Exception {
+		PersonAttribute attribute = aUserValuedAttribute();
+		assertEquals("Hippocrates of Cos (butch)", display(attribute, DISPLAY_ONLY),
+		    "the person's name should be in the display, or this is testing nothing");
+		PersonMaskingTestRule.deniedId = ALERT_RECIPIENT_PERSON_ID;
+
+		assertEquals(MASKED_DISPLAY, display(attribute, DISPLAY_ONLY));
+	}
+
+	/** And the name, which neither a User nor a Person rule reaches. */
+	@Test
+	public void getDisplayString_shouldMaskAUserValuedPersonAttributeWhenTheNameIsRefused() throws Exception {
+		PersonAttribute attribute = aUserValuedAttribute();
+		UuidMaskingTestRule.deniedUuid = ALERT_RECIPIENT_NAME_UUID;
+
+		assertEquals(MASKED_DISPLAY, display(attribute, DISPLAY_ONLY));
+	}
+
+	/**
+	 * The same shape one type over: {@code Concept.getDisplayString()} prints a {@code ConceptName}, so
+	 * a rule refusing the name and not the concept it hangs off reached the display through the record
+	 * that was allowed.
+	 */
+	@Test
+	public void getDisplayString_shouldMaskAConceptValuedPersonAttributeWhenOnlyItsNameIsRefused() throws Exception {
+		PersonAttribute attribute = Context.getPersonService().getPersonAttributeByUuid(CIVIL_STATUS_ATTRIBUTE_UUID);
+		assertEquals("MARRIED", display(attribute, DISPLAY_ONLY));
+		UuidMaskingTestRule.deniedUuid = MARRIED_CONCEPT_NAME_UUID;
+
+		assertEquals(MASKED_DISPLAY, display(attribute, DISPLAY_ONLY));
+	}
+
+	/**
+	 * Built here because no dataset in core or this module holds an attribute type whose format is
+	 * {@code org.openmrs.User}. {@code User.hydrate} reads the value as a user id.
+	 */
+	private PersonAttribute aUserValuedAttribute() {
+		User user = Context.getUserService().getUserByUuid(ALERT_RECIPIENT_USER_UUID);
+		assertNotNull(user, "user " + ALERT_RECIPIENT_USER_UUID + " should be in the standard dataset");
+		PersonAttributeType type = new PersonAttributeType();
+		type.setName("Account of record");
+		type.setDescription("A user-valued attribute type, which no dataset holds");
+		type.setFormat(User.class.getName());
+		type.setSearchable(false);
+		return new PersonAttribute(Context.getPersonService().savePersonAttributeType(type),
+		    String.valueOf(user.getUserId()));
 	}
 
 	@Test
