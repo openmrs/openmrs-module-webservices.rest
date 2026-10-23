@@ -10,6 +10,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import io.swagger.models.Model;
@@ -17,6 +18,10 @@ import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.StringProperty;
 import org.apache.commons.lang3.StringUtils;
+import org.openmrs.OpenmrsObject;
+import org.openmrs.Person;
+import org.openmrs.Program;
+import org.openmrs.Provider;
 import org.openmrs.attribute.Attribute;
 import org.openmrs.customdatatype.CustomDatatype;
 import org.openmrs.customdatatype.CustomDatatypeUtil;
@@ -174,23 +179,70 @@ public abstract class BaseAttributeCrudResource1_9<T extends Attribute<?, ?>, P,
 	 * 
 	 * @param attr the attribute.
 	 * @return attribute type: value (for concise display purposes), or
-	 *         {@link ConversionUtil#MASKED_DISPLAY} when a rule refuses the attribute type or the
-	 *         record the value resolves to
+	 *         {@link ConversionUtil#MASKED_DISPLAY} when a rule refuses the attribute type, the record
+	 *         the value resolves to, or a record that value's own {@code toString()} reads
 	 */
 	@PropertyGetter("display")
 	public String getDisplayString(T attr) {
 		if (attr.getAttributeType() == null)
 			return "";
-		// a datatype backed by a record hands one back - a Concept for ConceptDatatype, a Location for
-		// LocationDatatype - and that is masked under "value" while this printed its toString() beside
+		// a datatype backed by a record hands one back - a Concept for ConceptDatatype, a Provider for
+		// ProviderDatatype - and that is masked under "value" while this printed its toString() beside
 		// the mask: "Concept #6" names the refused concept by its id. The type is a record of its own
 		// too, masked under "attributeType"
 		Object value = resolveValue(attr);
 		if (value == REFUSED || ConversionUtil.isRefusedByARule(attr.getAttributeType())
-		        || ConversionUtil.isRefusedByARule(value)) {
+		        || readsARefusedRecord(value)) {
 			return ConversionUtil.MASKED_DISPLAY;
 		}
 		return attr.getAttributeType().getName() + ": " + value;
+	}
+
+	/**
+	 * Whether a rule refuses the value, or any record the value's own {@code toString()} reads - which
+	 * is how the display above prints it.
+	 * <p>
+	 * The value itself is the first question and for most datatypes the only one: a {@code Location}
+	 * prints its own name column, a {@code Concept} its own id, and refusing the record covers both.
+	 * Two of the record-backed datatypes core ships print another record, and a derived string is never
+	 * what the funnel sees, so each is named here.
+	 * <p>
+	 * A list, which {@link ConversionUtil#isRefusedByARule(Object)} says to avoid, because here there is
+	 * no alternative: nothing can ask a type what its {@code toString()} reads, and a module may
+	 * contribute a datatype of its own, which has to be added. Two entries for the whole of core is a
+	 * list short enough to keep in step with.
+	 */
+	private static boolean readsARefusedRecord(Object value) {
+		if (ConversionUtil.isRefusedByARule(value)) {
+			return true;
+		}
+		if (value instanceof Provider) {
+			// Provider.toString() prints every name of the person behind it, so it discloses what a
+			// Person rule hides. The names are asked about one by one as well: a PersonName is a record
+			// of its own, which neither a Provider nor a Person rule reaches
+			Person person = ((Provider) value).getPerson();
+			return ConversionUtil.isRefusedByARule(person) || (person != null && anyIsRefused(person.getNames()));
+		}
+		if (value instanceof Program) {
+			// Program.toString() prints its concept and each of its workflows, both of which render as
+			// their ids - and an id names a record as plainly as a name does, which is why "Concept #6"
+			// was worth hiding above
+			Program program = (Program) value;
+			return ConversionUtil.isRefusedByARule(program.getConcept()) || anyIsRefused(program.getWorkflows());
+		}
+		return false;
+	}
+
+	private static boolean anyIsRefused(Collection<? extends OpenmrsObject> records) {
+		if (records == null) {
+			return false;
+		}
+		for (OpenmrsObject record : records) {
+			if (ConversionUtil.isRefusedByARule(record)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/**

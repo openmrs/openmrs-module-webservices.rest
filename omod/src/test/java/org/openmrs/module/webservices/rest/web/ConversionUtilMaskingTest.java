@@ -243,8 +243,23 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	/** The concept-valued visit attribute type {@code visitAttributeWithConceptValue.xml} adds. */
 	private static final String VISIT_ATTRIBUTE_TYPE_UUID = "b2d8f4c1-5e37-4a90-8f6b-7c1e0a9d3b54";
 
-	/** Concept 22 "UNKNOWN", which that attribute's value_reference names. */
+	/** Concept 22 "UNKNOWN", which the concept-valued attribute's value_reference names. */
 	private static final String UNKNOWN_CONCEPT_UUID = "e10ffe54-5184-4efe-8960-cd565ec1cdf8";
+
+	/** Visit 2, which carries the provider-valued attribute: provider 1, on person 1 "Super User". */
+	private static final String PROVIDER_ATTRIBUTE_VISIT_UUID = "4e663d66-6b78-11e0-93c3-18a905e044dc";
+
+	private static final int SUPER_USER_PERSON_ID = 1;
+
+	private static final String SUPER_USER_NAME_UUID = "38a686df-d459-484c-9e7c-3f43a9bced58";
+
+	/** Visit 3, which carries the program-valued attribute: program 1, on concept 9 "HIV PROGRAM". */
+	private static final String PROGRAM_ATTRIBUTE_VISIT_UUID = "6f85b2a6-6b78-11e0-93c3-18a905e044dc";
+
+	private static final int PROGRAM_CONCEPT_ID = 9;
+
+	/** A workflow of program 1, printed as its id by {@code Program.toString()}. */
+	private static final String PROGRAM_WORKFLOW_UUID = "84f0effa-dd73-46cb-b931-7cd6be6c5f81";
 
 	/** User 502 "butch", on person 502 "Hippocrates of Cos", whose name an alert recipient prints. */
 	private static final String ALERT_RECIPIENT_USER_UUID = "c98a1558-e131-11de-babe-001e378eb67e";
@@ -977,8 +992,8 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	 */
 	@Test
 	public void getDisplayString_shouldMaskAVisitAttributesDisplayWhenItsConceptValueIsRefused() throws Exception {
-		executeDataSet("visitAttributeWithConceptValue.xml");
-		VisitAttribute attribute = conceptValuedAttributeOfVisit1();
+		executeDataSet("visitAttributesWithRecordValues.xml");
+		VisitAttribute attribute = theOnlyAttributeOf(VISIT_UUID);
 		assertEquals("Primary Diagnosis: Concept #" + CODED_OBS_ANSWER_CONCEPT_ID, display(attribute, DISPLAY_ONLY));
 		ConceptMaskingTestRule.deniedId = CODED_OBS_ANSWER_CONCEPT_ID;
 
@@ -989,8 +1004,8 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 
 	@Test
 	public void getDisplayString_shouldMaskAVisitAttributesDisplayWhenItsTypeIsRefused() throws Exception {
-		executeDataSet("visitAttributeWithConceptValue.xml");
-		VisitAttribute attribute = conceptValuedAttributeOfVisit1();
+		executeDataSet("visitAttributesWithRecordValues.xml");
+		VisitAttribute attribute = theOnlyAttributeOf(VISIT_UUID);
 		UuidMaskingTestRule.deniedUuid = VISIT_ATTRIBUTE_TYPE_UUID;
 
 		assertEquals(MASKED_DISPLAY, display(attribute, DEFAULT));
@@ -1093,6 +1108,58 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	}
 
 	/**
+	 * The record a value names is not always the end of it: a datatype's value is printed by its own
+	 * {@code toString()}, and {@code Provider.toString()} prints every name of the person behind the
+	 * provider. So a Person rule left {@code providerName:[Super User]} in the display beside
+	 * {@code value.person: {"masked": true}}.
+	 */
+	@Test
+	public void getDisplayString_shouldMaskAProviderValuedAttributeWhenThePersonBehindItIsRefused() throws Exception {
+		executeDataSet("visitAttributesWithRecordValues.xml");
+		VisitAttribute attribute = theOnlyAttributeOf(PROVIDER_ATTRIBUTE_VISIT_UUID);
+		assertTrue(((String) display(attribute, DISPLAY_ONLY)).contains("Super User"),
+		    "the person's name should be in the display, got " + display(attribute, DISPLAY_ONLY));
+		PersonMaskingTestRule.deniedId = SUPER_USER_PERSON_ID;
+
+		assertEquals(MASKED_DISPLAY, display(attribute, DISPLAY_ONLY));
+	}
+
+	/** And each of those names, which neither a Provider nor a Person rule reaches. */
+	@Test
+	public void getDisplayString_shouldMaskAProviderValuedAttributeWhenAPersonNameIsRefused() throws Exception {
+		executeDataSet("visitAttributesWithRecordValues.xml");
+		VisitAttribute attribute = theOnlyAttributeOf(PROVIDER_ATTRIBUTE_VISIT_UUID);
+		UuidMaskingTestRule.deniedUuid = SUPER_USER_NAME_UUID;
+
+		assertEquals(MASKED_DISPLAY, display(attribute, DISPLAY_ONLY));
+	}
+
+	/**
+	 * {@code Program.toString()} prints its concept, which renders as {@code Concept #9} - an id names
+	 * the record as plainly as a name does.
+	 */
+	@Test
+	public void getDisplayString_shouldMaskAProgramValuedAttributeWhenItsConceptIsRefused() throws Exception {
+		executeDataSet("visitAttributesWithRecordValues.xml");
+		VisitAttribute attribute = theOnlyAttributeOf(PROGRAM_ATTRIBUTE_VISIT_UUID);
+		assertTrue(((String) display(attribute, DISPLAY_ONLY)).contains("concept=Concept #" + PROGRAM_CONCEPT_ID),
+		    "the concept's id should be in the display, got " + display(attribute, DISPLAY_ONLY));
+		ConceptMaskingTestRule.deniedId = PROGRAM_CONCEPT_ID;
+
+		assertEquals(MASKED_DISPLAY, display(attribute, DISPLAY_ONLY));
+	}
+
+	/** And its workflows, printed as ids in the same string. */
+	@Test
+	public void getDisplayString_shouldMaskAProgramValuedAttributeWhenAWorkflowIsRefused() throws Exception {
+		executeDataSet("visitAttributesWithRecordValues.xml");
+		VisitAttribute attribute = theOnlyAttributeOf(PROGRAM_ATTRIBUTE_VISIT_UUID);
+		UuidMaskingTestRule.deniedUuid = PROGRAM_WORKFLOW_UUID;
+
+		assertEquals(MASKED_DISPLAY, display(attribute, DISPLAY_ONLY));
+	}
+
+	/**
 	 * A value the datatype never got to hand over: a rule that answers the id-and-type overload, which
 	 * is how one written for a deployment reads, makes {@code ConceptService}'s guard throw where
 	 * {@link org.openmrs.security.Authorize} would have masked. That exception came out of the two
@@ -1105,8 +1172,8 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	 */
 	@Test
 	public void getValue_shouldMaskAVisitAttributeValueAServiceGuardRefusesRatherThanFailing() throws Exception {
-		executeDataSet("visitAttributeWithConceptValue.xml");
-		VisitAttribute attribute = conceptValuedAttributeOfVisit1();
+		executeDataSet("visitAttributesWithRecordValues.xml");
+		VisitAttribute attribute = theOnlyAttributeOf(VISIT_UUID);
 		UuidMaskingTestRule.deniedUuidAtServiceGuards = UNKNOWN_CONCEPT_UUID;
 
 		Map<String, Object> converted = asMap(ConversionUtil.convertToRepresentation(attribute, DEFAULT));
@@ -1122,8 +1189,8 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	 */
 	@Test
 	public void getValue_shouldMaskAVisitAttributeValueWhenThePrivilegeToResolveItIsMissing() throws Exception {
-		executeDataSet("visitAttributeWithConceptValue.xml");
-		VisitAttribute attribute = conceptValuedAttributeOfVisit1();
+		executeDataSet("visitAttributesWithRecordValues.xml");
+		VisitAttribute attribute = theOnlyAttributeOf(VISIT_UUID);
 		Context.logout();
 
 		Map<String, Object> converted = asMap(ConversionUtil.convertToRepresentation(attribute, DEFAULT));
@@ -1139,8 +1206,8 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	 */
 	@Test
 	public void convertToRepresentation_shouldLeaveAMaskAGetterSubstitutedAlone() throws Exception {
-		executeDataSet("visitAttributeWithConceptValue.xml");
-		VisitAttribute attribute = conceptValuedAttributeOfVisit1();
+		executeDataSet("visitAttributesWithRecordValues.xml");
+		VisitAttribute attribute = theOnlyAttributeOf(VISIT_UUID);
 		UuidMaskingTestRule.deniedUuidAtServiceGuards = UNKNOWN_CONCEPT_UUID;
 
 		for (Representation rep : Arrays.asList(DEFAULT, FULL, new CustomRepresentation("value:(uuid)"))) {
@@ -1194,10 +1261,11 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		return alertRecipient;
 	}
 
-	private VisitAttribute conceptValuedAttributeOfVisit1() {
-		Visit visit = Context.getVisitService().getVisitByUuid(VISIT_UUID);
+	private VisitAttribute theOnlyAttributeOf(String visitUuid) {
+		Visit visit = Context.getVisitService().getVisitByUuid(visitUuid);
+		assertNotNull(visit);
 		assertEquals(1, visit.getActiveAttributes().size(),
-		    "visitAttributeWithConceptValue.xml should give visit 1 its only attribute");
+		    "visitAttributesWithRecordValues.xml should give visit " + visitUuid + " its only attribute");
 		return visit.getActiveAttributes().iterator().next();
 	}
 
