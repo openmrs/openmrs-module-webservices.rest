@@ -89,8 +89,9 @@ public class ConceptTreeResource1_9 extends BaseDelegatingResource<SimpleObject>
 	private SimpleObject buildConceptTree(Concept concept, Set<String> visitedUuids, ConceptService conceptService) {
 		// built by hand rather than through ConversionUtil, so the funnel's check never sees this concept.
 		// A refused one becomes the same marker a representation would carry: the node stays, keeping the
-		// tree's shape, and carries neither the name nor the uuid
-		if (ConversionUtil.isRefusedByARule(concept)) {
+		// tree's shape, and carries neither the name nor the uuid. The name is asked about too, since a
+		// ConceptName is a record of its own that no Concept rule reaches and it is what is printed
+		if (ConversionUtil.isRefusedByARule(concept) || ConversionUtil.isRefusedByARule(concept.getName())) {
 			return new SimpleObject().add(ConversionUtil.MASKED_PROPERTY, Boolean.TRUE);
 		}
 

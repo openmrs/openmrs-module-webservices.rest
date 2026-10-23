@@ -261,6 +261,18 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	/** A workflow of program 1, printed as its id by {@code Program.toString()}. */
 	private static final String PROGRAM_WORKFLOW_UUID = "84f0effa-dd73-46cb-b931-7cd6be6c5f81";
 
+	/** The preferred name of person 7, which {@link #RELATIONSHIP_UUID}'s display reads. */
+	private static final String RELATIONSHIP_PERSON_B_NAME_UUID = "a65c347e-1384-493a-a55b-d325924acd94";
+
+	/** Relationship type 1, whose "Doctor" the same display prints between the two names. */
+	private static final String RELATIONSHIP_TYPE_UUID = "6d9002ea-a96b-4889-af78-82d48c57a110";
+
+	/** Encounter role 1 "Unknown", the role encounter 3's only provider plays. */
+	private static final String ENCOUNTER_ROLE_UUID = "a0b03050-c99b-11e0-9572-0800200c9a66";
+
+	/** The order set of {@link #ORDER_GROUP_UUID}, whose name closes that group's display. */
+	private static final String ORDER_SET_UUID = "2d3fb1d0-ae06-22e3-a5e2-0140211c1001";
+
 	/** User 502 "butch", on person 502 "Hippocrates of Cos", whose name an alert recipient prints. */
 	private static final String ALERT_RECIPIENT_USER_UUID = "c98a1558-e131-11de-babe-001e378eb67e";
 
@@ -1267,6 +1279,110 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		assertEquals(1, visit.getActiveAttributes().size(),
 		    "visitAttributesWithRecordValues.xml should give visit " + visitUuid + " its only attribute");
 		return visit.getActiveAttributes().iterator().next();
+	}
+
+	// The second order of the same problem: these displays asked about a record but not about the name
+	// or type rows that record's own display reads, so refusing one of those left the string intact.
+
+	@Test
+	public void getDisplayString_shouldMaskAConceptsDisplayWhenItsNameIsRefused() throws Exception {
+		Concept aspirin = aspirin();
+		assertEquals("ASPIRIN", display(aspirin, DISPLAY_ONLY));
+		// read off the concept rather than hardcoded: which of its names is preferred depends on the
+		// locale, and this test is about the name the display actually reads
+		UuidMaskingTestRule.deniedUuid = aspirin.getName().getUuid();
+
+		assertEquals(MASKED_DISPLAY, display(aspirin, DEFAULT));
+		assertEquals(MASKED_DISPLAY, display(aspirin, REF));
+	}
+
+	@Test
+	public void getDisplayString_shouldMaskAProvidersDisplayWhenTheNameItReadsIsRefused() throws Exception {
+		executeDataSet("providerTestDataset.xml");
+		Provider provider = Context.getProviderService().getProviderByUuid(PROVIDER_UUID);
+		assertNotNull(provider);
+		UuidMaskingTestRule.deniedUuid = NON_PATIENT_PERSON_NAME_UUID;
+
+		assertEquals(MASKED_DISPLAY, display(provider, DEFAULT));
+	}
+
+	@Test
+	public void getDisplayString_shouldMaskAnEncounterProvidersDisplayWhenTheNameItReadsIsRefused() throws Exception {
+		Encounter encounter = Context.getEncounterService().getEncounterByUuid(ENCOUNTER_UUID);
+		UuidMaskingTestRule.deniedUuid = SUPER_USER_NAME_UUID;
+
+		assertEncounterProvidersMasked(encounter);
+	}
+
+	/** The role is printed after the name, so refusing it has to hide the string as well. */
+	@Test
+	public void getDisplayString_shouldMaskAnEncounterProvidersDisplayWhenItsRoleIsRefused() throws Exception {
+		Encounter encounter = Context.getEncounterService().getEncounterByUuid(ENCOUNTER_UUID);
+		UuidMaskingTestRule.deniedUuid = ENCOUNTER_ROLE_UUID;
+
+		assertEncounterProvidersMasked(encounter);
+	}
+
+	@Test
+	public void getDisplayString_shouldMaskARelationshipsDisplayWhenANameItReadsIsRefused() throws Exception {
+		Relationship relationship = Context.getPersonService().getRelationshipByUuid(RELATIONSHIP_UUID);
+		assertNotNull(relationship);
+		UuidMaskingTestRule.deniedUuid = RELATIONSHIP_PERSON_B_NAME_UUID;
+
+		assertEquals(MASKED_DISPLAY, display(relationship, DEFAULT));
+	}
+
+	@Test
+	public void getDisplayString_shouldMaskARelationshipsDisplayWhenItsTypeIsRefused() throws Exception {
+		Relationship relationship = Context.getPersonService().getRelationshipByUuid(RELATIONSHIP_UUID);
+		assertTrue(((String) display(relationship, DISPLAY_ONLY)).contains("Doctor"),
+		    "the type should be in the display, got " + display(relationship, DISPLAY_ONLY));
+		UuidMaskingTestRule.deniedUuid = RELATIONSHIP_TYPE_UUID;
+
+		assertEquals(MASKED_DISPLAY, display(relationship, DEFAULT));
+	}
+
+	@Test
+	public void getDisplayString_shouldMaskAnOrderGroupsDisplayWhenTheIdentifierItReadsIsRefused() throws Exception {
+		executeDataSet("orderGroupTestDataset.xml");
+		OrderGroup group = Context.getOrderService().getOrderGroupByUuid(ORDER_GROUP_UUID);
+		assertNotNull(group);
+		// orderGroupTestDataset.xml gives patient 2 its own identifier and name, so both are read off
+		// the group rather than taken from the standard dataset's
+		UuidMaskingTestRule.deniedUuid = group.getPatient().getPatientIdentifier().getUuid();
+
+		assertEquals(MASKED_DISPLAY, display(group, DEFAULT));
+	}
+
+	@Test
+	public void getDisplayString_shouldMaskAnOrderGroupsDisplayWhenTheNameItReadsIsRefused() throws Exception {
+		executeDataSet("orderGroupTestDataset.xml");
+		OrderGroup group = Context.getOrderService().getOrderGroupByUuid(ORDER_GROUP_UUID);
+		UuidMaskingTestRule.deniedUuid = group.getPatient().getPersonName().getUuid();
+
+		assertEquals(MASKED_DISPLAY, display(group, DEFAULT));
+	}
+
+	/** The order set closes that display, and is a record of its own that no Patient rule reaches. */
+	@Test
+	public void getDisplayString_shouldMaskAnOrderGroupsDisplayWhenItsOrderSetIsRefused() throws Exception {
+		executeDataSet("orderGroupTestDataset.xml");
+		OrderGroup group = Context.getOrderService().getOrderGroupByUuid(ORDER_GROUP_UUID);
+		assertTrue(((String) display(group, DISPLAY_ONLY)).contains("Order_Set_1"),
+		    "the order set's name should be in the display, got " + display(group, DISPLAY_ONLY));
+		UuidMaskingTestRule.deniedUuid = ORDER_SET_UUID;
+
+		assertEquals(MASKED_DISPLAY, display(group, DEFAULT));
+	}
+
+	private void assertEncounterProvidersMasked(Encounter encounter) throws Exception {
+		assertNotNull(encounter);
+		List<?> encounterProviders = assertInstanceOf(List.class,
+		    asMap(ConversionUtil.convertToRepresentation(encounter, DEFAULT)).get("encounterProviders"));
+		assertFalse(encounterProviders.isEmpty(), "encounter " + ENCOUNTER_UUID + " should have a provider");
+		for (Object encounterProvider : encounterProviders) {
+			assertEquals(MASKED_DISPLAY, asMap(encounterProvider).get("display"));
+		}
 	}
 
 	private Object display(Object delegate, Representation rep) throws Exception {
