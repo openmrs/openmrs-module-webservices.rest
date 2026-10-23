@@ -183,6 +183,13 @@ public class OrderGroupResource1_12 extends DataDelegatingCrudResource<OrderGrou
 		if (ConversionUtil.isRefusedByARule(patient)) {
 			return ConversionUtil.MASKED_DISPLAY;
 		}
+		// and the three records the string is actually read off, none of which a Patient rule reaches:
+		// the preferred identifier, the preferred name, and the order set whose name closes the string
+		if (ConversionUtil.isRefusedByARule(patient.getPatientIdentifier())
+		        || ConversionUtil.isRefusedByARule(patient.getPersonName())
+		        || ConversionUtil.isRefusedByARule(group.getOrderSet())) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
 		return patient.getPatientIdentifier().getIdentifier() + " - " + patient.getPersonName().getFullName() + " - "
 		        + group.getOrderSet().getName();
 	}

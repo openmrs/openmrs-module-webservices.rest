@@ -153,7 +153,7 @@ public class ObsTreeResource1_9 extends BaseDelegatingResource<SimpleObject> imp
 			ObsService obsService, ConceptService conceptService) {
 		
 		// as in getSetMap: these maps are built by hand, so nothing has asked the rules about the concept
-		if (ConversionUtil.isRefusedByARule(concept)) {
+		if (refusesTheConcept(concept)) {
 			HashMap<String, Object> masked = new HashMap<String, Object>();
 			masked.put(ConversionUtil.MASKED_PROPERTY, Boolean.TRUE);
 			return masked;
@@ -219,13 +219,22 @@ public class ObsTreeResource1_9 extends BaseDelegatingResource<SimpleObject> imp
 	
 
 	private SimpleObject getSetMap(Concept concept, List<Map<String, Object>> subSets) {
-		if (ConversionUtil.isRefusedByARule(concept)) {
+		if (refusesTheConcept(concept)) {
 			return new SimpleObject().add(ConversionUtil.MASKED_PROPERTY, Boolean.TRUE);
 		}
 		SimpleObject map = new SimpleObject();
 		map.put("display", concept.getDisplayString());
 		map.put("subSets", subSets);
 		return map;
+	}
+	
+	/**
+	 * Whether a rule refuses this concept or the name both maps above print through
+	 * {@code Concept.getDisplayString()}. The name is asked about separately because a
+	 * {@code ConceptName} is a record of its own that no {@code Concept} rule reaches.
+	 */
+	private boolean refusesTheConcept(Concept concept) {
+		return ConversionUtil.isRefusedByARule(concept) || ConversionUtil.isRefusedByARule(concept.getName());
 	}
 	
 	private void fillConceptNumericMetadata(HashMap<String, Object> map, ConceptNumeric conceptNumeric) {

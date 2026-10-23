@@ -17,6 +17,7 @@ import io.swagger.models.properties.StringProperty;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterProvider;
 import org.openmrs.EncounterRole;
+import org.openmrs.Person;
 import org.openmrs.Provider;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
@@ -221,11 +222,11 @@ public class EncounterProviderResource1_9 extends DelegatingSubResource<Encounte
 		Provider provider = encounterProvider.getProvider();
 		EncounterRole rolePlayed = encounterProvider.getEncounterRole();
 
-		// the provider and the person its name is read from. Both are needed: unlike
-		// ProviderResource1_9, where the provider is the delegate and a refused one never reaches the
-		// display at all, here it is a record of its own, so a Provider rule has to be asked too
-		if (provider != null && (ConversionUtil.isRefusedByARule(provider)
-		        || ConversionUtil.isRefusedByARule(provider.getPerson()))) {
+		// the provider, the person its name is read from, and that person's preferred name, which is the
+		// record Provider.getName() actually reads. The provider is needed as well as the person:
+		// unlike ProviderResource1_9, where the provider is the delegate and a refused one never
+		// reaches the display at all, here it is a record of its own. The role is read below too
+		if (readsARefusedRecord(provider) || ConversionUtil.isRefusedByARule(rolePlayed)) {
 			return ConversionUtil.MASKED_DISPLAY;
 		}
 
@@ -237,6 +238,20 @@ public class EncounterProviderResource1_9 extends DelegatingSubResource<Encounte
 			}
 		}
 		return provider.getName() + ": " + rolePlayed.getName();
+	}
+	
+	/**
+	 * Whether a rule refuses the provider, the person behind it, or the preferred name
+	 * {@code Provider.getName()} reads off that person. A null provider refuses nothing: the display
+	 * below prints no name for one.
+	 */
+	private boolean readsARefusedRecord(Provider provider) {
+		if (provider == null) {
+			return false;
+		}
+		Person person = provider.getPerson();
+		return ConversionUtil.isRefusedByARule(provider) || ConversionUtil.isRefusedByARule(person)
+		        || (person != null && ConversionUtil.isRefusedByARule(person.getPersonName()));
 	}
 	
 	@Override

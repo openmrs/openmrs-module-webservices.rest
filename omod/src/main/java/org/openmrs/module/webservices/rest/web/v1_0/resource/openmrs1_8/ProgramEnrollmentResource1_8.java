@@ -20,6 +20,7 @@ import org.openmrs.PatientProgram;
 import org.openmrs.PatientState;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -51,8 +52,18 @@ public class ProgramEnrollmentResource1_8 extends DataDelegatingCrudResource<Pat
 		return Context.getProgramWorkflowService().getPatientProgramByUuid(uniqueId);
 	}
 	
+	/**
+	 * @return the name of the program the patient is enrolled in, or
+	 *         {@link ConversionUtil#MASKED_DISPLAY} when a rule refuses that program
+	 */
 	@PropertyGetter("display")
 	public String getDisplayString(PatientProgram patientProgram) {
+		// the program is a record of its own, masked under "program" while its name went out here.
+		// Testing before reading also keeps this from throwing on a program the service layer already
+		// masked, whose getName() answers null
+		if (ConversionUtil.isRefusedByARule(patientProgram.getProgram())) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
 		return patientProgram.getProgram().getName();
 	}
 
