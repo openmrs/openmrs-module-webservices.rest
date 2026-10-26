@@ -240,7 +240,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	/** Concept 6's only name, which is what its display string prints. */
 	private static final String MARRIED_CONCEPT_NAME_UUID = "f74e3673-983b-41e3-b872-56f0e6f7696e";
 
-	/** The concept-valued visit attribute type {@code visitAttributeWithConceptValue.xml} adds. */
+	/** The concept-valued visit attribute type {@code visitAttributesWithRecordValues.xml} adds. */
 	private static final String VISIT_ATTRIBUTE_TYPE_UUID = "b2d8f4c1-5e37-4a90-8f6b-7c1e0a9d3b54";
 
 	/** Concept 22 "UNKNOWN", which the concept-valued attribute's value_reference names. */
