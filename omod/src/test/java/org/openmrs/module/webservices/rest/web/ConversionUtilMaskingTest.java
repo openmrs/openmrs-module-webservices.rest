@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openmrs.CodedOrFreeText;
 import org.openmrs.Allergy;
@@ -42,12 +43,21 @@ import org.openmrs.FieldAnswer;
 import org.openmrs.MedicationDispense;
 import org.openmrs.Order;
 import org.openmrs.Obs;
+import org.openmrs.OrderFrequency;
 import org.openmrs.OrderGroup;
 import org.openmrs.Patient;
+import org.openmrs.PatientIdentifier;
+import org.openmrs.PatientProgram;
 import org.openmrs.Person;
+import org.openmrs.PersonAttribute;
+import org.openmrs.PersonAttributeType;
 import org.openmrs.Provider;
+import org.openmrs.User;
 import org.openmrs.Relationship;
+import org.openmrs.Visit;
+import org.openmrs.VisitAttribute;
 import org.openmrs.api.MedicationDispenseService;
+import org.openmrs.notification.AlertRecipient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
@@ -62,14 +72,19 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.ConceptS
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0.PatientAllergyResource2_0;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_6.MedicationDispenseResource2_6;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_7.ConceptReferenceRangeResource2_7;
+import org.openmrs.security.AuthorizationRules;
 import org.openmrs.security.ConceptMaskingTestRule;
+import org.openmrs.security.DomainObjectAuthorizationRule;
 import org.openmrs.security.DrugMaskingTestRule;
 import org.openmrs.security.ObsMaskingTestRule;
+import org.openmrs.security.OpenmrsPermissionEvaluator;
 import org.openmrs.security.PersonMaskingTestRule;
 import org.openmrs.security.ProviderMaskingTestRule;
 import org.openmrs.security.UnregisteredTestObject;
 import org.openmrs.security.UnregisteredTestObjectMaskingTestRule;
+import org.openmrs.security.UuidMaskingTestRule;
 import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -185,17 +200,130 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 
 	private static final int MEDICATION_DISPENSE_CONCEPT_ID = 300;
 
+	/** Visit 1, on visit type 1 "Initial HIV Clinic Visit" at location 1 "Unknown Location". */
+	private static final String VISIT_UUID = "1e5d5d48-6b78-11e0-93c3-18a905e044dc";
+
+	private static final String VISIT_LOCATION_UUID = "8d6c993e-c2cc-11de-8d13-0010c6dffd0f";
+
+	private static final String VISIT_TYPE_UUID = "c0c579b0-8e59-401d-8a4a-976a0b183519";
+
+	/** Encounter type 2 "Emergency", the type of {@link #ENCOUNTER_UUID}. */
+	private static final String ENCOUNTER_TYPE_UUID = "07000be2-26b6-4cce-8b40-866d8435b613";
+
+	/** Patient 2, "101-6 - Horatio Test Hornblower". */
+	private static final int PATIENT_ID = 2;
+
+	/** The preferred identifier of patient 2, "101-6", of type "OpenMRS Identification Number". */
+	private static final String PREFERRED_IDENTIFIER_UUID = "8a9aac6e-3f9f-4ed2-8fb5-25215f8bb614";
+
+	private static final String IDENTIFIER_TYPE_UUID = "1a339fe9-38bc-4ab3-b180-320988c0b968";
+
+	/** The preferred name of person 2, "Horatio Test Hornblower". */
+	private static final String PREFERRED_NAME_UUID = "399e3a7b-6482-487d-94ce-c07bb3ca3cc7";
+
+	/**
+	 * The only name of person 501, "Bruno Otterbourg". Person 501 rather than patient 2 for the
+	 * PersonResource case: a person who is also a patient converts through {@code PatientResource1_8},
+	 * whose display is the one above.
+	 */
+	private static final String NON_PATIENT_PERSON_NAME_UUID = "d7e51684-a077-4039-9d85-8fd599609156";
+
+	/** Patient 2's enrolment in program 1, "HIV PROGRAM". */
+	private static final String PATIENT_PROGRAM_UUID = "b75462a0-4c92-451e-b8bc-e98b38b76534";
+
+	private static final String PROGRAM_UUID = "da4a0391-ba62-4fad-ad66-1e3722d16380";
+
+	/** The obs {@code obsWithValueCodedName.xml} adds, naming concept 22's "UNKNOWN". */
+	private static final int VALUE_CODED_NAME_OBS_ID = 5300;
+
+	/** Person attribute 8: person 2's "Civil Status", whose value is concept 6 "MARRIED". */
+	private static final String CIVIL_STATUS_ATTRIBUTE_UUID = "0c28eb28-efdf-4553-8db4-ae7c88ead7f8";
+
+	private static final String CIVIL_STATUS_ATTRIBUTE_TYPE_UUID = "a0f5521c-dbbd-4c10-81b2-1b7ab18330df";
+
+	private static final int MARRIED_CONCEPT_ID = 6;
+
+	/** Concept 6's only name, which is what its display string prints. */
+	private static final String MARRIED_CONCEPT_NAME_UUID = "f74e3673-983b-41e3-b872-56f0e6f7696e";
+
+	/** The concept-valued visit attribute type {@code visitAttributesWithRecordValues.xml} adds. */
+	private static final String VISIT_ATTRIBUTE_TYPE_UUID = "b2d8f4c1-5e37-4a90-8f6b-7c1e0a9d3b54";
+
+	/** Concept 22 "UNKNOWN", which the concept-valued attribute's value_reference names. */
+	private static final String UNKNOWN_CONCEPT_UUID = "e10ffe54-5184-4efe-8960-cd565ec1cdf8";
+
+	/** Visit 2, which carries the provider-valued attribute: provider 1, on person 1 "Super User". */
+	private static final String PROVIDER_ATTRIBUTE_VISIT_UUID = "4e663d66-6b78-11e0-93c3-18a905e044dc";
+
+	private static final int SUPER_USER_PERSON_ID = 1;
+
+	private static final String SUPER_USER_NAME_UUID = "38a686df-d459-484c-9e7c-3f43a9bced58";
+
+	/** Visit 3, which carries the program-valued attribute: program 1, on concept 9 "HIV PROGRAM". */
+	private static final String PROGRAM_ATTRIBUTE_VISIT_UUID = "6f85b2a6-6b78-11e0-93c3-18a905e044dc";
+
+	private static final int PROGRAM_CONCEPT_ID = 9;
+
+	/** A workflow of program 1, printed as its id by {@code Program.toString()}. */
+	private static final String PROGRAM_WORKFLOW_UUID = "84f0effa-dd73-46cb-b931-7cd6be6c5f81";
+
+	/** The preferred name of person 7, which {@link #RELATIONSHIP_UUID}'s display reads. */
+	private static final String RELATIONSHIP_PERSON_B_NAME_UUID = "a65c347e-1384-493a-a55b-d325924acd94";
+
+	/** Relationship type 1, whose "Doctor" the same display prints between the two names. */
+	private static final String RELATIONSHIP_TYPE_UUID = "6d9002ea-a96b-4889-af78-82d48c57a110";
+
+	/** Encounter role 1 "Unknown", the role encounter 3's only provider plays. */
+	private static final String ENCOUNTER_ROLE_UUID = "a0b03050-c99b-11e0-9572-0800200c9a66";
+
+	/** The order set of {@link #ORDER_GROUP_UUID}, whose name closes that group's display. */
+	private static final String ORDER_SET_UUID = "2d3fb1d0-ae06-22e3-a5e2-0140211c1001";
+
+	/** Order frequency 1, named by concept 113 "1/day x 7 days/week" - it has no name of its own. */
+	private static final String ORDER_FREQUENCY_UUID = "28090760-7c38-11e3-baa7-0800200c9a66";
+
+	private static final int ORDER_FREQUENCY_CONCEPT_ID = 113;
+
+	private static final String ORDER_FREQUENCY_CONCEPT_NAME = "1/day x 7 days/week";
+
+	/** User 502 "butch", on person 502 "Hippocrates of Cos", whose name an alert recipient prints. */
+	private static final String ALERT_RECIPIENT_USER_UUID = "c98a1558-e131-11de-babe-001e378eb67e";
+
+	private static final int ALERT_RECIPIENT_PERSON_ID = 502;
+
+	private static final String ALERT_RECIPIENT_NAME_UUID = "0e69f78c-e3f2-4d9c-933b-d52aa8a669b8";
+
 	/** Asks for nothing but the display, so only the display getter is under test. */
 	private static final Representation DISPLAY_ONLY = new CustomRepresentation("display");
 
+	/**
+	 * Registered for the duration of each test rather than contributed as beans: see
+	 * {@link org.openmrs.security.MaskingTestRule} on why a rule the context holds changes which path
+	 * a read takes in every other test even while it refuses nothing.
+	 */
+	private final DomainObjectAuthorizationRule[] rules = { new PersonMaskingTestRule(), new ObsMaskingTestRule(),
+	        new ConceptMaskingTestRule(), new DrugMaskingTestRule(), new ProviderMaskingTestRule(),
+	        new UnregisteredTestObjectMaskingTestRule(), new UuidMaskingTestRule() };
+
+	@Autowired
+	private OpenmrsPermissionEvaluator evaluator;
+
+	@BeforeEach
+	public void registerRules() {
+		AuthorizationRules.register(evaluator, rules);
+	}
+
 	@AfterEach
 	public void disarmRules() {
+		AuthorizationRules.unregister(evaluator, rules);
 		PersonMaskingTestRule.deniedId = null;
 		ObsMaskingTestRule.deniedId = null;
 		ConceptMaskingTestRule.deniedId = null;
 		DrugMaskingTestRule.deniedId = null;
 		ProviderMaskingTestRule.deniedId = null;
 		UnregisteredTestObjectMaskingTestRule.deniedId = null;
+		UuidMaskingTestRule.deniedUuid = null;
+		UuidMaskingTestRule.deniedUuidAtServiceGuards = null;
 	}
 
 	@Test
@@ -741,6 +869,583 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		finally {
 			Context.openSession();
 			authenticate();
+		}
+	}
+
+	// The records below are reached off a delegate the same way, and each is masked where the response
+	// carries it while the display read its name, its identifier or its id in full beside the mask.
+	// Every one asserts the unmasked string first, so none can pass vacuously if the record stops
+	// being read.
+
+	/**
+	 * The one a deployment meets first: restricting visits by location is what TRUNK-6798 is for, and
+	 * the location came back masked under {@code location} with its name spelled out in the display of
+	 * the same visit.
+	 */
+	@Test
+	public void getDisplayString_shouldMaskAVisitsDisplayWhenItsLocationIsRefused() throws Exception {
+		Visit visit = Context.getVisitService().getVisitByUuid(VISIT_UUID);
+		assertNotNull(visit);
+		assertTrue(((String) display(visit, DISPLAY_ONLY)).contains("Unknown Location"),
+		    "the location's name should be in the display, got " + display(visit, DISPLAY_ONLY));
+		UuidMaskingTestRule.deniedUuid = VISIT_LOCATION_UUID;
+
+		assertEquals(MASKED_DISPLAY, display(visit, DEFAULT));
+		assertEquals(MASKED_DISPLAY, display(visit, REF), "ref carries display too");
+	}
+
+	@Test
+	public void getDisplayString_shouldMaskAVisitsDisplayWhenItsVisitTypeIsRefused() throws Exception {
+		Visit visit = Context.getVisitService().getVisitByUuid(VISIT_UUID);
+		assertTrue(((String) display(visit, DISPLAY_ONLY)).contains("Initial HIV Clinic Visit"),
+		    "the visit type's name should be in the display, got " + display(visit, DISPLAY_ONLY));
+		UuidMaskingTestRule.deniedUuid = VISIT_TYPE_UUID;
+
+		assertEquals(MASKED_DISPLAY, display(visit, DEFAULT));
+	}
+
+	@Test
+	public void getDisplayString_shouldNotMaskAVisitsDisplayWhenNothingItReadsIsRefused() throws Exception {
+		Visit visit = Context.getVisitService().getVisitByUuid(VISIT_UUID);
+		UuidMaskingTestRule.deniedUuid = "no-such-uuid";
+
+		assertTrue(((String) display(visit, DEFAULT)).startsWith("Initial HIV Clinic Visit @ Unknown Location"));
+	}
+
+	@Test
+	public void getDisplayString_shouldMaskAnEncountersDisplayWhenItsTypeIsRefused() throws Exception {
+		Encounter encounter = Context.getEncounterService().getEncounterByUuid(ENCOUNTER_UUID);
+		assertTrue(((String) display(encounter, DISPLAY_ONLY)).startsWith("Emergency"),
+		    "the type's name should be in the display, got " + display(encounter, DISPLAY_ONLY));
+		UuidMaskingTestRule.deniedUuid = ENCOUNTER_TYPE_UUID;
+
+		Map<String, Object> converted = asMap(ConversionUtil.convertToRepresentation(encounter, DEFAULT));
+		assertTrue(isMasked(converted.get("encounterType")), "the type masks as a nested object");
+		assertEquals(MASKED_DISPLAY, converted.get("display"), "and must not be spelled out in the display");
+	}
+
+	/**
+	 * The identifier a patient is looked up by, which the display prints ahead of the name. As much a
+	 * disclosure as the name is, and masked under {@code identifiers} while it went out here.
+	 */
+	@Test
+	public void getDisplayString_shouldMaskAPatientsDisplayWhenThePreferredIdentifierIsRefused() throws Exception {
+		Patient patient = Context.getPatientService().getPatient(PATIENT_ID);
+		assertEquals(PREFERRED_IDENTIFIER_UUID, patient.getPatientIdentifier().getUuid(),
+		    "the preferred identifier should be the one this refuses");
+		assertEquals("101-6 - Horatio Test Hornblower", display(patient, DISPLAY_ONLY));
+		UuidMaskingTestRule.deniedUuid = PREFERRED_IDENTIFIER_UUID;
+
+		assertEquals(MASKED_DISPLAY, display(patient, DEFAULT));
+		assertEquals(MASKED_DISPLAY, display(patient, REF));
+	}
+
+	@Test
+	public void getDisplayString_shouldMaskAPatientsDisplayWhenTheNameIsRefused() throws Exception {
+		Patient patient = Context.getPatientService().getPatient(PATIENT_ID);
+		UuidMaskingTestRule.deniedUuid = PREFERRED_NAME_UUID;
+
+		assertEquals(MASKED_DISPLAY, display(patient, DEFAULT));
+	}
+
+	@Test
+	public void getDisplayString_shouldMaskAPersonsDisplayWhenTheNameIsRefused() throws Exception {
+		Person person = Context.getPersonService().getPerson(PROVIDER_PERSON_ID);
+		assertEquals("Bruno Otterbourg", display(person, DISPLAY_ONLY));
+		UuidMaskingTestRule.deniedUuid = NON_PATIENT_PERSON_NAME_UUID;
+
+		assertEquals(MASKED_DISPLAY, display(person, DEFAULT));
+		assertEquals(MASKED_DISPLAY, display(person, REF));
+	}
+
+	@Test
+	public void getDisplayString_shouldMaskAPatientIdentifiersDisplayWhenItsTypeIsRefused() throws Exception {
+		PatientIdentifier identifier = Context.getPatientService().getPatientIdentifierByUuid(PREFERRED_IDENTIFIER_UUID);
+		assertNotNull(identifier);
+		assertEquals("OpenMRS Identification Number = 101-6", display(identifier, DISPLAY_ONLY));
+		UuidMaskingTestRule.deniedUuid = IDENTIFIER_TYPE_UUID;
+
+		assertEquals(MASKED_DISPLAY, display(identifier, DEFAULT));
+	}
+
+	@Test
+	public void getDisplayString_shouldMaskAProgramEnrollmentsDisplayWhenTheProgramIsRefused() throws Exception {
+		PatientProgram enrollment = Context.getProgramWorkflowService().getPatientProgramByUuid(PATIENT_PROGRAM_UUID);
+		assertNotNull(enrollment);
+		assertEquals("HIV PROGRAM", display(enrollment, DISPLAY_ONLY));
+		UuidMaskingTestRule.deniedUuid = PROGRAM_UUID;
+
+		Map<String, Object> converted = asMap(ConversionUtil.convertToRepresentation(enrollment, DEFAULT));
+		assertTrue(isMasked(converted.get("program")), "the program masks as a nested object");
+		assertEquals(MASKED_DISPLAY, converted.get("display"), "and must not be named in the display");
+	}
+
+	// A ConceptName is not reached by a Concept rule, so these two cover the funnel following one to
+	// the concept it names. They are properties rather than display strings: what a reader was served
+	// was the name's own representation, in full, beside the mask of the concept it hangs off.
+
+	@Test
+	public void convertToRepresentation_shouldMaskAnObsValueCodedNameWhenItsConceptIsRefused() throws Exception {
+		executeDataSet("obsWithValueCodedName.xml");
+		Obs obs = Context.getObsService().getObs(VALUE_CODED_NAME_OBS_ID);
+		assertNotNull(obs.getValueCodedName(), "obs " + VALUE_CODED_NAME_OBS_ID + " should name its coded answer");
+		assertEquals("UNKNOWN", asMap(asMap(ConversionUtil.convertToRepresentation(obs, DEFAULT)).get("valueCodedName"))
+		        .get("display"), "the name should be rendered in full, or this is testing nothing");
+		ConceptMaskingTestRule.deniedId = CODED_OBS_ANSWER_CONCEPT_ID;
+
+		for (Representation rep : Arrays.asList(DEFAULT, FULL)) {
+			Map<String, Object> converted = asMap(ConversionUtil.convertToRepresentation(obs, rep));
+			assertTrue(isMasked(converted.get("valueCodedName")), "valueCodedName should mask under "
+			        + rep.getRepresentation() + ", got " + converted.get("valueCodedName"));
+		}
+	}
+
+	@Test
+	public void convertToRepresentation_shouldMaskACodedOrFreeTextsSpecificNameWhenItsConceptIsRefused()
+	        throws Exception {
+		executeDataSet("conditionTestDataset.xml");
+		Condition condition = Context.getConditionService().getConditionByUuid(CODED_CONDITION_UUID);
+		assertNotNull(condition.getCondition().getSpecificName(), "the condition should name its coded concept");
+		ConceptMaskingTestRule.deniedId = CONDITION_CONCEPT_ID;
+
+		for (Representation rep : Arrays.asList(DEFAULT, FULL)) {
+			Map<String, Object> codedOrFreeText = asMap(
+			    asMap(ConversionUtil.convertToRepresentation(condition, rep)).get("condition"));
+			assertTrue(isMasked(codedOrFreeText.get("specificName")), "specificName should mask under "
+			        + rep.getRepresentation() + ", got " + codedOrFreeText.get("specificName"));
+		}
+	}
+
+	@Test
+	public void convertToRepresentation_shouldStillRenderAConceptNameWhoseConceptNoRuleRefuses() throws Exception {
+		executeDataSet("obsWithValueCodedName.xml");
+		Obs obs = Context.getObsService().getObs(VALUE_CODED_NAME_OBS_ID);
+		ConceptMaskingTestRule.deniedId = -1;
+
+		Map<String, Object> converted = asMap(ConversionUtil.convertToRepresentation(obs, DEFAULT));
+		assertFalse(isMasked(converted.get("valueCodedName")));
+		assertNotNull(asMap(converted.get("valueCodedName")).get("uuid"));
+	}
+
+	// Attributes, whose value is a record when the type says so and a literal otherwise
+
+	/**
+	 * A concept-valued attribute: the value is masked under {@code value} while the display printed
+	 * {@code Concept#toString()}, "Concept #22", which names the refused concept by its id.
+	 */
+	@Test
+	public void getDisplayString_shouldMaskAVisitAttributesDisplayWhenItsConceptValueIsRefused() throws Exception {
+		executeDataSet("visitAttributesWithRecordValues.xml");
+		VisitAttribute attribute = theOnlyAttributeOf(VISIT_UUID);
+		assertEquals("Primary Diagnosis: Concept #" + CODED_OBS_ANSWER_CONCEPT_ID, display(attribute, DISPLAY_ONLY));
+		ConceptMaskingTestRule.deniedId = CODED_OBS_ANSWER_CONCEPT_ID;
+
+		Map<String, Object> converted = asMap(ConversionUtil.convertToRepresentation(attribute, DEFAULT));
+		assertTrue(isMasked(converted.get("value")), "the concept masks as a nested object");
+		assertEquals(MASKED_DISPLAY, converted.get("display"), "and must not be named in the display");
+	}
+
+	@Test
+	public void getDisplayString_shouldMaskAVisitAttributesDisplayWhenItsTypeIsRefused() throws Exception {
+		executeDataSet("visitAttributesWithRecordValues.xml");
+		VisitAttribute attribute = theOnlyAttributeOf(VISIT_UUID);
+		UuidMaskingTestRule.deniedUuid = VISIT_ATTRIBUTE_TYPE_UUID;
+
+		assertEquals(MASKED_DISPLAY, display(attribute, DEFAULT));
+	}
+
+	/**
+	 * A person attribute reports a refusal as nothing but a null hydration: the service's guard throws,
+	 * {@code Concept.hydrate} swallows that, and {@code PersonAttribute.toString()} falls back to
+	 * printing the raw value - the refused concept's own id. So the response carried
+	 * {@code "display": "6"} with nothing under {@code value} at all.
+	 */
+	@Test
+	public void getDisplayString_shouldMaskAPersonAttributesDisplayWhenTheConceptItRefersToIsRefused()
+	        throws Exception {
+		PersonAttribute attribute = Context.getPersonService().getPersonAttributeByUuid(CIVIL_STATUS_ATTRIBUTE_UUID);
+		assertNotNull(attribute);
+		assertEquals("MARRIED", display(attribute, DISPLAY_ONLY), "the concept's name should be the display");
+		ConceptMaskingTestRule.deniedId = MARRIED_CONCEPT_ID;
+
+		String display = (String) display(attribute, DEFAULT);
+		assertNotEquals(String.valueOf(MARRIED_CONCEPT_ID), display, "the raw value is the concept's own id");
+		assertEquals(MASKED_DISPLAY, display);
+	}
+
+	/**
+	 * A user-valued attribute, where the record the value names is not the end of it:
+	 * {@code User.getDisplayString()} prints the linked person's name, which a {@code User} rule does
+	 * not cover. Asking about the hydrated user alone left that name in the display.
+	 */
+	@Test
+	public void getDisplayString_shouldMaskAUserValuedPersonAttributeWhenThePersonBehindItIsRefused()
+	        throws Exception {
+		PersonAttribute attribute = aUserValuedAttribute();
+		assertEquals("Hippocrates of Cos (butch)", display(attribute, DISPLAY_ONLY),
+		    "the person's name should be in the display, or this is testing nothing");
+		PersonMaskingTestRule.deniedId = ALERT_RECIPIENT_PERSON_ID;
+
+		assertEquals(MASKED_DISPLAY, display(attribute, DISPLAY_ONLY));
+	}
+
+	/** And the name, which neither a User nor a Person rule reaches. */
+	@Test
+	public void getDisplayString_shouldMaskAUserValuedPersonAttributeWhenTheNameIsRefused() throws Exception {
+		PersonAttribute attribute = aUserValuedAttribute();
+		UuidMaskingTestRule.deniedUuid = ALERT_RECIPIENT_NAME_UUID;
+
+		assertEquals(MASKED_DISPLAY, display(attribute, DISPLAY_ONLY));
+	}
+
+	/**
+	 * The same shape one type over: {@code Concept.getDisplayString()} prints a {@code ConceptName}, so
+	 * a rule refusing the name and not the concept it hangs off reached the display through the record
+	 * that was allowed.
+	 */
+	@Test
+	public void getDisplayString_shouldMaskAConceptValuedPersonAttributeWhenOnlyItsNameIsRefused() throws Exception {
+		PersonAttribute attribute = Context.getPersonService().getPersonAttributeByUuid(CIVIL_STATUS_ATTRIBUTE_UUID);
+		assertEquals("MARRIED", display(attribute, DISPLAY_ONLY));
+		UuidMaskingTestRule.deniedUuid = MARRIED_CONCEPT_NAME_UUID;
+
+		assertEquals(MASKED_DISPLAY, display(attribute, DISPLAY_ONLY));
+	}
+
+	/**
+	 * Built here because no dataset in core or this module holds an attribute type whose format is
+	 * {@code org.openmrs.User}. {@code User.hydrate} reads the value as a user id.
+	 */
+	private PersonAttribute aUserValuedAttribute() {
+		User user = Context.getUserService().getUserByUuid(ALERT_RECIPIENT_USER_UUID);
+		assertNotNull(user, "user " + ALERT_RECIPIENT_USER_UUID + " should be in the standard dataset");
+		PersonAttributeType type = new PersonAttributeType();
+		type.setName("Account of record");
+		type.setDescription("A user-valued attribute type, which no dataset holds");
+		type.setFormat(User.class.getName());
+		type.setSearchable(false);
+		return new PersonAttribute(Context.getPersonService().savePersonAttributeType(type),
+		    String.valueOf(user.getUserId()));
+	}
+
+	@Test
+	public void getDisplayString_shouldMaskAPersonAttributesDisplayWhenItsTypeIsRefused() throws Exception {
+		PersonAttribute attribute = Context.getPersonService().getPersonAttributeByUuid(CIVIL_STATUS_ATTRIBUTE_UUID);
+		UuidMaskingTestRule.deniedUuid = CIVIL_STATUS_ATTRIBUTE_TYPE_UUID;
+
+		assertEquals(MASKED_DISPLAY, display(attribute, DEFAULT));
+	}
+
+	/**
+	 * An attribute whose value is its own content rather than a reference to a record. Nothing is
+	 * hidden for it, with no rule registered or with one that refuses something else: a literal is
+	 * what this getter is for.
+	 */
+	@Test
+	public void getDisplayString_shouldNotMaskAPersonAttributeHoldingALiteralValue() throws Exception {
+		PersonAttribute birthplace = Context.getPersonService().getPersonAttribute(6);
+		assertEquals("java.lang.String", birthplace.getAttributeType().getFormat());
+		UuidMaskingTestRule.deniedUuid = "no-such-uuid";
+
+		assertEquals("London", display(birthplace, DEFAULT));
+	}
+
+	/**
+	 * The record a value names is not always the end of it: a datatype's value is printed by its own
+	 * {@code toString()}, and {@code Provider.toString()} prints every name of the person behind the
+	 * provider. So a Person rule left {@code providerName:[Super User]} in the display beside
+	 * {@code value.person: {"masked": true}}.
+	 */
+	@Test
+	public void getDisplayString_shouldMaskAProviderValuedAttributeWhenThePersonBehindItIsRefused() throws Exception {
+		executeDataSet("visitAttributesWithRecordValues.xml");
+		VisitAttribute attribute = theOnlyAttributeOf(PROVIDER_ATTRIBUTE_VISIT_UUID);
+		assertTrue(((String) display(attribute, DISPLAY_ONLY)).contains("Super User"),
+		    "the person's name should be in the display, got " + display(attribute, DISPLAY_ONLY));
+		PersonMaskingTestRule.deniedId = SUPER_USER_PERSON_ID;
+
+		assertEquals(MASKED_DISPLAY, display(attribute, DISPLAY_ONLY));
+	}
+
+	/** And each of those names, which neither a Provider nor a Person rule reaches. */
+	@Test
+	public void getDisplayString_shouldMaskAProviderValuedAttributeWhenAPersonNameIsRefused() throws Exception {
+		executeDataSet("visitAttributesWithRecordValues.xml");
+		VisitAttribute attribute = theOnlyAttributeOf(PROVIDER_ATTRIBUTE_VISIT_UUID);
+		UuidMaskingTestRule.deniedUuid = SUPER_USER_NAME_UUID;
+
+		assertEquals(MASKED_DISPLAY, display(attribute, DISPLAY_ONLY));
+	}
+
+	/**
+	 * {@code Program.toString()} prints its concept, which renders as {@code Concept #9} - an id names
+	 * the record as plainly as a name does.
+	 */
+	@Test
+	public void getDisplayString_shouldMaskAProgramValuedAttributeWhenItsConceptIsRefused() throws Exception {
+		executeDataSet("visitAttributesWithRecordValues.xml");
+		VisitAttribute attribute = theOnlyAttributeOf(PROGRAM_ATTRIBUTE_VISIT_UUID);
+		assertTrue(((String) display(attribute, DISPLAY_ONLY)).contains("concept=Concept #" + PROGRAM_CONCEPT_ID),
+		    "the concept's id should be in the display, got " + display(attribute, DISPLAY_ONLY));
+		ConceptMaskingTestRule.deniedId = PROGRAM_CONCEPT_ID;
+
+		assertEquals(MASKED_DISPLAY, display(attribute, DISPLAY_ONLY));
+	}
+
+	/** And its workflows, printed as ids in the same string. */
+	@Test
+	public void getDisplayString_shouldMaskAProgramValuedAttributeWhenAWorkflowIsRefused() throws Exception {
+		executeDataSet("visitAttributesWithRecordValues.xml");
+		VisitAttribute attribute = theOnlyAttributeOf(PROGRAM_ATTRIBUTE_VISIT_UUID);
+		UuidMaskingTestRule.deniedUuid = PROGRAM_WORKFLOW_UUID;
+
+		assertEquals(MASKED_DISPLAY, display(attribute, DISPLAY_ONLY));
+	}
+
+	/**
+	 * A value the datatype never got to hand over: a rule that answers the id-and-type overload, which
+	 * is how one written for a deployment reads, makes {@code ConceptService}'s guard throw where
+	 * {@link org.openmrs.security.Authorize} would have masked. That exception came out of the two
+	 * getters and failed the whole representation, so a visit carrying this attribute served nothing.
+	 * <p>
+	 * No unmasked assertion first, deliberately: reading the value caches it on the attribute, so
+	 * asserting the string here would resolve the concept while it was still allowed and leave the
+	 * guard nothing to refuse. The unmasked string is pinned down by
+	 * {@link #getDisplayString_shouldMaskAVisitAttributesDisplayWhenItsConceptValueIsRefused()}.
+	 */
+	@Test
+	public void getValue_shouldMaskAVisitAttributeValueAServiceGuardRefusesRatherThanFailing() throws Exception {
+		executeDataSet("visitAttributesWithRecordValues.xml");
+		VisitAttribute attribute = theOnlyAttributeOf(VISIT_UUID);
+		UuidMaskingTestRule.deniedUuidAtServiceGuards = UNKNOWN_CONCEPT_UUID;
+
+		Map<String, Object> converted = asMap(ConversionUtil.convertToRepresentation(attribute, DEFAULT));
+
+		assertTrue(isMasked(converted.get("value")),
+		    "a value the guard would not resolve should mask, got " + converted.get("value"));
+		assertEquals(MASKED_DISPLAY, converted.get("display"));
+	}
+
+	/**
+	 * The same guard, denied on the privilege rather than by a rule - the commoner way to meet it, and
+	 * the reason the mask does not claim to tell the two apart: one expression decides both.
+	 */
+	@Test
+	public void getValue_shouldMaskAVisitAttributeValueWhenThePrivilegeToResolveItIsMissing() throws Exception {
+		executeDataSet("visitAttributesWithRecordValues.xml");
+		VisitAttribute attribute = theOnlyAttributeOf(VISIT_UUID);
+		Context.logout();
+
+		Map<String, Object> converted = asMap(ConversionUtil.convertToRepresentation(attribute, DEFAULT));
+
+		assertTrue(isMasked(converted.get("value")), "got " + converted.get("value"));
+		assertEquals(MASKED_DISPLAY, converted.get("display"));
+	}
+
+	/**
+	 * A mask a getter substituted itself must survive being handed back to the funnel under every
+	 * representation, custom ones included: it holds a marker and no record, so converting it again
+	 * would look for the hidden record's named properties on it and fail the response that way instead.
+	 */
+	@Test
+	public void convertToRepresentation_shouldLeaveAMaskAGetterSubstitutedAlone() throws Exception {
+		executeDataSet("visitAttributesWithRecordValues.xml");
+		VisitAttribute attribute = theOnlyAttributeOf(VISIT_UUID);
+		UuidMaskingTestRule.deniedUuidAtServiceGuards = UNKNOWN_CONCEPT_UUID;
+
+		for (Representation rep : Arrays.asList(DEFAULT, FULL, new CustomRepresentation("value:(uuid)"))) {
+			Map<String, Object> converted = asMap(ConversionUtil.convertToRepresentation(attribute, rep));
+			assertTrue(isMasked(converted.get("value")),
+			    "value should mask under " + rep.getRepresentation() + ", got " + converted.get("value"));
+		}
+	}
+
+	// An alert recipient is a User, and User.getDisplayString() reads the person's name as well as the
+	// username
+
+	@Test
+	public void getDisplayString_shouldMaskAnAlertRecipientsDisplayWhenItsPersonIsRefused() throws Exception {
+		AlertRecipient recipient = anAlertRecipient();
+		assertEquals("Hippocrates of Cos (butch)", display(recipient, DISPLAY_ONLY),
+		    "the person's name should be in the display, or this is testing nothing");
+		PersonMaskingTestRule.deniedId = ALERT_RECIPIENT_PERSON_ID;
+
+		assertEquals(MASKED_DISPLAY, display(recipient, DISPLAY_ONLY));
+	}
+
+	/** And the user, which a Person rule does not cover: the two are separate records. */
+	@Test
+	public void getDisplayString_shouldMaskAnAlertRecipientsDisplayWhenTheUserIsRefused() throws Exception {
+		AlertRecipient recipient = anAlertRecipient();
+		UuidMaskingTestRule.deniedUuid = ALERT_RECIPIENT_USER_UUID;
+
+		assertEquals(MASKED_DISPLAY, display(recipient, DISPLAY_ONLY));
+	}
+
+	/** And the name, which neither a User nor a Person rule reaches. */
+	@Test
+	public void getDisplayString_shouldMaskAnAlertRecipientsDisplayWhenTheNameIsRefused() throws Exception {
+		AlertRecipient recipient = anAlertRecipient();
+		UuidMaskingTestRule.deniedUuid = ALERT_RECIPIENT_NAME_UUID;
+
+		assertEquals(MASKED_DISPLAY, display(recipient, DISPLAY_ONLY));
+	}
+
+	/**
+	 * Built here rather than loaded: no dataset in core or this module holds an alert, and the display
+	 * getter reads nothing but the recipient.
+	 */
+	private AlertRecipient anAlertRecipient() {
+		User recipient = Context.getUserService().getUserByUuid(ALERT_RECIPIENT_USER_UUID);
+		assertNotNull(recipient, "user " + ALERT_RECIPIENT_USER_UUID + " should be in the standard dataset");
+		AlertRecipient alertRecipient = new AlertRecipient();
+		alertRecipient.setUuid("647beb7c-d4fc-404c-b751-5c0dc14f5345");
+		alertRecipient.setRecipient(recipient);
+		return alertRecipient;
+	}
+
+	private VisitAttribute theOnlyAttributeOf(String visitUuid) {
+		Visit visit = Context.getVisitService().getVisitByUuid(visitUuid);
+		assertNotNull(visit);
+		assertEquals(1, visit.getActiveAttributes().size(),
+		    "visitAttributesWithRecordValues.xml should give visit " + visitUuid + " its only attribute");
+		return visit.getActiveAttributes().iterator().next();
+	}
+
+	// The second order of the same problem: these displays asked about a record but not about the name
+	// or type rows that record's own display reads, so refusing one of those left the string intact.
+
+	@Test
+	public void getDisplayString_shouldMaskAConceptsDisplayWhenItsNameIsRefused() throws Exception {
+		Concept aspirin = aspirin();
+		assertEquals("ASPIRIN", display(aspirin, DISPLAY_ONLY));
+		// read off the concept rather than hardcoded: which of its names is preferred depends on the
+		// locale, and this test is about the name the display actually reads
+		UuidMaskingTestRule.deniedUuid = aspirin.getName().getUuid();
+
+		assertEquals(MASKED_DISPLAY, display(aspirin, DEFAULT));
+		assertEquals(MASKED_DISPLAY, display(aspirin, REF));
+	}
+
+	@Test
+	public void getDisplayString_shouldMaskAProvidersDisplayWhenTheNameItReadsIsRefused() throws Exception {
+		executeDataSet("providerTestDataset.xml");
+		Provider provider = Context.getProviderService().getProviderByUuid(PROVIDER_UUID);
+		assertNotNull(provider);
+		UuidMaskingTestRule.deniedUuid = NON_PATIENT_PERSON_NAME_UUID;
+
+		assertEquals(MASKED_DISPLAY, display(provider, DEFAULT));
+	}
+
+	@Test
+	public void getDisplayString_shouldMaskAnEncounterProvidersDisplayWhenTheNameItReadsIsRefused() throws Exception {
+		Encounter encounter = Context.getEncounterService().getEncounterByUuid(ENCOUNTER_UUID);
+		UuidMaskingTestRule.deniedUuid = SUPER_USER_NAME_UUID;
+
+		assertEncounterProvidersMasked(encounter);
+	}
+
+	/** The role is printed after the name, so refusing it has to hide the string as well. */
+	@Test
+	public void getDisplayString_shouldMaskAnEncounterProvidersDisplayWhenItsRoleIsRefused() throws Exception {
+		Encounter encounter = Context.getEncounterService().getEncounterByUuid(ENCOUNTER_UUID);
+		UuidMaskingTestRule.deniedUuid = ENCOUNTER_ROLE_UUID;
+
+		assertEncounterProvidersMasked(encounter);
+	}
+
+	@Test
+	public void getDisplayString_shouldMaskARelationshipsDisplayWhenANameItReadsIsRefused() throws Exception {
+		Relationship relationship = Context.getPersonService().getRelationshipByUuid(RELATIONSHIP_UUID);
+		assertNotNull(relationship);
+		UuidMaskingTestRule.deniedUuid = RELATIONSHIP_PERSON_B_NAME_UUID;
+
+		assertEquals(MASKED_DISPLAY, display(relationship, DEFAULT));
+	}
+
+	@Test
+	public void getDisplayString_shouldMaskARelationshipsDisplayWhenItsTypeIsRefused() throws Exception {
+		Relationship relationship = Context.getPersonService().getRelationshipByUuid(RELATIONSHIP_UUID);
+		assertTrue(((String) display(relationship, DISPLAY_ONLY)).contains("Doctor"),
+		    "the type should be in the display, got " + display(relationship, DISPLAY_ONLY));
+		UuidMaskingTestRule.deniedUuid = RELATIONSHIP_TYPE_UUID;
+
+		assertEquals(MASKED_DISPLAY, display(relationship, DEFAULT));
+	}
+
+	@Test
+	public void getDisplayString_shouldMaskAnOrderGroupsDisplayWhenTheIdentifierItReadsIsRefused() throws Exception {
+		executeDataSet("orderGroupTestDataset.xml");
+		OrderGroup group = Context.getOrderService().getOrderGroupByUuid(ORDER_GROUP_UUID);
+		assertNotNull(group);
+		// orderGroupTestDataset.xml gives patient 2 its own identifier and name, so both are read off
+		// the group rather than taken from the standard dataset's
+		UuidMaskingTestRule.deniedUuid = group.getPatient().getPatientIdentifier().getUuid();
+
+		assertEquals(MASKED_DISPLAY, display(group, DEFAULT));
+	}
+
+	@Test
+	public void getDisplayString_shouldMaskAnOrderGroupsDisplayWhenTheNameItReadsIsRefused() throws Exception {
+		executeDataSet("orderGroupTestDataset.xml");
+		OrderGroup group = Context.getOrderService().getOrderGroupByUuid(ORDER_GROUP_UUID);
+		UuidMaskingTestRule.deniedUuid = group.getPatient().getPersonName().getUuid();
+
+		assertEquals(MASKED_DISPLAY, display(group, DEFAULT));
+	}
+
+	/** The order set closes that display, and is a record of its own that no Patient rule reaches. */
+	@Test
+	public void getDisplayString_shouldMaskAnOrderGroupsDisplayWhenItsOrderSetIsRefused() throws Exception {
+		executeDataSet("orderGroupTestDataset.xml");
+		OrderGroup group = Context.getOrderService().getOrderGroupByUuid(ORDER_GROUP_UUID);
+		assertTrue(((String) display(group, DISPLAY_ONLY)).contains("Order_Set_1"),
+		    "the order set's name should be in the display, got " + display(group, DISPLAY_ONLY));
+		UuidMaskingTestRule.deniedUuid = ORDER_SET_UUID;
+
+		assertEquals(MASKED_DISPLAY, display(group, DEFAULT));
+	}
+
+	/**
+	 * The one case where the leak needs no {@code v=custom}: an order frequency has no name column of
+	 * its own, so the {@code name} its default representation declares - and the {@code display}
+	 * derived from it - are both read off the concept, which is masked under {@code concept} in the
+	 * same response.
+	 */
+	@Test
+	public void getName_shouldMaskAnOrderFrequencysNameAndDisplayWhenItsConceptIsRefused() throws Exception {
+		OrderFrequency frequency = Context.getOrderService().getOrderFrequencyByUuid(ORDER_FREQUENCY_UUID);
+		assertNotNull(frequency);
+		Map<String, Object> unmasked = asMap(ConversionUtil.convertToRepresentation(frequency, DEFAULT));
+		assertEquals(ORDER_FREQUENCY_CONCEPT_NAME, unmasked.get("name"),
+		    "the name should be the concept's, or this is testing nothing");
+		assertEquals(ORDER_FREQUENCY_CONCEPT_NAME, unmasked.get("display"));
+		ConceptMaskingTestRule.deniedId = ORDER_FREQUENCY_CONCEPT_ID;
+
+		Map<String, Object> converted = asMap(ConversionUtil.convertToRepresentation(frequency, DEFAULT));
+		assertTrue(isMasked(converted.get("concept")), "the concept masks as a nested object");
+		assertEquals(MASKED_DISPLAY, converted.get("name"), "and must not be spelled out under name");
+		assertEquals(MASKED_DISPLAY, converted.get("display"));
+	}
+
+	/** And the name itself, which no Concept rule reaches. */
+	@Test
+	public void getName_shouldMaskAnOrderFrequencysNameWhenTheConceptNameIsRefused() throws Exception {
+		OrderFrequency frequency = Context.getOrderService().getOrderFrequencyByUuid(ORDER_FREQUENCY_UUID);
+		UuidMaskingTestRule.deniedUuid = frequency.getConcept().getName().getUuid();
+
+		Map<String, Object> converted = asMap(ConversionUtil.convertToRepresentation(frequency, DEFAULT));
+		assertEquals(MASKED_DISPLAY, converted.get("name"));
+		assertEquals(MASKED_DISPLAY, converted.get("display"));
+	}
+
+	private void assertEncounterProvidersMasked(Encounter encounter) throws Exception {
+		assertNotNull(encounter);
+		List<?> encounterProviders = assertInstanceOf(List.class,
+		    asMap(ConversionUtil.convertToRepresentation(encounter, DEFAULT)).get("encounterProviders"));
+		assertFalse(encounterProviders.isEmpty(), "encounter " + ENCOUNTER_UUID + " should have a provider");
+		for (Object encounterProvider : encounterProviders) {
+			assertEquals(MASKED_DISPLAY, asMap(encounterProvider).get("display"));
 		}
 	}
 

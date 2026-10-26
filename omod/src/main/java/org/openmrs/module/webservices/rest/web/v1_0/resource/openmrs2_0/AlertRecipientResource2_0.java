@@ -18,6 +18,7 @@ import io.swagger.models.properties.StringProperty;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -76,9 +77,22 @@ public class AlertRecipientResource2_0 extends DelegatingSubResource<AlertRecipi
 		return description;
 	}
 
+	/**
+	 * @return the recipient's name and username, or {@link ConversionUtil#MASKED_DISPLAY} when a rule
+	 *         refuses the recipient or the person its name is read from
+	 */
 	@PropertyGetter(DISPLAY)
 	public String getDisplayProperty(AlertRecipient instance) {
-		return instance.getRecipient().getDisplayString();
+		User recipient = instance.getRecipient();
+		// User.getDisplayString() reads the linked person's name as well as the username, so all three
+		// records are asked about: the user, which is masked under "recipient" here rather than being
+		// this resource's own delegate, the person behind it - which a Person rule covers and a User
+		// rule does not - and the name, which neither reaches
+		if (ConversionUtil.isRefusedByARule(recipient) || ConversionUtil.isRefusedByARule(recipient.getPerson())
+		        || ConversionUtil.isRefusedByARule(recipient.getPersonName())) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
+		return recipient.getDisplayString();
 	}
 
 	@PropertySetter(RECIPIENT)

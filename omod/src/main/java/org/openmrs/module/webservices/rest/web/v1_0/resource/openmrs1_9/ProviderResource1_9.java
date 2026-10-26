@@ -15,6 +15,7 @@ import io.swagger.models.properties.ArrayProperty;
 import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+import org.openmrs.Person;
 import org.openmrs.Provider;
 import org.openmrs.ProviderAttribute;
 import org.openmrs.api.context.Context;
@@ -247,9 +248,13 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 	@Override
 	@PropertyGetter("display")
 	public String getDisplayString(Provider provider) {
-		// Provider.getName() reads the linked person's name, so a Person rule refusing that person has
-		// to hide this string too - the provider itself is not what a rule was written about
-		if (ConversionUtil.isRefusedByARule(provider.getPerson())) {
+		// Provider.getName() reads the linked person's preferred name, so a Person rule refusing that
+		// person has to hide this string too - the provider itself is not what a rule was written about.
+		// The name is asked about as well: it is the record the string is actually read off, and neither
+		// a Provider nor a Person rule reaches it
+		Person person = provider.getPerson();
+		if (ConversionUtil.isRefusedByARule(person)
+		        || (person != null && ConversionUtil.isRefusedByARule(person.getPersonName()))) {
 			return ConversionUtil.MASKED_DISPLAY;
 		}
 		if (provider.getIdentifier() == null) {

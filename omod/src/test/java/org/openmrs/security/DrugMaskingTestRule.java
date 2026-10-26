@@ -10,10 +10,8 @@
 package org.openmrs.security;
 
 import org.openmrs.Drug;
-import org.springframework.stereotype.Component;
 
 /** Refuses one drug, for the displays that print a drug's name rather than a concept's. */
-@Component
 public class DrugMaskingTestRule extends MaskingTestRule<Drug> {
 
 	public static volatile Integer deniedId;

@@ -10,13 +10,11 @@
 package org.openmrs.security;
 
 import org.openmrs.Provider;
-import org.springframework.stereotype.Component;
 
 /**
  * Refuses one provider. Distinct from {@link PersonMaskingTestRule}: a display reading a provider
  * has to ask about both, since a rule may cover the provider and not the person behind it.
  */
-@Component
 public class ProviderMaskingTestRule extends MaskingTestRule<Provider> {
 
 	public static volatile Integer deniedId;

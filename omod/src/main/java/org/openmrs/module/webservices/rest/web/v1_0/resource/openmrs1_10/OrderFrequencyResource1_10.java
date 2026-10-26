@@ -12,8 +12,10 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 import org.openmrs.Concept;
 import org.openmrs.OrderFrequency;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -72,6 +74,50 @@ public class OrderFrequencyResource1_10 extends MetadataDelegatingCrudResource<O
 			return description;
 		}
 		return null;
+	}
+	
+	/**
+	 * Whether a rule refuses the concept this frequency is named after, or the name it is named by.
+	 * <p>
+	 * Unusual among metadata, and the reason both getters below need a guard: an order frequency has no
+	 * name column of its own. {@code OrderFrequency.getName()} answers
+	 * {@code getConcept().getName()}, so the {@code name} property and the {@code display}
+	 * {@code MetadataDelegatingCrudResource} derives from it are both read off a record this one only
+	 * points at - one that is masked under {@code concept} in the same response, with its name spelled
+	 * out beside the mask under both.
+	 */
+	private boolean readsARefusedRecord(OrderFrequency instance) {
+		Concept concept = instance.getConcept();
+		return ConversionUtil.isRefusedByARule(concept)
+		        || (concept != null && ConversionUtil.isRefusedByARule(concept.getName()));
+	}
+	
+	/**
+	 * @param instance the order frequency
+	 * @return its name, which is its concept's, or {@link ConversionUtil#MASKED_DISPLAY} when a rule
+	 *         refuses that concept or the name itself
+	 */
+	@PropertyGetter("name")
+	public String getName(OrderFrequency instance) {
+		if (readsARefusedRecord(instance)) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
+		return instance.getName();
+	}
+	
+	/**
+	 * @return the localization or the name, as for any metadata, or
+	 *         {@link ConversionUtil#MASKED_DISPLAY} when a rule refuses the concept that name is read
+	 *         from. The localization is masked too: it is this frequency's own name in the reader's
+	 *         locale, so it is the same disclosure by another route
+	 */
+	@Override
+	@PropertyGetter("display")
+	public String getDisplayString(OrderFrequency instance) {
+		if (readsARefusedRecord(instance)) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
+		return super.getDisplayString(instance);
 	}
 	
 	/**

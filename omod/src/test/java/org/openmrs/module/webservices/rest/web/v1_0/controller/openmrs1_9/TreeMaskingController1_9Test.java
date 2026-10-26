@@ -17,8 +17,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.RestControllerTestUtils;
+import org.openmrs.security.AuthorizationRules;
 import org.openmrs.security.ConceptMaskingTestRule;
+import org.openmrs.security.DomainObjectAuthorizationRule;
 import org.openmrs.security.ObsMaskingTestRule;
+import org.openmrs.security.OpenmrsPermissionEvaluator;
+import org.openmrs.security.UuidMaskingTestRule;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -44,9 +49,14 @@ public class TreeMaskingController1_9Test extends RestControllerTestUtils {
 
 	private static final String HEMATOCRIT_NAME = "Hematocrit";
 
+	/** Concept 182's only name, the record {@code Concept.getDisplayString()} reads. */
+	private static final String HEMATOCRIT_CONCEPT_NAME_UUID = "4cc5693a-f558-40c9-8177-145a4b119ca7";
+
 	private static final int FAVOURITE_FOOD_CONCEPT_ID = 19;
 
 	private static final String FAVOURITE_FOOD_NAME = "FAVORITE FOOD, NON-CODED";
+
+	private static final String FAVOURITE_FOOD_CONCEPT_NAME_UUID = "f4d0b584-6ce5-40e2-9ce5-fa7ec07b32b4";
 
 	/** An observation of concept 182 on patient 7, the only one, with value 7. */
 	private static final int HEMATOCRIT_OBS_ID = 136;
@@ -58,15 +68,25 @@ public class TreeMaskingController1_9Test extends RestControllerTestUtils {
 
 	private static final String YES_NAME = "YES";
 
+	/** Only the three these tests arm: see {@link org.openmrs.security.MaskingTestRule} on why. */
+	private final DomainObjectAuthorizationRule[] rules = { new ConceptMaskingTestRule(), new ObsMaskingTestRule(),
+	        new UuidMaskingTestRule() };
+
+	@Autowired
+	private OpenmrsPermissionEvaluator evaluator;
+
 	@BeforeEach
 	public void init() throws Exception {
 		executeDataSet("obsTreeDataset.xml");
+		AuthorizationRules.register(evaluator, rules);
 	}
 
 	@AfterEach
 	public void disarmRules() {
+		AuthorizationRules.unregister(evaluator, rules);
 		ConceptMaskingTestRule.deniedId = null;
 		ObsMaskingTestRule.deniedId = null;
+		UuidMaskingTestRule.deniedUuid = null;
 	}
 
 	@Test
@@ -129,6 +149,35 @@ public class TreeMaskingController1_9Test extends RestControllerTestUtils {
 		assertFalse(masked.contains("\"value\":\"" + YES_NAME + "\""),
 		    "a refused answer should be named nowhere, got " + masked);
 		assertTrue(masked.contains(ConversionUtil.MASKED_DISPLAY), "the value should say it is hidden");
+	}
+
+	/**
+	 * A rule refusing the <em>name</em> and not the concept it hangs off. Both trees print the name
+	 * through {@code Concept.getDisplayString()}, and a {@code ConceptName} is a record of its own that
+	 * no {@code Concept} rule reaches, so asking about the concept alone left the name in the node.
+	 */
+	@Test
+	public void conceptTree_shouldNotNameAConceptWhoseNameARuleRefuses() throws Exception {
+		assertTrue(conceptTree().contains(HEMATOCRIT_NAME), "the tree should name concept "
+		        + HEMATOCRIT_CONCEPT_ID + " when no rule refuses it, or this is testing nothing");
+
+		UuidMaskingTestRule.deniedUuid = HEMATOCRIT_CONCEPT_NAME_UUID;
+		String masked = conceptTree();
+
+		assertFalse(masked.contains(HEMATOCRIT_NAME), "a refused name should appear nowhere, got " + masked);
+		assertTrue(masked.contains(ConversionUtil.MASKED_PROPERTY), "and the node should say it is hidden");
+	}
+
+	@Test
+	public void obsTree_shouldNotNameAConceptWhoseNameARuleRefuses() throws Exception {
+		assertTrue(obsTree().contains(FAVOURITE_FOOD_NAME), "the tree should name concept "
+		        + FAVOURITE_FOOD_CONCEPT_ID + " when no rule refuses it, or this is testing nothing");
+
+		UuidMaskingTestRule.deniedUuid = FAVOURITE_FOOD_CONCEPT_NAME_UUID;
+		String masked = obsTree();
+
+		assertFalse(masked.contains(FAVOURITE_FOOD_NAME), "a refused name should appear nowhere, got " + masked);
+		assertTrue(masked.contains(ConversionUtil.MASKED_PROPERTY));
 	}
 
 	private String conceptTree() throws Exception {

@@ -127,15 +127,26 @@ public class RelationshipResource1_8 extends DataDelegatingCrudResource<Relation
 	@PropertyGetter("display")
 	public String getDisplayString(Relationship relationship) {
 		// both names are read below, so refusing either hides the whole string: naming only the allowed
-		// half would say which one is hidden and spell out the other
-		if (ConversionUtil.isRefusedByARule(relationship.getPersonA())
-		        || ConversionUtil.isRefusedByARule(relationship.getPersonB())) {
+		// half would say which one is hidden and spell out the other. Person.getGivenName() reads the
+		// preferred PersonName, a record of its own that no Person rule reaches, so each of those is
+		// asked about too - as is the relationship type, whose aIsToB is printed between them
+		if (readsARefusedRecord(relationship.getPersonA()) || readsARefusedRecord(relationship.getPersonB())
+		        || ConversionUtil.isRefusedByARule(relationship.getRelationshipType())) {
 			return ConversionUtil.MASKED_DISPLAY;
 		}
 		String relType = relationship.getRelationshipType() == null ? "NULL" : relationship.getRelationshipType()
 		        .getaIsToB();
 		return relationship.getPersonA().getGivenName() + " is the " + relType + " of "
 		        + relationship.getPersonB().getGivenName();
+	}
+	
+	/**
+	 * Whether a rule refuses this person or the preferred name {@code Person.getGivenName()} reads off
+	 * it.
+	 */
+	private boolean readsARefusedRecord(Person person) {
+		return ConversionUtil.isRefusedByARule(person)
+		        || (person != null && ConversionUtil.isRefusedByARule(person.getPersonName()));
 	}
 	
 	/**
