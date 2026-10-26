@@ -386,9 +386,10 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 	 * A reference that did not resolve for the other reason - the record is gone - is masked too, since
 	 * the two are indistinguishable from here. That is the side to err on: {@code value} is null either
 	 * way, so this keeps the two properties telling one story, and a dangling key was never a display
-	 * string. Narrowed to a format naming a record so that it stays that choice and not a wider one: a
-	 * value that is its own content rather than a reference ({@code AttributableDate}) hydrates to null
-	 * when it is malformed, and printing that back is all this getter can do.
+	 * string. Narrowed to a format naming a record so that it stays that choice and not a wider one.
+	 * Only a {@code hydrate} that answers null arrives here: {@code getHydratedObject()} turns an
+	 * exception into the raw value, so a malformed {@code AttributableDate} prints itself without
+	 * reaching this, and a record type whose {@code hydrate} throws would print its raw id past it.
 	 */
 	private static boolean referencesARecordThatDidNotResolve(PersonAttribute pa, Object hydrated) {
 		if (hydrated != null || StringUtils.isBlank(pa.getValue())) {
