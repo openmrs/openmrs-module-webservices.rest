@@ -10,10 +10,8 @@
 package org.openmrs.security;
 
 import org.openmrs.Concept;
-import org.springframework.stereotype.Component;
 
 /** Refuses one concept, for the coded condition and diagnosis cases. */
-@Component
 public class ConceptMaskingTestRule extends MaskingTestRule<Concept> {
 
 	public static volatile Integer deniedId;

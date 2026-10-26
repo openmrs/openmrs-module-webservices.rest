@@ -10,10 +10,8 @@
 package org.openmrs.security;
 
 import org.openmrs.Obs;
-import org.springframework.stereotype.Component;
 
 /** Refuses one observation, for the obs-group display cases. */
-@Component
 public class ObsMaskingTestRule extends MaskingTestRule<Obs> {
 
 	public static volatile Integer deniedId;

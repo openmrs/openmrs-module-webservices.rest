@@ -17,9 +17,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.RestControllerTestUtils;
+import org.openmrs.security.AuthorizationRules;
 import org.openmrs.security.ConceptMaskingTestRule;
+import org.openmrs.security.DomainObjectAuthorizationRule;
 import org.openmrs.security.ObsMaskingTestRule;
+import org.openmrs.security.OpenmrsPermissionEvaluator;
 import org.openmrs.security.UuidMaskingTestRule;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -64,13 +68,22 @@ public class TreeMaskingController1_9Test extends RestControllerTestUtils {
 
 	private static final String YES_NAME = "YES";
 
+	/** Only the three these tests arm: see {@link org.openmrs.security.MaskingTestRule} on why. */
+	private final DomainObjectAuthorizationRule[] rules = { new ConceptMaskingTestRule(), new ObsMaskingTestRule(),
+	        new UuidMaskingTestRule() };
+
+	@Autowired
+	private OpenmrsPermissionEvaluator evaluator;
+
 	@BeforeEach
 	public void init() throws Exception {
 		executeDataSet("obsTreeDataset.xml");
+		AuthorizationRules.register(evaluator, rules);
 	}
 
 	@AfterEach
 	public void disarmRules() {
+		AuthorizationRules.unregister(evaluator, rules);
 		ConceptMaskingTestRule.deniedId = null;
 		ObsMaskingTestRule.deniedId = null;
 		UuidMaskingTestRule.deniedUuid = null;

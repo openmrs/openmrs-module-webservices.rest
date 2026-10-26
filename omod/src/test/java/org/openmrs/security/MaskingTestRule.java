@@ -20,10 +20,15 @@ import org.springframework.security.core.Authentication;
  * {@link DomainObjectAuthorizationRule#getTargetType()} names one and
  * {@code OpenmrsPermissionEvaluator} matches rules by it.
  * <p>
- * Subclasses live in {@code org.openmrs.security} because that is a package core's component scan
- * reaches, which is how a rule becomes visible to {@code OpenmrsPermissionEvaluator}. Each refuses
- * nothing until a test sets its {@code deniedId}, so having them on the test classpath does not
- * change behaviour for tests that do not use them.
+ * Subclasses live in {@code org.openmrs.security} because {@code OpenmrsPermissionEvaluator}'s
+ * registration hook is package-private; a test reaches it through {@link AuthorizationRules}.
+ * <p>
+ * None of them is a bean, and a test registers the ones it needs for its own duration.
+ * Contributing them to the context would change which path a read takes in every other test in this
+ * module even while they refuse nothing: the evaluator would report that rules exist, and
+ * {@code Authorize} then copies a collection instead of returning a view of it, initializing a lazy
+ * association on the way. Registered per test, everything else runs the no-rule path a server
+ * without a rule module takes.
  *
  * @param <T> the type this rule judges
  */

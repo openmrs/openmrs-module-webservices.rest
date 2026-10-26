@@ -10,13 +10,11 @@
 package org.openmrs.security;
 
 import org.openmrs.Person;
-import org.springframework.stereotype.Component;
 
 /**
  * Refuses one person, and so also the patient, user or provider's person behind it: a rule's target
  * type is matched by assignability, so {@code Person} covers every subtype.
  */
-@Component
 public class PersonMaskingTestRule extends MaskingTestRule<Person> {
 
 	public static volatile Integer deniedId;

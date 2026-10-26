@@ -13,7 +13,6 @@ import java.io.Serializable;
 
 import org.openmrs.OpenmrsObject;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Component;
 
 /**
  * Refuses one test-selected record of any type, named by its uuid.
@@ -38,10 +37,11 @@ import org.springframework.stereotype.Component;
  * through a service meets an exception rather than a mask. It refuses the object as well, since a
  * rule that denies a lookup by id would hardly authorize the same record by reference.
  * <p>
- * Refuses nothing until a test sets one of them, so being on the test classpath changes nothing for
- * tests that do not use it.
+ * Not a bean, and registered for the duration of one test like its {@link MaskingTestRule}
+ * siblings - see there for why that matters, and the more so for this one: with
+ * {@link OpenmrsObject} as its target type it covers every domain type there is, so a context
+ * holding it would put every object every other test converts past a rule.
  */
-@Component
 public class UuidMaskingTestRule implements DomainObjectAuthorizationRule {
 
 	/** The uuid this rule refuses when asked about an object, or null to refuse nothing. */

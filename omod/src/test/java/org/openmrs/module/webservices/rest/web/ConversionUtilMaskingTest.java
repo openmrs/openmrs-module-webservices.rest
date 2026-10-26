@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openmrs.CodedOrFreeText;
 import org.openmrs.Allergy;
@@ -71,15 +72,19 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.ConceptS
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0.PatientAllergyResource2_0;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_6.MedicationDispenseResource2_6;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_7.ConceptReferenceRangeResource2_7;
+import org.openmrs.security.AuthorizationRules;
 import org.openmrs.security.ConceptMaskingTestRule;
+import org.openmrs.security.DomainObjectAuthorizationRule;
 import org.openmrs.security.DrugMaskingTestRule;
 import org.openmrs.security.ObsMaskingTestRule;
+import org.openmrs.security.OpenmrsPermissionEvaluator;
 import org.openmrs.security.PersonMaskingTestRule;
 import org.openmrs.security.ProviderMaskingTestRule;
 import org.openmrs.security.UnregisteredTestObject;
 import org.openmrs.security.UnregisteredTestObjectMaskingTestRule;
 import org.openmrs.security.UuidMaskingTestRule;
 import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -291,8 +296,26 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	/** Asks for nothing but the display, so only the display getter is under test. */
 	private static final Representation DISPLAY_ONLY = new CustomRepresentation("display");
 
+	/**
+	 * Registered for the duration of each test rather than contributed as beans: see
+	 * {@link org.openmrs.security.MaskingTestRule} on why a rule the context holds changes which path
+	 * a read takes in every other test even while it refuses nothing.
+	 */
+	private final DomainObjectAuthorizationRule[] rules = { new PersonMaskingTestRule(), new ObsMaskingTestRule(),
+	        new ConceptMaskingTestRule(), new DrugMaskingTestRule(), new ProviderMaskingTestRule(),
+	        new UnregisteredTestObjectMaskingTestRule(), new UuidMaskingTestRule() };
+
+	@Autowired
+	private OpenmrsPermissionEvaluator evaluator;
+
+	@BeforeEach
+	public void registerRules() {
+		AuthorizationRules.register(evaluator, rules);
+	}
+
 	@AfterEach
 	public void disarmRules() {
+		AuthorizationRules.unregister(evaluator, rules);
 		PersonMaskingTestRule.deniedId = null;
 		ObsMaskingTestRule.deniedId = null;
 		ConceptMaskingTestRule.deniedId = null;

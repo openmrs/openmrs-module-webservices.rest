@@ -9,10 +9,8 @@
  */
 package org.openmrs.security;
 
-import org.springframework.stereotype.Component;
 
 /** Refuses one {@link UnregisteredTestObject}, for the no-converter case. */
-@Component
 public class UnregisteredTestObjectMaskingTestRule extends MaskingTestRule<UnregisteredTestObject> {
 
 	public static volatile Integer deniedId;
