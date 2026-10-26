@@ -42,6 +42,7 @@ import org.openmrs.FieldAnswer;
 import org.openmrs.MedicationDispense;
 import org.openmrs.Order;
 import org.openmrs.Obs;
+import org.openmrs.OrderFrequency;
 import org.openmrs.OrderGroup;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
@@ -272,6 +273,13 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 
 	/** The order set of {@link #ORDER_GROUP_UUID}, whose name closes that group's display. */
 	private static final String ORDER_SET_UUID = "2d3fb1d0-ae06-22e3-a5e2-0140211c1001";
+
+	/** Order frequency 1, named by concept 113 "1/day x 7 days/week" - it has no name of its own. */
+	private static final String ORDER_FREQUENCY_UUID = "28090760-7c38-11e3-baa7-0800200c9a66";
+
+	private static final int ORDER_FREQUENCY_CONCEPT_ID = 113;
+
+	private static final String ORDER_FREQUENCY_CONCEPT_NAME = "1/day x 7 days/week";
 
 	/** User 502 "butch", on person 502 "Hippocrates of Cos", whose name an alert recipient prints. */
 	private static final String ALERT_RECIPIENT_USER_UUID = "c98a1558-e131-11de-babe-001e378eb67e";
@@ -1373,6 +1381,39 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		UuidMaskingTestRule.deniedUuid = ORDER_SET_UUID;
 
 		assertEquals(MASKED_DISPLAY, display(group, DEFAULT));
+	}
+
+	/**
+	 * The one case where the leak needs no {@code v=custom}: an order frequency has no name column of
+	 * its own, so the {@code name} its default representation declares - and the {@code display}
+	 * derived from it - are both read off the concept, which is masked under {@code concept} in the
+	 * same response.
+	 */
+	@Test
+	public void getName_shouldMaskAnOrderFrequencysNameAndDisplayWhenItsConceptIsRefused() throws Exception {
+		OrderFrequency frequency = Context.getOrderService().getOrderFrequencyByUuid(ORDER_FREQUENCY_UUID);
+		assertNotNull(frequency);
+		Map<String, Object> unmasked = asMap(ConversionUtil.convertToRepresentation(frequency, DEFAULT));
+		assertEquals(ORDER_FREQUENCY_CONCEPT_NAME, unmasked.get("name"),
+		    "the name should be the concept's, or this is testing nothing");
+		assertEquals(ORDER_FREQUENCY_CONCEPT_NAME, unmasked.get("display"));
+		ConceptMaskingTestRule.deniedId = ORDER_FREQUENCY_CONCEPT_ID;
+
+		Map<String, Object> converted = asMap(ConversionUtil.convertToRepresentation(frequency, DEFAULT));
+		assertTrue(isMasked(converted.get("concept")), "the concept masks as a nested object");
+		assertEquals(MASKED_DISPLAY, converted.get("name"), "and must not be spelled out under name");
+		assertEquals(MASKED_DISPLAY, converted.get("display"));
+	}
+
+	/** And the name itself, which no Concept rule reaches. */
+	@Test
+	public void getName_shouldMaskAnOrderFrequencysNameWhenTheConceptNameIsRefused() throws Exception {
+		OrderFrequency frequency = Context.getOrderService().getOrderFrequencyByUuid(ORDER_FREQUENCY_UUID);
+		UuidMaskingTestRule.deniedUuid = frequency.getConcept().getName().getUuid();
+
+		Map<String, Object> converted = asMap(ConversionUtil.convertToRepresentation(frequency, DEFAULT));
+		assertEquals(MASKED_DISPLAY, converted.get("name"));
+		assertEquals(MASKED_DISPLAY, converted.get("display"));
 	}
 
 	private void assertEncounterProvidersMasked(Encounter encounter) throws Exception {
