@@ -27,6 +27,7 @@ import org.openmrs.api.AdministrationService;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.ObsService;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.impl.ObsArchiveHelper;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
@@ -167,6 +168,45 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 		List<Object> allNonVoidedObsAfterDeleteList = deserialize(allNonVoidedObsAfterDeleteResponse).get("results");
 
 		assertEquals(5, allNonVoidedObsAfterDeleteList.size());
+	}
+
+	@Test
+	public void searchByEncounter_shouldGetArchivedObsIfIncludeAllIsTrue() throws Exception {
+
+		executeDataSet("encounterWithObsGroup1_9.xml");
+
+		final String ENCOUNTER_UUID = "62967e68-96bb-11e0-8d6b-9b9415a91465";
+
+		MockHttpServletRequest allNonVoidedObsRequest = newGetRequest(getURI());
+		allNonVoidedObsRequest.addParameter("encounter", ENCOUNTER_UUID);
+		MockHttpServletResponse allNonVoidedObsResponse = handle(allNonVoidedObsRequest);
+		List<Object> allNonVoidedObsList = deserialize(allNonVoidedObsResponse).get("results");
+
+		assertEquals(6, allNonVoidedObsList.size());
+		
+		Context.getAdministrationService().executeSQL(
+				"insert into obs_archive (obs_id, person_id, encounter_id, concept_id, value_text, status, obs_datetime, creator, " + 
+				"date_created, voided, void_reason, date_voided, voided_by, uuid) values (1006, 7, 1000, 19, 'Archived text', " + 
+				"'FINAL', '2008-08-01 00:00:00', 1, '2008-08-18 14:09:05', true, 'archived', '2008-08-18 14:09:05', 1, " + 
+				"'12345678-96cd-11e0-8d6b-9b9415a91465')", false);
+		Context.getRegisteredComponent("obsArchiveHelper", ObsArchiveHelper.class).markArchiveHasData();
+
+		MockHttpServletRequest allObsIncludingArchivedRequest = newGetRequest(getURI());
+		allObsIncludingArchivedRequest.addParameter("encounter", ENCOUNTER_UUID);
+		allObsIncludingArchivedRequest.addParameter("includeAll", "true");
+		MockHttpServletResponse allObsIncludingArchivedResponse = handle(allObsIncludingArchivedRequest);
+		List<Object> allObsIncludingArchivedList = deserialize(allObsIncludingArchivedResponse).get("results");
+
+		// should now be 7 (6 original + 1 archived)
+		assertEquals(7, allObsIncludingArchivedList.size());
+		
+		// test that it doesn't come back with includeAll=false
+		MockHttpServletRequest allObsNotIncludingArchivedRequest = newGetRequest(getURI());
+		allObsNotIncludingArchivedRequest.addParameter("encounter", ENCOUNTER_UUID);
+		MockHttpServletResponse allObsNotIncludingArchivedResponse = handle(allObsNotIncludingArchivedRequest);
+		List<Object> allObsNotIncludingArchivedList = deserialize(allObsNotIncludingArchivedResponse).get("results");
+		
+		assertEquals(6, allObsNotIncludingArchivedList.size());
 	}
 
 	@Test
