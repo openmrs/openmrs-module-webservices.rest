@@ -11,8 +11,10 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
@@ -84,6 +86,9 @@ public class ObsTreeController1_9Test extends MainResourceControllerTest {
 		// this entire hack is because timezone will differ between environments
 		replaceTimeZone(actualResult);
 		replaceTimeZone(expectedResult);
+		// uuid is asserted separately and dynamically in shouldGetObsTree_shouldIncludeUuidInEachObs;
+		// strip it here so this fixture-based comparison doesn't need to hardcode uuid values
+		removeUuid(actualResult);
 		Assertions.assertEquals(expectedResult, actualResult);
 	}
 
@@ -100,6 +105,61 @@ public class ObsTreeController1_9Test extends MainResourceControllerTest {
 				Iterator it = ((List) object.get(key)).iterator();
 				while (it.hasNext()) {
 					replaceTimeZone((HashMap) it.next());
+				}
+			}
+		}
+	}
+
+	// remove uuid keys recursively so this test can focus on the other obs fields
+	public void removeUuid(HashMap<String, Object> object) {
+		for (String key : new HashSet<>(object.keySet())) {
+			if (key.equals("uuid")) {
+				object.remove(key);
+			} else if (object.get(key) instanceof HashMap) {
+				removeUuid((HashMap) object.get(key));
+			} else if (object.get(key) instanceof List) {
+				Iterator it = ((List) object.get(key)).iterator();
+				while (it.hasNext()) {
+					Object item = it.next();
+					if (item instanceof HashMap) {
+						removeUuid((HashMap) item);
+					}
+				}
+			}
+		}
+	}
+
+	@Test
+	public void shouldGetObsTree_shouldIncludeUuidInEachObs() throws Exception {
+		MockHttpServletRequest req = newGetRequest(getURI(),
+				new Parameter("patient", "5946f880-b197-400b-9caa-a3c661d23041"),
+				new Parameter("concept", "0f97e14e-cdc2-49ac-9255-b5126f8a5148"));
+
+		SimpleObject result = deserialize(handle(req));
+
+		assertObsUuidsPresent(result);
+	}
+
+	private void assertObsUuidsPresent(Map<?, ?> node) {
+		if (node.containsKey("obs")) {
+			Object obsObject = node.get("obs");
+			if (obsObject instanceof List<?>) {
+				for (Object item : (List<?>) obsObject) {
+					if (item instanceof Map<?, ?>) {
+						Map<?, ?> obs = (Map<?, ?>) item;
+						Assertions.assertNotNull(obs.get("uuid"), "obs entry is missing uuid field");
+						Assertions.assertFalse(obs.get("uuid").toString().isEmpty(), "obs uuid should not be empty");
+					}
+				}
+			}
+		}
+		if (node.containsKey("subSets")) {
+			Object subSetsObject = node.get("subSets");
+			if (subSetsObject instanceof List<?>) {
+				for (Object item : (List<?>) subSetsObject) {
+					if (item instanceof Map<?, ?>) {
+						assertObsUuidsPresent((Map<?, ?>) item);
+					}
 				}
 			}
 		}
