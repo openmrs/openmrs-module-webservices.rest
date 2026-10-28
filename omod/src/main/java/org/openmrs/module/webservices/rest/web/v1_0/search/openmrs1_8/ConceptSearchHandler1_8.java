@@ -36,6 +36,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -134,6 +135,8 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 			for (ConceptSearchResult csr : searchResults) {
 				results.add(csr.getConcept());
 			}
+			// Remove duplicates that can arise from HQL joins on multi-valued associations
+			results = new ArrayList<Concept>(new LinkedHashSet<Concept>(results));
 			return new NeedsPaging<Concept>(results, context);
 		} else if (searchType == null || "equals".equals(searchType)) {
 			
