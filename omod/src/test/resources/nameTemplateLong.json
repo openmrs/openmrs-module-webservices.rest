@@ -10,7 +10,7 @@
       },
       {
         "isToken": "IS_NAME_TOKEN",
-        "displayText": "PersonName.prefix",
+        "displayText": "Prefix",
         "codeName": "prefix",
         "displaySize": "5"
       }
@@ -22,7 +22,7 @@
       },
       {
         "isToken": "IS_NAME_TOKEN",
-        "displayText": "PersonName.givenName",
+        "displayText": "Given",
         "codeName": "givenName",
         "displaySize": "30"
       }
@@ -34,7 +34,7 @@
       },
       {
         "isToken": "IS_NAME_TOKEN",
-        "displayText": "PersonName.middleName",
+        "displayText": "Middle",
         "codeName": "middleName",
         "displaySize": "30"
       }
@@ -46,7 +46,7 @@
       },
       {
         "isToken": "IS_NAME_TOKEN",
-        "displayText": "PersonName.familyNamePrefix",
+        "displayText": "Family Name Prefix",
         "codeName": "familyNamePrefix",
         "displaySize": "8"
       },
@@ -56,7 +56,7 @@
       },
       {
         "isToken": "IS_NAME_TOKEN",
-        "displayText": "PersonName.familyName",
+        "displayText": "Family Name",
         "codeName": "familyName",
         "displaySize": "25"
       },
@@ -66,7 +66,7 @@
       },
       {
         "isToken": "IS_NAME_TOKEN",
-        "displayText": "PersonName.familyName2",
+        "displayText": "Family Name 2",
         "codeName": "familyName2",
         "displaySize": "25"
       },
@@ -76,7 +76,7 @@
       },
       {
         "isToken": "IS_NAME_TOKEN",
-        "displayText": "PersonName.familyNameSuffix",
+        "displayText": "Family Name Suffix",
         "codeName": "familyNameSuffix",
         "displaySize": "8"
       }
@@ -88,7 +88,7 @@
       },
       {
         "isToken": "IS_NAME_TOKEN",
-        "displayText": "PersonName.degree",
+        "displayText": "Degree",
         "codeName": "degree",
         "displaySize": "5"
       }
@@ -102,14 +102,14 @@
     "degree"
   ],
   "nameMappings": {
-    "familyName2": "PersonName.familyName2",
-    "prefix": "PersonName.prefix",
-    "familyNamePrefix": "PersonName.familyNamePrefix",
-    "givenName": "PersonName.givenName",
-    "familyName": "PersonName.familyName",
-    "degree": "PersonName.degree",
-    "middleName": "PersonName.middleName",
-    "familyNameSuffix": "PersonName.familyNameSuffix"
+    "familyName2": "Family Name 2",
+    "prefix": "Prefix",
+    "familyNamePrefix": "Family Name Prefix",
+    "givenName": "Given",
+    "familyName": "Family Name",
+    "degree": "Degree",
+    "middleName": "Middle",
+    "familyNameSuffix": "Family Name Suffix"
   },
   "sizeMappings": {
     "familyName2": "25",
