@@ -10,7 +10,8 @@
           "value" : "7.0",
           "interpretation" : "NORMAL",
           "hiAbsolute" : 60.0,
-          "hiCritical" : 68.0
+          "hiCritical" : 68.0,
+          "uuid" : "a1521c32-47b6-47da-9c6f-3673ddfb74f1"
         } ],
         "datatype" : "Numeric",
         "display" : "Hematocrit",
@@ -21,7 +22,8 @@
       }, {
         "obs" : [ {
           "obsDatetime" : "2008-08-15T00:00:00.000+0200",
-          "value" : "8.0"
+          "value" : "8.0",
+          "uuid" : "b2521c32-47b6-47da-9c6f-3673ddfb74f1"
         } ],
         "datatype" : "Numeric",
         "display" : "Platelets",
@@ -32,7 +34,8 @@
       }, {
         "obs" : [ {
           "obsDatetime" : "2008-08-15T00:00:00.000+0200",
-          "value" : "9.0"
+          "value" : "9.0",
+          "uuid" : "c3521c32-47b6-47da-9c6f-3673ddfb74f1"
         } ],
         "datatype" : "Numeric",
         "display" : "Haemoglobin",
@@ -43,7 +46,8 @@
       }, {
         "obs" : [ {
           "obsDatetime" : "2008-08-15T00:00:00.000+0200",
-          "value" : "10.0"
+          "value" : "10.0",
+          "uuid" : "d4521c32-47b6-47da-9c6f-3673ddfb74f1"
         } ],
         "datatype" : "Numeric",
         "display" : "White blood cells",
@@ -60,7 +64,8 @@
       "subSets" : [ {
         "obs" : [ {
           "obsDatetime" : "2008-08-15T00:00:00.000+0200",
-          "value" : "62.0"
+          "value" : "62.0",
+          "uuid" : "aa521c32-47b6-47da-9c6f-3673ddfb74f1"
         } ],
         "datatype" : "Numeric",
         "display" : "Serum Chloride",
@@ -68,7 +73,8 @@
       }, {
         "obs" : [ {
           "obsDatetime" : "2008-08-15T00:00:00.000+0200",
-          "value" : "51.0"
+          "value" : "51.0",
+          "uuid" : "bb521c32-47b6-47da-9c6f-3673ddfb74f1"
         } ],
         "datatype" : "Numeric",
         "display" : "Serum Carbon Dioxide",
@@ -76,7 +82,8 @@
       }, {
         "obs" : [ {
           "obsDatetime" : "2008-08-15T00:00:00.000+0200",
-          "value" : "44.0"
+          "value" : "44.0",
+          "uuid" : "cc521c32-47b6-47da-9c6f-3673ddfb74f1"
         } ],
         "datatype" : "Numeric",
         "display" : "Blood Urea Nitrogen",
@@ -93,7 +100,8 @@
     "subSets" : [ {
       "obs" : [ {
         "obsDatetime" : "2008-08-15T00:00:00.000+0200",
-        "value" : "YES"
+        "value" : "YES",
+        "uuid" : "c6521c32-47b6-47da-9c6f-3673ddfb74f1"
       } ],
       "datatype" : "Coded",
       "display" : "CIVIL STATUS",
@@ -101,7 +109,8 @@
     }, {
       "obs" : [ {
         "obsDatetime" : "2008-08-15T00:00:00.000+0200",
-        "value" : ""
+        "value" : "",
+        "uuid" : "d6521c32-47b6-47da-9c6f-3673ddfb74f1"
       } ],
       "datatype" : "N/A",
       "display" : "SINGLE",
@@ -111,7 +120,8 @@
       "subSets" : [ {
         "obs" : [ {
           "obsDatetime" : "2008-08-15T00:00:00.000+0200",
-          "value" : ""
+          "value" : "",
+          "uuid" : "l6521c32-47b6-47da-9c6f-3673ddfb74f1"
         } ],
         "datatype" : "N/A",
         "display" : "MARRIED",
@@ -121,7 +131,8 @@
         "subSets" : [ {
           "obs" : [ {
             "obsDatetime" : "2008-08-15T00:00:00.000+0200",
-            "value" : ""
+            "value" : "",
+            "uuid" : "s6521c32-47b6-47da-9c6f-3673ddfb74f1"
           } ],
           "datatype" : "N/A",
           "display" : "YES",
@@ -129,7 +140,8 @@
         }, {
           "obs" : [ {
             "obsDatetime" : "2008-08-15T00:00:00.000+0200",
-            "value" : ""
+            "value" : "",
+            "uuid" : "x6521c32-47b6-47da-9c6f-3673ddfb74f1"
           } ],
           "datatype" : "N/A",
           "display" : "NO",
@@ -141,7 +153,8 @@
             "subSets" : [ {
               "obs" : [ {
                 "obsDatetime" : "2008-08-15T00:00:00.000+0200",
-                "value" : ""
+                "value" : "",
+                "uuid" : "06521c32-47b6-47da-9c6f-3673ddfb74f1"
               } ],
               "datatype" : "N/A",
               "display" : "HIV PROGRAM",
@@ -157,7 +170,8 @@
   }, {
     "obs" : [ {
       "obsDatetime" : "2008-08-15T00:00:00.000+0200",
-      "value" : "PB and J"
+      "value" : "PB and J",
+      "uuid" : "e26cea2c-1b9f-4afe-b211-f3ef6c88af6f"
     } ],
     "datatype" : "Text",
     "display" : "FAVORITE FOOD, NON-CODED",
