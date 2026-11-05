@@ -365,12 +365,21 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 	
 	/**
 	 * @param patient
-	 * @return identifier + name (for concise display purposes)
+	 * @return identifier + name (for concise display purposes), or
+	 *         {@link ConversionUtil#MASKED_DISPLAY} when a rule refuses either of those two records
 	 */
 	@PropertyGetter("display")
 	public String getDisplayString(Patient patient) {
 		if (patient.getPatientIdentifier() == null)
 			return "";
+		
+		// both are records of their own, each masked where the response carries it - the identifier
+		// under "identifiers", the name under the person's "preferredName" - while this printed them in
+		// full. The identifier is as much a disclosure as the name: it is what a patient is looked up by
+		if (ConversionUtil.isRefusedByARule(patient.getPatientIdentifier())
+		        || ConversionUtil.isRefusedByARule(patient.getPersonName())) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
 		
 		return patient.getPatientIdentifier().getIdentifier() + " - " + patient.getPersonName().getFullName();
 	}

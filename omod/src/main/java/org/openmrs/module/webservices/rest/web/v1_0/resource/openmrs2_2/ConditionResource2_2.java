@@ -19,6 +19,7 @@ import org.openmrs.Condition;
 import org.openmrs.Patient;
 import org.openmrs.api.ConditionService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -225,16 +226,25 @@ public class ConditionResource2_2 extends DataDelegatingCrudResource<Condition> 
 	
 	/**
 	 * @param condition - the condition to get the name of
-	 * @return condition's name
+	 * @return condition's name, or {@link ConversionUtil#MASKED_DISPLAY} when a rule refuses the coded
+	 *         concept the name is read from
 	 */
 	@PropertyGetter("display")
 	public String getDisplayString(Condition condition) {
 		if (condition.getCondition() == null) {
 			return "";
 		} else {
-			if (condition.getCondition().getCoded() != null)
+			if (condition.getCondition().getCoded() != null) {
+				// a Concept rule hides the concept under "condition", but the name printed here is a
+				// String by then and would go out beside the mask. The ConceptName is asked about too,
+				// since a rule may cover it and not the concept it hangs off
+				if (ConversionUtil.isRefusedByARule(condition.getCondition().getCoded())
+				        || ConversionUtil.isRefusedByARule(condition.getCondition().getCoded().getName())) {
+					return ConversionUtil.MASKED_DISPLAY;
+				}
 				return condition.getCondition().getCoded().getName().getName();
-			
+			}
+
 			return condition.getCondition().getNonCoded();
 		}
 	}

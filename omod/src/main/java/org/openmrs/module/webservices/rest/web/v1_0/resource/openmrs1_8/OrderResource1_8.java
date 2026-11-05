@@ -17,6 +17,7 @@ import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
 import org.openmrs.Order;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -129,6 +130,11 @@ public class OrderResource1_8 extends DataDelegatingCrudResource<Order> {
 	public String getDisplayString(Order order) {
 		if (order.getConcept() == null)
 			return "[No Concept]";
+		// the ordered concept's name, derived: masking the concept under "concept" does nothing for it
+		if (ConversionUtil.isRefusedByARule(order.getConcept())
+		        || ConversionUtil.isRefusedByARule(order.getConcept().getName())) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
 		return order.getConcept().getName().getName();
 	}
 	

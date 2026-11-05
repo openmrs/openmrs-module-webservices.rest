@@ -29,6 +29,7 @@ import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
@@ -92,6 +93,37 @@ public class PersonAttributeResource1_8Test extends BaseModuleWebContextSensitiv
 		String displayString = resource.getDisplayString(attribute);
 
 		assertThat(displayString, equalToIgnoringCase("Yes"));
+	}
+
+	/**
+	 * {@code PersonAttribute#getHydratedObject()} caches nothing, so every call repeats the service
+	 * lookup - and the access check with it - for a record-backed value. The display getter has to
+	 * resolve once and both judge and print from that, rather than hydrating for its check and again to
+	 * build the string.
+	 */
+	@Test
+	public void getDisplayString_shouldHydrateTheValueOnlyOnce() {
+		PersonAttributeType type = new PersonAttributeType();
+		type.setFormat("org.openmrs.Concept");
+		type.setName("Counted Concept");
+		type.setDescription("Some Attribute Type Description");
+		type.setSearchable(false);
+		type = personService.savePersonAttributeType(type);
+		Concept trueConcept = conceptService.getTrueConcept();
+		AtomicInteger hydrations = new AtomicInteger();
+		PersonAttribute attribute = new PersonAttribute(type, String.valueOf(trueConcept.getId())) {
+
+			@Override
+			public Object getHydratedObject() {
+				hydrations.incrementAndGet();
+				return super.getHydratedObject();
+			}
+		};
+
+		String displayString = resource.getDisplayString(attribute);
+
+		assertThat(displayString, equalToIgnoringCase("Yes"));
+		Assertions.assertEquals(1, hydrations.get(), "the value should be resolved once per display");
 	}
 
 	@Test

@@ -497,12 +497,42 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 	}
 	
 	/**
+	 * The {@code display} of a ref, which {@link #asRef(Concept)} maps to this delegate property rather
+	 * than to {@link #getDisplayString(Concept)} - so the guard has to be repeated here, or a refused
+	 * name would be hidden under the default and full representations and spelled out under the ref
+	 * that every nested concept renders as.
+	 * <p>
+	 * Delegates to {@code Concept.getDisplayString()} otherwise, rather than to the resource's own
+	 * display: that one prefers a localization keyed by the uuid, and a ref has never carried it.
+	 *
+	 * @param instance the concept delegate
+	 * @return what the concept renders as, or {@link ConversionUtil#MASKED_DISPLAY} when a rule refuses
+	 *         the name it is read from
+	 */
+	@PropertyGetter("displayString")
+	public String getDisplayStringProperty(Concept instance) {
+		if (ConversionUtil.isRefusedByARule(instance.getName())) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
+		return instance.getDisplayString();
+	}
+	
+	/**
 	 * Gets the display name of the Concept delegate
 	 * 
 	 * @param instance the delegate instance to get the display name off
+	 * @return the display name, or {@link ConversionUtil#MASKED_DISPLAY} when a rule refuses the name
+	 *         this reads it from
 	 */
 	@PropertyGetter("display")
 	public String getDisplayString(Concept instance) {
+		// a ConceptName is a record of its own and no Concept rule reaches one, so refusing the name
+		// while allowing the concept left the name in the display. Asked before the localization as
+		// well as before the name itself: the localization is this concept's name in the reader's
+		// locale, keyed by its uuid, so it is the same disclosure by another route
+		if (ConversionUtil.isRefusedByARule(instance.getName())) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
 		String localization = getLocalization("Concept", instance.getUuid());
 		if (StringUtils.isNotBlank(localization)) {
 			return localization;

@@ -15,6 +15,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -272,16 +274,74 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	
 	/**
 	 * Display string for Obs
-	 * 
+	 *
 	 * @param obs
-	 * @return String ConceptName = value
+	 * @return String ConceptName = value, or {@link ConversionUtil#MASKED_DISPLAY} when a rule refuses
+	 *         any record the string would have been read from
 	 */
 	@PropertyGetter("display")
 	public String getDisplayString(Obs obs) {
 		if (obs.getConcept() == null)
 			return "";
-		
+
+		if (readsARefusedRecord(obs)) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
+
 		return obs.getConcept().getName() + ": " + obs.getValueAsString(Context.getLocale());
+	}
+
+	/**
+	 * Whether a rule refuses anything {@link #getDisplayString(Obs)} would read off {@code obs}: the
+	 * observation itself, the concept it asks and the one it answers, the drug, and - for a grouping
+	 * concept, whose value is its members' values joined - every member, recursively.
+	 * <p>
+	 * The group is what makes this more than a single check. {@code Obs.getValueAsString} walks the
+	 * members when the obs holds no value of its own, so a group nobody refused still prints the value
+	 * of a member someone did, twice over: once in its own {@code display} and again in the visible
+	 * member's {@code obsGroup} ref.
+	 * <p>
+	 * Members are walked whether or not their values would have been joined. A group holding a value of
+	 * its own prints that and never reaches its members, so this hides a string that would not have
+	 * leaked - deliberately, because the alternative is to restate {@code getValueAsString}'s branching
+	 * on datatype and value here and keep the copy in step with it. Over-hiding a summary of a group
+	 * with something hidden in it is the side to err on.
+	 * <p>
+	 * An obs reached twice is judged once. An obs can be a member of its own group -
+	 * {@code obsWithGroupMembers.xml} has one - and walking that unguarded does not terminate. Leaving
+	 * it to fail the way {@code getValueAsString} would was wrong: that method returns the obs's own
+	 * value before it ever looks at the members, so such a display rendered before this walk existed,
+	 * and overflowing the stack here would break it for every installation, rules or none.
+	 */
+	public static boolean readsARefusedRecord(Obs obs) {
+		return readsARefusedRecord(obs, Collections.newSetFromMap(new IdentityHashMap<Obs, Boolean>()));
+	}
+
+	/**
+	 * @param visited the observations already judged on this walk, by identity rather than by equality
+	 *            so that testing one neither initializes a proxy nor reads its uuid
+	 */
+	private static boolean readsARefusedRecord(Obs obs, Set<Obs> visited) {
+		if (!visited.add(obs)) {
+			return false;
+		}
+		// the drug's own concept as well as the drug: Drug.getFullName, which is what getValueAsString
+		// prints for a drug answer, is "name (concept name)", so refusing that concept has to mask too
+		Drug valueDrug = obs.getValueDrug();
+		if (ConversionUtil.isRefusedByARule(obs) || ConversionUtil.isRefusedByARule(obs.getConcept())
+		        || ConversionUtil.isRefusedByARule(obs.getValueCoded())
+		        || ConversionUtil.isRefusedByARule(valueDrug)
+		        || (valueDrug != null && ConversionUtil.isRefusedByARule(valueDrug.getConcept()))) {
+			return true;
+		}
+		if (obs.hasGroupMembers()) {
+			for (Obs member : obs.getGroupMembers()) {
+				if (member != null && readsARefusedRecord(member, visited)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	/**

@@ -98,7 +98,13 @@ public class ConceptSearchResource1_9 extends BaseDelegatingResource<ConceptSear
 	 */
 	@PropertyGetter("display")
 	public String getDisplayString(ConceptSearchResult csr) {
+		if (ConversionUtil.isRefusedByARule(csr.getConcept())) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
 		ConceptName cn = csr.getConcept().getName();
+		if (ConversionUtil.isRefusedByARule(cn)) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
 		return cn == null ? null : cn.getName();
 	}
 	

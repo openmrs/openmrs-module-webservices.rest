@@ -19,6 +19,7 @@ import org.openmrs.ConceptReferenceRange;
 import org.openmrs.Patient;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -103,6 +104,9 @@ public class ConceptReferenceRangeResource2_7 extends DelegatingCrudResource<Con
 	
 	@PropertyGetter("units")
 	public String getUnits(ConceptReferenceRange instance) {
+		if (refusesTheConcept(instance)) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
 		return instance.getConceptNumeric().getUnits();
 	}
 	
@@ -113,11 +117,30 @@ public class ConceptReferenceRangeResource2_7 extends DelegatingCrudResource<Con
 	
 	@PropertyGetter("concept")
 	public String getConcept(ConceptReferenceRange instance) {
+		// the uuid is a disclosure of its own and not only a key: a CIEL concept's uuid is its public id
+		// padded out, so handing it over names the concept as surely as the display would
+		if (refusesTheConcept(instance)) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
 		return instance.getConceptNumeric().getUuid();
+	}
+
+	/**
+	 * Whether a rule refuses the concept this range belongs to. Every property here is derived from
+	 * that concept rather than from the range, so none of them passes through
+	 * {@link ConversionUtil#convertToRepresentation(Object, Representation)} to be masked.
+	 */
+	private boolean refusesTheConcept(ConceptReferenceRange instance) {
+		return ConversionUtil.isRefusedByARule(instance.getConceptNumeric())
+		        || ConversionUtil.isRefusedByARule(instance.getConceptNumeric().getName());
 	}
 	
 	@PropertyGetter("display")
 	public String getDisplayString(ConceptReferenceRange instance) {
+		// the range's concept, which this prints the name - or the localization keyed by the uuid - of
+		if (refusesTheConcept(instance)) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
 		String localization = getLocalization("Concept", instance.getConceptNumeric().getUuid());
 		if (StringUtils.isNotBlank(localization)) {
 			return localization;

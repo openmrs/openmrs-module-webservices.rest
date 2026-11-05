@@ -464,13 +464,21 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 	
 	/**
 	 * @param person
-	 * @return fullname (for concise display purposes)
+	 * @return fullname (for concise display purposes), or {@link ConversionUtil#MASKED_DISPLAY} when a
+	 *         rule refuses the name it is read from
 	 */
 	@PropertyGetter("display")
 	public String getDisplayString(Person person) {
 		// TODO copy what is done in PatientResource to use configured name layout
 		if (person.getPersonName() == null)
 			return "";
+		
+		// the name is a record of its own, masked under "preferredName" while its full form went out
+		// here. A rule refusing the person does not reach this getter, since the person is the delegate
+		// and the representation is masked before the converter runs
+		if (ConversionUtil.isRefusedByARule(person.getPersonName())) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
 		
 		return person.getPersonName().getFullName();
 	}

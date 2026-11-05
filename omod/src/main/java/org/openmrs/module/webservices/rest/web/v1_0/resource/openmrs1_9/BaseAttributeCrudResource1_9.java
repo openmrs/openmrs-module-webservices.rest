@@ -10,6 +10,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import io.swagger.models.Model;
@@ -17,10 +18,15 @@ import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.StringProperty;
 import org.apache.commons.lang3.StringUtils;
+import org.openmrs.OpenmrsObject;
+import org.openmrs.Person;
+import org.openmrs.Program;
+import org.openmrs.Provider;
 import org.openmrs.attribute.Attribute;
 import org.openmrs.customdatatype.CustomDatatype;
 import org.openmrs.customdatatype.CustomDatatypeUtil;
 import org.openmrs.customdatatype.NotYetPersistedException;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
@@ -30,6 +36,7 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
+import org.springframework.security.access.AccessDeniedException;
 
 /**
  * Subclass of {@link DelegatingSubResource} with helper methods specific to {@link Attribute}
@@ -40,6 +47,12 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResour
  */
 public abstract class BaseAttributeCrudResource1_9<T extends Attribute<?, ?>, P, PR> extends DelegatingSubResource<T, P, DelegatingCrudResource<P>> {
 	
+	/**
+	 * Stands for a value the service a datatype resolves its reference through would not hand over. Not
+	 * null, which this resource already uses for an attribute that has no value to resolve yet.
+	 */
+	private static final Object REFUSED = new Object();
+
 	/**
 	 * Sets value on the given attribute.
 	 * 
@@ -59,15 +72,45 @@ public abstract class BaseAttributeCrudResource1_9<T extends Attribute<?, ?>, P,
 	 * that case
 	 * 
 	 * @param instance
-	 * @return
+	 * @return the typed value, {@link ConversionUtil#maskedRepresentation()} when reading the record it
+	 *         refers to was refused, or null when the attribute has not been persisted yet
 	 */
 	@PropertyGetter("value")
 	public static Object getValue(Attribute<?, ?> instance) {
+		Object value = resolveValue(instance);
+		return value == REFUSED ? ConversionUtil.maskedRepresentation() : value;
+	}
+
+	/**
+	 * The attribute's typed value, or {@link #REFUSED} when the record it refers to was not handed
+	 * over, or null when there is nothing to resolve yet.
+	 * <p>
+	 * A refusal arrives here as an exception rather than as a masked object: a datatype deserializes
+	 * through a guarded service method - {@code ConceptDatatype} calls
+	 * {@code ConceptService.getConceptByUuid}, whose {@code hasPermission} guard covers the privilege
+	 * and every rule registered for {@code Concept} in one expression - and a guard throws where
+	 * {@code Authorize} would have masked. Unhandled, it came out of both getters below and failed the
+	 * whole representation, so a visit carrying one attribute the reader may not see served none of the
+	 * visit at all.
+	 * <p>
+	 * What the callers do with it is mask, and the mask deliberately does not distinguish a rule's
+	 * refusal from a missing privilege, because the guard that threw does not either. That is the side
+	 * to err on: a reader is told this one value is hidden rather than handed an error for the whole
+	 * record that carries it. Dropping the property the way a privilege denial does elsewhere is not
+	 * available here, since that happens in {@code ConversionUtil.convertToRepresentation} and this
+	 * value never reaches it.
+	 */
+	private static Object resolveValue(Attribute<?, ?> instance) {
 		try {
 			return instance.getValue();
 		}
 		catch (NotYetPersistedException ex) {
 			return null;
+		}
+		catch (AccessDeniedException ex) {
+			// covers the legacy exception too: as of core 3.0.0 APIAuthenticationException extends this,
+			// which is the same pairing BaseRestController's handler relies on
+			return REFUSED;
 		}
 	}
 	
@@ -135,13 +178,71 @@ public abstract class BaseAttributeCrudResource1_9<T extends Attribute<?, ?>, P,
 	 * Gets the display string for an attribute.
 	 * 
 	 * @param attr the attribute.
-	 * @return attribute type: value (for concise display purposes)
+	 * @return attribute type: value (for concise display purposes), or
+	 *         {@link ConversionUtil#MASKED_DISPLAY} when a rule refuses the attribute type, the record
+	 *         the value resolves to, or a record that value's own {@code toString()} reads
 	 */
 	@PropertyGetter("display")
 	public String getDisplayString(T attr) {
 		if (attr.getAttributeType() == null)
 			return "";
-		return attr.getAttributeType().getName() + ": " + attr.getValue();
+		// a datatype backed by a record hands one back - a Concept for ConceptDatatype, a Provider for
+		// ProviderDatatype - and that is masked under "value" while this printed its toString() beside
+		// the mask: "Concept #6" names the refused concept by its id. The type is a record of its own
+		// too, masked under "attributeType"
+		Object value = resolveValue(attr);
+		if (value == REFUSED || ConversionUtil.isRefusedByARule(attr.getAttributeType())
+		        || readsARefusedRecord(value)) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
+		return attr.getAttributeType().getName() + ": " + value;
+	}
+
+	/**
+	 * Whether a rule refuses the value, or any record the value's own {@code toString()} reads - which
+	 * is how the display above prints it.
+	 * <p>
+	 * The value itself is the first question and for most datatypes the only one: a {@code Location}
+	 * prints its own name column, a {@code Concept} its own id, and refusing the record covers both.
+	 * Two of the record-backed datatypes core ships print another record, and a derived string is never
+	 * what the funnel sees, so each is named here.
+	 * <p>
+	 * A list, which {@link ConversionUtil#isRefusedByARule(Object)} says to avoid, because here there is
+	 * no alternative: nothing can ask a type what its {@code toString()} reads, and a module may
+	 * contribute a datatype of its own, which has to be added. Two entries for the whole of core is a
+	 * list short enough to keep in step with.
+	 */
+	private static boolean readsARefusedRecord(Object value) {
+		if (ConversionUtil.isRefusedByARule(value)) {
+			return true;
+		}
+		if (value instanceof Provider) {
+			// Provider.toString() prints every name of the person behind it, so it discloses what a
+			// Person rule hides. The names are asked about one by one as well: a PersonName is a record
+			// of its own, which neither a Provider nor a Person rule reaches
+			Person person = ((Provider) value).getPerson();
+			return ConversionUtil.isRefusedByARule(person) || (person != null && anyIsRefused(person.getNames()));
+		}
+		if (value instanceof Program) {
+			// Program.toString() prints its concept and each of its workflows, both of which render as
+			// their ids - and an id names a record as plainly as a name does, which is why "Concept #6"
+			// was worth hiding above
+			Program program = (Program) value;
+			return ConversionUtil.isRefusedByARule(program.getConcept()) || anyIsRefused(program.getWorkflows());
+		}
+		return false;
+	}
+
+	private static boolean anyIsRefused(Collection<? extends OpenmrsObject> records) {
+		if (records == null) {
+			return false;
+		}
+		for (OpenmrsObject record : records) {
+			if (ConversionUtil.isRefusedByARule(record)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/**

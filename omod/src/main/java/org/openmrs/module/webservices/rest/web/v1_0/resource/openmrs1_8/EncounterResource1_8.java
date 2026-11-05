@@ -22,6 +22,7 @@ import org.openmrs.Order;
 import org.openmrs.Patient;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -238,10 +239,15 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 	
 	/**
 	 * @param encounter
-	 * @return encounter type and date
+	 * @return encounter type and date, or {@link ConversionUtil#MASKED_DISPLAY} when a rule refuses the
+	 *         encounter type whose name it prints
 	 */
 	@PropertyGetter("display")
 	public String getDisplayString(Encounter encounter) {
+		// the type is a record of its own, masked under "encounterType" while its name went out here
+		if (ConversionUtil.isRefusedByARule(encounter.getEncounterType())) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
 		String ret = encounter.getEncounterType() == null ? "?" : encounter.getEncounterType().getName();
 		ret += " ";
 		ret += encounter.getEncounterDatetime() == null ? "?" : Context.getDateFormat().format(

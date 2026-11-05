@@ -110,10 +110,18 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	 * Returns a display string
 	 * 
 	 * @param visit
-	 * @return the display string
+	 * @return the display string, or {@link ConversionUtil#MASKED_DISPLAY} when a rule refuses the
+	 *         visit type or the location whose names it prints
 	 */
 	@PropertyGetter("display")
 	public String getDisplayString(Visit visit) {
+		// the location is what a deployment restricting visits by location (TRUNK-6798) refuses, and it
+		// was masked under "location" while this spelled its name out in the same response. The visit
+		// type goes with it: it is read the same way and is as much a record of its own
+		if (ConversionUtil.isRefusedByARule(visit.getVisitType())
+		        || ConversionUtil.isRefusedByARule(visit.getLocation())) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
 		String ret = visit.getVisitType() == null ? "?" : visit.getVisitType().getName();
 		ret += " ";
 		ret += visit.getLocation() == null ? "?" : "@ " + visit.getLocation().getName();

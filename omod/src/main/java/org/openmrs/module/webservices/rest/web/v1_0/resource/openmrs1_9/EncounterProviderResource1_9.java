@@ -17,9 +17,11 @@ import io.swagger.models.properties.StringProperty;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterProvider;
 import org.openmrs.EncounterRole;
+import org.openmrs.Person;
 import org.openmrs.Provider;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -206,19 +208,28 @@ public class EncounterProviderResource1_9 extends DelegatingSubResource<Encounte
 	
 	/**
 	 * Display string for EncounterProvider
-	 * 
+	 *
 	 * @param encounterProvider
-	 * @return String uuid
+	 * @return String uuid, or {@link ConversionUtil#MASKED_DISPLAY} when a rule refuses the person the
+	 *         provider's name comes from
 	 */
 	@PropertyGetter("display")
 	public String getDisplayString(EncounterProvider encounterProvider) {
 		if (encounterProvider == null) {
 			return "";
 		}
-		
+
 		Provider provider = encounterProvider.getProvider();
 		EncounterRole rolePlayed = encounterProvider.getEncounterRole();
-		
+
+		// the provider, the person its name is read from, and that person's preferred name, which is the
+		// record Provider.getName() actually reads. The provider is needed as well as the person:
+		// unlike ProviderResource1_9, where the provider is the delegate and a refused one never
+		// reaches the display at all, here it is a record of its own. The role is read below too
+		if (readsARefusedRecord(provider) || ConversionUtil.isRefusedByARule(rolePlayed)) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
+
 		if (rolePlayed == null) {
 			if (provider == null) {
 				return null;
@@ -227,6 +238,20 @@ public class EncounterProviderResource1_9 extends DelegatingSubResource<Encounte
 			}
 		}
 		return provider.getName() + ": " + rolePlayed.getName();
+	}
+	
+	/**
+	 * Whether a rule refuses the provider, the person behind it, or the preferred name
+	 * {@code Provider.getName()} reads off that person. A null provider refuses nothing: the display
+	 * below prints no name for one.
+	 */
+	private boolean readsARefusedRecord(Provider provider) {
+		if (provider == null) {
+			return false;
+		}
+		Person person = provider.getPerson();
+		return ConversionUtil.isRefusedByARule(provider) || ConversionUtil.isRefusedByARule(person)
+		        || (person != null && ConversionUtil.isRefusedByARule(person.getPersonName()));
 	}
 	
 	@Override

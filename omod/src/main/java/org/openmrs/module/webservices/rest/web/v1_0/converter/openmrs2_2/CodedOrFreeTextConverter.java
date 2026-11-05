@@ -10,13 +10,10 @@
 package org.openmrs.module.webservices.rest.web.v1_0.converter.openmrs2_2;
 
 import org.openmrs.CodedOrFreeText;
-import org.openmrs.Concept;
-import org.openmrs.ConceptName;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
-import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -24,8 +21,6 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingConverter;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.ConceptNameResource1_9;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0.ConceptResource2_0;
 
 @Handler(supports = CodedOrFreeText.class, order = 0)
 public class CodedOrFreeTextConverter extends BaseDelegatingConverter<CodedOrFreeText> {
@@ -45,17 +40,13 @@ public class CodedOrFreeTextConverter extends BaseDelegatingConverter<CodedOrFre
 			}
 		}
 		else {
-			if (instance.getSpecificName() != null) {
-				ConceptNameResource1_9 conceptNameResource = (ConceptNameResource1_9) Context.getService(RestService.class)
-						.getResourceBySupportedClass(ConceptName.class);
-				codedOrFreeText.add("specificName", conceptNameResource.asRepresentation(instance.getSpecificName(), rep));
-			}
-
-			if (instance.getCoded() != null) {
-				ConceptResource2_0 conceptResource = (ConceptResource2_0) Context.getService(RestService.class)
-						.getResourceBySupportedClass(Concept.class);
-				codedOrFreeText.add("coded", conceptResource.asRepresentation(instance.getCoded(), rep));
-			}
+			// through ConversionUtil rather than straight to the resource, so these two get the privilege
+			// check and the authorization-rule check every other nested object gets. Calling
+			// asRepresentation directly meant a refused concept was masked under
+			// v=custom:(condition:(coded)), which goes via getPropertyWithRepresentation, and served in
+			// full under the default and full representations, which come through here
+			addUnlessPrivilegeDenied(codedOrFreeText, "specificName", instance.getSpecificName(), rep);
+			addUnlessPrivilegeDenied(codedOrFreeText, "coded", instance.getCoded(), rep);
 
 			if (instance.getNonCoded() != null) {
 				codedOrFreeText.add("nonCoded", instance.getNonCoded());
@@ -64,7 +55,24 @@ public class CodedOrFreeTextConverter extends BaseDelegatingConverter<CodedOrFre
 		
 		return codedOrFreeText;
 	}
-	
+
+	/**
+	 * Adds {@code value}'s representation under {@code propertyName}, leaving the key out when the
+	 * current user lacks the privilege its resource requires - the same thing
+	 * {@code convertDelegateToRepresentation} does for a property of a delegating resource, so a
+	 * privilege denial reads the same here as it does everywhere else. A null value adds nothing.
+	 */
+	private void addUnlessPrivilegeDenied(SimpleObject codedOrFreeText, String propertyName, Object value,
+	        Representation rep) throws ConversionException {
+		if (value == null) {
+			return;
+		}
+		Object converted = ConversionUtil.convertToRepresentation(value, rep);
+		if (converted != ConversionUtil.PRIVILEGE_DENIED) {
+			codedOrFreeText.add(propertyName, converted);
+		}
+	}
+
 	@Override
 	public CodedOrFreeText getByUniqueId(String uuid) {
 		return null;

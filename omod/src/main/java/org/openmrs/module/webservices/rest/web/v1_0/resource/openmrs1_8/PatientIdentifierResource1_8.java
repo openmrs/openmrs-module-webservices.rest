@@ -19,6 +19,7 @@ import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -274,12 +275,18 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 	
 	/**
 	 * @param id
-	 * @return identifier type + identifier (for concise display purposes)
+	 * @return identifier type + identifier (for concise display purposes), or
+	 *         {@link ConversionUtil#MASKED_DISPLAY} when a rule refuses the type whose name it prints
 	 */
 	@PropertyGetter("display")
 	public String getDisplayString(PatientIdentifier id) {
 		if (id.getIdentifierType() == null)
 			return "";
+		
+		// the type is a record of its own, masked under "identifierType" while its name went out here
+		if (ConversionUtil.isRefusedByARule(id.getIdentifierType())) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
 		
 		return id.getIdentifierType().getName() + " = " + id.getIdentifier();
 	}

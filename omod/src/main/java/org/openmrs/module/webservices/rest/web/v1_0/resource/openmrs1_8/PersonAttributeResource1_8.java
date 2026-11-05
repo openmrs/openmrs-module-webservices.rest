@@ -14,11 +14,15 @@ import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Attributable;
+import org.openmrs.Concept;
 import org.openmrs.Location;
+import org.openmrs.OpenmrsObject;
 import org.openmrs.Person;
 import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
+import org.openmrs.User;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
@@ -293,7 +297,9 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 	 * Gets the display string for a person attribute.
 	 * 
 	 * @param pa the person attribute.
-	 * @return value (for concise display purposes)
+	 * @return value (for concise display purposes), or {@link ConversionUtil#MASKED_DISPLAY} when a
+	 *         rule refuses the attribute type, the record the value refers to, or a record that
+	 *         record's own display string reads
 	 */
 	@PropertyGetter("display")
 	public String getDisplayString(PersonAttribute pa) {
@@ -302,9 +308,103 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 			return pa.getValue() != null ? pa.getValue() : "";
 		}
 
-		// PersonAttribute#toString() calls PersonAttribute#hydrateObject() and Attributable#getDisplayString()
-		String value = pa.toString();
-		return value == null ? "" : value;
+		// hydrated once and then both judged and printed from. Reading PersonAttribute#toString() below
+		// hydrated a second time, and getHydratedObject() caches nothing, so a record-backed attribute
+		// repeated its service lookup for every display - and the two hydrations could answer with
+		// different objects, leaving the check looking at one and the string built from the other
+		Object hydrated = pa.getHydratedObject();
+		if (ConversionUtil.isRefusedByARule(pa.getAttributeType()) || readsARefusedRecord(hydrated)
+		        || referencesARecordThatDidNotResolve(pa, hydrated)) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
+
+		return displayOf(pa, hydrated);
+	}
+
+	/**
+	 * Whether a rule refuses the hydrated value, or any record that value's <em>own</em> display string
+	 * reads.
+	 * <p>
+	 * The value itself is the first question and for most formats the only one: a {@code Location}
+	 * prints its own name and an {@code AttributableDate} its own value, so refusing the record is
+	 * enough. Two of the {@code Attributable} types core ships read another record, and a derived string
+	 * is never what the funnel sees, so each is named here: {@code User.getDisplayString()} prints the
+	 * linked person's name - which a {@code Person} rule covers and a {@code User} rule does not, and
+	 * the name itself neither - and {@code Concept.getDisplayString()} prints a {@code ConceptName}.
+	 * <p>
+	 * A list, which {@link ConversionUtil#isRefusedByARule(Object)} says to avoid, because here there is
+	 * no alternative: nothing can ask a type what its display string reads, and {@code Attributable} is
+	 * an extension point, so a module contributing one whose display reaches a related record has to be
+	 * added. Two entries for the whole of core is a list short enough to keep in step with.
+	 */
+	private static boolean readsARefusedRecord(Object hydrated) {
+		if (ConversionUtil.isRefusedByARule(hydrated)) {
+			return true;
+		}
+		if (hydrated instanceof User) {
+			User user = (User) hydrated;
+			return ConversionUtil.isRefusedByARule(user.getPerson())
+			        || ConversionUtil.isRefusedByARule(user.getPersonName());
+		}
+		if (hydrated instanceof Concept) {
+			return ConversionUtil.isRefusedByARule(((Concept) hydrated).getName());
+		}
+		return false;
+	}
+
+	/**
+	 * What {@code PersonAttribute.toString()} prints, from a value already hydrated rather than by
+	 * hydrating again: an {@code Attributable} renders through its own display string, anything else
+	 * through {@code toString()}, and a value that hydrated to nothing falls back to the raw reference -
+	 * which is the fallback {@link #referencesARecordThatDidNotResolve} intercepts when that reference
+	 * names a record.
+	 */
+	private static String displayOf(PersonAttribute pa, Object hydrated) {
+		if (hydrated instanceof Attributable) {
+			String display = ((Attributable) hydrated).getDisplayString();
+			return display == null ? "" : display;
+		}
+		if (hydrated != null) {
+			String display = hydrated.toString();
+			return display == null ? "" : display;
+		}
+		return pa.getValue() == null ? "" : pa.getValue();
+	}
+
+	/**
+	 * Whether this attribute's value names a record that hydration did not produce, in which case the
+	 * raw value must not be printed in its place.
+	 * <p>
+	 * A refusal reaches this getter as nothing else. The value of a concept-typed attribute is a
+	 * concept id, {@code Concept.hydrate} resolves it through {@code ConceptService}, whose
+	 * {@code hasPermission} guard throws when a rule refuses what it was about to return - and
+	 * {@code hydrate} catches that and answers null. {@code PersonAttribute.toString()} then falls back
+	 * to printing {@code value} itself, which is the refused concept's own id, so the response carried
+	 * {@code "display": "6"} with nothing under {@code value} at all. There is no object left for
+	 * {@link ConversionUtil#isRefusedByARule(Object)} to judge by then, only the null.
+	 * <p>
+	 * A reference that did not resolve for the other reason - the record is gone - is masked too, since
+	 * the two are indistinguishable from here. That is the side to err on: {@code value} is null either
+	 * way, so this keeps the two properties telling one story, and a dangling key was never a display
+	 * string. Narrowed to a format naming a record so that it stays that choice and not a wider one.
+	 * Only a {@code hydrate} that answers null arrives here: {@code getHydratedObject()} turns an
+	 * exception into the raw value, so a malformed {@code AttributableDate} prints itself without
+	 * reaching this, and a record type whose {@code hydrate} throws would print its raw id past it.
+	 */
+	private static boolean referencesARecordThatDidNotResolve(PersonAttribute pa, Object hydrated) {
+		if (hydrated != null || StringUtils.isBlank(pa.getValue())) {
+			return false;
+		}
+		try {
+			return OpenmrsObject.class.isAssignableFrom(OpenmrsClassLoader.getInstance().loadClass(
+			    pa.getAttributeType().getFormat()));
+		}
+		catch (Exception e) {
+			// a format naming no loadable class never hydrates to anything either, and
+			// PersonAttribute#getHydratedObject answers the raw value rather than null for it, so this
+			// branch is not the state above
+			return false;
+		}
 	}
 
 	/**

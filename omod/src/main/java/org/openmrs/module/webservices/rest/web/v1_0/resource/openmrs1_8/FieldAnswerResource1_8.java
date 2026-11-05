@@ -19,6 +19,7 @@ import org.openmrs.Field;
 import org.openmrs.FieldAnswer;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -170,7 +171,13 @@ public class FieldAnswerResource1_8 extends DelegatingSubResource<FieldAnswer, F
 	public String getDisplayString(FieldAnswer delegate) {
 		if (delegate == null)
 			return null;
-		
+
+		// the answer concept's name is read below; the field is metadata and not what a rule covers
+		if (delegate.getConcept() != null && (ConversionUtil.isRefusedByARule(delegate.getConcept())
+		        || ConversionUtil.isRefusedByARule(delegate.getConcept().getName()))) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
+
 		return new StringBuilder().append(delegate.getField() == null ? "Null Field" : delegate.getField().getName())
 		        .append(" - ")
 		        .append(delegate.getConcept() == null ? "Null Concept" : delegate.getConcept().getName().toString())

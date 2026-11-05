@@ -18,6 +18,7 @@ import io.swagger.models.properties.StringProperty;
 import org.openmrs.Person;
 import org.openmrs.Relationship;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -120,14 +121,32 @@ public class RelationshipResource1_8 extends DataDelegatingCrudResource<Relation
 	
 	/**
 	 * @param relationship
-	 * @return relationship type and start date
+	 * @return relationship type and start date, or {@link ConversionUtil#MASKED_DISPLAY} when a rule
+	 *         refuses either person
 	 */
 	@PropertyGetter("display")
 	public String getDisplayString(Relationship relationship) {
+		// both names are read below, so refusing either hides the whole string: naming only the allowed
+		// half would say which one is hidden and spell out the other. Person.getGivenName() reads the
+		// preferred PersonName, a record of its own that no Person rule reaches, so each of those is
+		// asked about too - as is the relationship type, whose aIsToB is printed between them
+		if (readsARefusedRecord(relationship.getPersonA()) || readsARefusedRecord(relationship.getPersonB())
+		        || ConversionUtil.isRefusedByARule(relationship.getRelationshipType())) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
 		String relType = relationship.getRelationshipType() == null ? "NULL" : relationship.getRelationshipType()
 		        .getaIsToB();
 		return relationship.getPersonA().getGivenName() + " is the " + relType + " of "
 		        + relationship.getPersonB().getGivenName();
+	}
+	
+	/**
+	 * Whether a rule refuses this person or the preferred name {@code Person.getGivenName()} reads off
+	 * it.
+	 */
+	private boolean readsARefusedRecord(Person person) {
+		return ConversionUtil.isRefusedByARule(person)
+		        || (person != null && ConversionUtil.isRefusedByARule(person.getPersonName()));
 	}
 	
 	/**

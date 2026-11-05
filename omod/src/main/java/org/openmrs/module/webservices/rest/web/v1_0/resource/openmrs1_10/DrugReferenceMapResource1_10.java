@@ -29,6 +29,7 @@ import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
 
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 
@@ -70,6 +71,11 @@ public class DrugReferenceMapResource1_10 extends DelegatingCrudResource<DrugRef
 	
 	@PropertyGetter("display")
 	public String getDisplayString(DrugReferenceMap map) {
+		// before the null check: a Drug the service layer already masked answers null here, and that
+		// would read as "no display name" rather than as hidden
+		if (ConversionUtil.isRefusedByARule(map.getDrug())) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
 		if (map.getDrug().getDisplayName() == null) {
 			return "";
 		}

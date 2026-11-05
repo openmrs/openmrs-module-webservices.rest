@@ -15,6 +15,8 @@ import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.openmrs.Auditable;
+import org.openmrs.ConceptName;
+import org.openmrs.OpenmrsObject;
 import org.openmrs.Retireable;
 import org.openmrs.Voidable;
 import org.openmrs.api.APIException;
@@ -31,8 +33,11 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription.Property;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.security.Authorize;
+import org.openmrs.security.DomainObjectAuthorizationRule;
 import org.openmrs.util.HandlerUtil;
 import org.openmrs.util.LocaleUtility;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
@@ -66,6 +71,23 @@ public class ConversionUtil {
 
 	public static final Object PRIVILEGE_DENIED = new Object();
 	
+	/**
+	 * The property a representation carries in place of an object a
+	 * {@link DomainObjectAuthorizationRule} refused, so a reader can tell data that is hidden from data
+	 * that does not exist.
+	 */
+	public static final String MASKED_PROPERTY = "masked";
+
+	/**
+	 * What a display string says when a {@link DomainObjectAuthorizationRule} refuses a record the
+	 * display was read from. A resource that computes one has to substitute this itself, because a
+	 * derived value is not an object this funnel ever sees: see {@link #isRefusedByARule(Object)}.
+	 * <p>
+	 * The same literal {@code Authorize} prints for a mask's own {@code toString()}, so a reader meets
+	 * one spelling of "hidden" however the value reached them.
+	 */
+	public static final String MASKED_DISPLAY = "[hidden]";
+
 	// This would better be a Map<Pair<Class, String>, Type> but adding the dependency for
 	//  org.apache.commons.lang3.tuple.Pair (through omrs-api) messed up other tests
 	private static final Map<String, Type> typeVariableMap = new ConcurrentHashMap<String, Type>();
@@ -404,6 +426,10 @@ public class ConversionUtil {
 				ret.add(converted);
 			}
 			return ret;
+		} else if (isAMask(o)) {
+			// a getter that resolved its own record and found it refused: already the stand-in, and the
+			// Map branch below would take it apart. See maskedRepresentation()
+			return o;
 		} else if (o instanceof Map) {
 			if (rep instanceof CustomRepresentation) {
 				return convertToCustomRepresentation(o, (CustomRepresentation) rep);
@@ -419,6 +445,17 @@ public class ConversionUtil {
 			return ret;
 		} else {
 			Converter<S> converter = specificConverter != null ? specificConverter : (Converter) getConverter(o.getClass());
+			if (converter instanceof BaseDelegatingResource) {
+				String requiredPrivilege = ((BaseDelegatingResource<?>) converter).getRequiredGetPrivilege();
+				if (requiredPrivilege != null && !Context.hasPrivilege(requiredPrivilege)) {
+					return PRIVILEGE_DENIED;
+				}
+			}
+			// after the privilege check, so a privilege denial keeps dropping the property as it always has,
+			// but before the no-converter shortcut, which would otherwise hand the object to the serializer whole
+			if (isRefusedByARule(o)) {
+				return maskedRepresentation();
+			}
 			if (converter == null) {
 				// try a few known datatypes
 				if (o instanceof Date) {
@@ -427,12 +464,6 @@ public class ConversionUtil {
 				// otherwise we have no choice but to return the plain object
 				return o;
 			}
-			if (converter instanceof BaseDelegatingResource) {
-				String requiredPrivilege = ((BaseDelegatingResource<?>) converter).getRequiredGetPrivilege();
-				if (requiredPrivilege != null && !Context.hasPrivilege(requiredPrivilege)) {
-					return PRIVILEGE_DENIED;
-				}
-			}
 			try {
 				return converter.asRepresentation(o, rep);
 			}
@@ -440,6 +471,98 @@ public class ConversionUtil {
 				throw new ConversionException("converting " + o.getClass() + " to " + rep, ex);
 			}
 		}
+	}
+	
+	/**
+	 * Whether a registered {@link DomainObjectAuthorizationRule} refuses this object to the current
+	 * user. Asked here because this is the one place every object a representation contains passes
+	 * through, nested ones included, and by the time they do they have been unwrapped to real entities.
+	 * <p>
+	 * A service method has usually applied the same rules already, through {@code @PostFilter} or a
+	 * {@code hasPermission} guard, and then this agrees with it and changes nothing. It earns its place
+	 * on what the service never saw: a nested object reached by following a property off the object the
+	 * service returned.
+	 * <p>
+	 * <strong>A value a resource derives from a record never passes through here.</strong> Only objects
+	 * a representation <em>contains</em> do. A {@code display} string built by reading a related
+	 * record's fields is a plain String by the time it is a property, so masking the record does
+	 * nothing for it and the same response can carry both the mask and what it hides. That is why this
+	 * is public: <strong>any display that reads a record other than its own delegate has to ask this
+	 * itself and substitute {@link #MASKED_DISPLAY}</strong>. A refused delegate never reaches its own
+	 * display, because the representation is masked before the converter runs; a record reached off it
+	 * is not covered by anything.
+	 * <p>
+	 * Deliberately no list of the getters that do: there are too many to keep in step with, and a list
+	 * that falls behind reads as a complete one.
+	 * <p>
+	 * A {@link ConceptName} is judged by the concept it names as well as by itself: see below.
+	 *
+	 * @param o the object to ask the rules about, may be null or of any type
+	 * @return true if a registered rule refuses {@code o} to the current user, or refuses the concept
+	 *         {@code o} names when it is a {@link ConceptName}
+	 */
+	public static boolean isRefusedByARule(Object o) {
+		if (!(o instanceof OpenmrsObject)) {
+			return false;
+		}
+		if (Authorize.isMasked(o)) {
+			return true;
+		}
+		// Only when there is no identity at all. A rule is asked about an Authentication, which
+		// LegacyContextAuthentication takes from the security context when one is published and builds
+		// from the UserContext otherwise, so either alone is enough to judge by and only the absence of
+		// both leaves nothing to ask with. Testing the session alone would skip the rules on a worker
+		// that carries a published Authentication and no UserContext.
+		// Nothing is given up by returning false here: a display getter reached with neither is being
+		// called on objects the caller built itself, in a unit test of this module or of one depending
+		// on it, since nothing can be loaded from the database without an identity. Failing instead
+		// would make every guarded getter require a session to run.
+		if (!Context.isSessionOpen() && SecurityContextHolder.getContext().getAuthentication() == null) {
+			return false;
+		}
+		if (Authorize.maskIfDenied((OpenmrsObject) o) != o) {
+			return true;
+		}
+		// A ConceptName is how the concept it hangs off is spelled, and it is a record a response puts
+		// on its own: obs.valueCodedName and CodedOrFreeText.specificName are both ConceptName
+		// properties. Rules are matched by type and judge nothing reachable through what they are
+		// handed, so no Concept rule reaches one - without this, a refused concept came back masked
+		// under value and spelled out in full under valueCodedName in the same response.
+		// Asked here rather than at those two properties so that every ConceptName a representation
+		// contains is covered, whichever resource put it there.
+		return o instanceof ConceptName && isRefusedByARule(((ConceptName) o).getConcept());
+	}
+	
+	/**
+	 * What stands in for a refused object: a marker and nothing else.
+	 * <p>
+	 * Deliberately not the object's own representation with the fields blanked. Converting the stand-in
+	 * through its resource would hand a client a uuid and a self link for a record it may not read and
+	 * which resolves to nothing, and the type is itself a disclosure. A marker also keeps a collection's
+	 * size honest, where {@link #PRIVILEGE_DENIED} drops the element and leaves the reader unable to
+	 * tell six observations with two hidden from four observations.
+	 * <p>
+	 * Public for the same reason {@link #MASKED_DISPLAY} is, and it is the counterpart of it for a
+	 * property that is not a string: <strong>a getter that resolves a record itself, rather than handing
+	 * one to this funnel, has to substitute the mask on its own</strong>. The case that needs it is a
+	 * getter whose resolution <em>fails</em> - an attribute's value comes back from a service whose
+	 * guard throws rather than masking, so there is no object left for
+	 * {@link #isRefusedByARule(Object)} to judge, only an exception. Whatever this returns is treated as
+	 * final by {@link #convertToRepresentation(Object, Representation, Converter)}, so a getter may
+	 * return it under any representation.
+	 */
+	public static SimpleObject maskedRepresentation() {
+		return new SimpleObject().add(MASKED_PROPERTY, Boolean.TRUE);
+	}
+
+	/**
+	 * Whether this is already the stand-in {@link #maskedRepresentation()} builds, in which case there
+	 * is nothing left to convert: it holds a marker and no record. Converting it again would take the
+	 * marker for the record - a custom representation asks the mask for the properties it named and
+	 * gets {@code {"uuid": null}} back, which has lost the one thing the mask was there to say.
+	 */
+	private static boolean isAMask(Object o) {
+		return o instanceof Map && Boolean.TRUE.equals(((Map<?, ?>) o).get(MASKED_PROPERTY));
 	}
 	
 	/**

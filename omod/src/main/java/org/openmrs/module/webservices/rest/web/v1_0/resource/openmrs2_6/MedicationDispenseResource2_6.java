@@ -23,6 +23,7 @@ import org.openmrs.Order;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.MedicationDispenseService;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -350,6 +351,15 @@ public class MedicationDispenseResource2_6 extends DataDelegatingCrudResource<Me
 	 */
 	@PropertyGetter("display")
 	public String getDisplayString(MedicationDispense medicationDispense) {
+		// the drug when one is set and the concept otherwise, plus the quantity's units, are all read
+		// below. Refusing either of the first two masks, including when it is the one not printed: the
+		// pair is one clinical fact and splitting the check buys nothing
+		if (ConversionUtil.isRefusedByARule(medicationDispense.getDrug())
+		        || ConversionUtil.isRefusedByARule(medicationDispense.getConcept())
+		        || ConversionUtil.isRefusedByARule(medicationDispense.getQuantityUnits())) {
+			return ConversionUtil.MASKED_DISPLAY;
+		}
+
 		StringBuilder ret = new StringBuilder();
 		ret.append("(").append(medicationDispense.getStatus().getDisplayString()).append(") ");
 		if (medicationDispense.getDrug() != null) {

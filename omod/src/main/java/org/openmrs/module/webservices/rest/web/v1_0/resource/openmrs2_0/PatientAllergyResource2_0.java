@@ -24,6 +24,7 @@ import org.openmrs.AllergyReaction;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -276,6 +277,10 @@ public class PatientAllergyResource2_0 extends DelegatingSubResource<Allergy, Pa
 	@PropertyGetter("display")
 	public String getDisplayString(Allergy allergy) {
 		if (allergy.getAllergen().isCoded()) {
+			// the coded allergen is a Concept, and this prints its name
+			if (ConversionUtil.isRefusedByARule(allergy.getAllergen().getCodedAllergen())) {
+				return ConversionUtil.MASKED_DISPLAY;
+			}
 			return allergy.getAllergen().getCodedAllergen().getDisplayString();
 		} else {
 			return allergy.getAllergen().getNonCodedAllergen();
