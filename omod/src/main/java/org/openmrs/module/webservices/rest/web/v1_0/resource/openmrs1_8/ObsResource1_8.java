@@ -268,8 +268,8 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	 */
 	@Override
 	public Obs save(Obs delegate) {
-        propagateEncounterToGroupMembers(delegate);
-        Obs savedObs = Context.getObsService().saveObs(delegate, "REST web service");
+    	propagateEncounterToGroupMembers(delegate);
+    	Obs savedObs = Context.getObsService().saveObs(delegate, "REST web service");
 		return Context.getObsService().getObs(savedObs.getId());
 	}
 	
@@ -431,18 +431,18 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 
 	/**
 	 * Gives members posted inside an obs group the group's encounter, as Encounter.addObs does for
-	 * groups sent with POST /encounter (RESTWS-1062). Members that already have an encounter are
-	 * left alone. Nested groups are handled recursively. This runs at save time rather than in
-	 * setGroupMembers, because property setters can run in any order and the group's encounter may
-	 * not be set yet when the members are set.
+	 * groups sent with POST /encounter (RESTWS-1062). Voided members are historical records and are
+	 * left unchanged, as are members that already have an encounter. Nested groups are handled
+	 * recursively. This runs at save time rather than in setGroupMembers, because property setters
+	 * can run in any order and the group's encounter may not be set yet when members are set.
 	 *
 	 * @param group the obs group about to be saved
 	 */
 	private void propagateEncounterToGroupMembers(Obs group) {
-		if (group == null || group.getEncounter() == null || group.getGroupMembers(true) == null) {
+		if (group == null || group.getEncounter() == null || group.getGroupMembers() == null) {
 			return;
 		}
-		for (Obs member : group.getGroupMembers(true)) {
+		for (Obs member : group.getGroupMembers()) {
 			if (member.getEncounter() == null) {
 				member.setEncounter(group.getEncounter());
 			}
