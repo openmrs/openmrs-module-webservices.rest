@@ -20,6 +20,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.openmrs.User;
+import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.UserContext;
@@ -29,11 +30,14 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.UserAndPassword1_8;
+import org.openmrs.util.PrivilegeConstants;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.WebRequest;
 
 public class UserController2_0Test extends MainResourceControllerTest {
+	
+	private static final String USER_WITHOUT_PRIVILEGES_UUID = "06d05314-e132-11de-babe-001e37123456";
 	
 	private UserService service;
 	
@@ -204,6 +208,94 @@ public class UserController2_0Test extends MainResourceControllerTest {
 		Mockito.verify(spyUserContext, Mockito.times(1)).refreshAuthenticatedUser();
 	}
 
+	@Test
+	public void updateUser_shouldLetAUserWithoutEditUsersSaveTheirOwnUserProperties() throws Exception {
+		authenticateAsUserWithoutPrivileges();
+		Assertions.assertFalse(Context.hasPrivilege(PrivilegeConstants.EDIT_USERS));
+		
+		String json = "{\"userProperties\":{\"defaultLocale\":\"fr\",\"defaultLocation\":\"8d6c993e-c2cc-11de-8d13-0010c6dffd0f\"}}";
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + USER_WITHOUT_PRIVILEGES_UUID);
+		req.setContent(json.getBytes());
+		SimpleObject result = deserialize(handle(req));
+		
+		Assertions.assertEquals(USER_WITHOUT_PRIVILEGES_UUID, PropertyUtils.getProperty(result, "uuid"));
+		User user = Context.getAuthenticatedUser();
+		Assertions.assertEquals("fr", user.getUserProperty("defaultLocale"));
+		Assertions.assertEquals("8d6c993e-c2cc-11de-8d13-0010c6dffd0f", user.getUserProperty("defaultLocation"));
+	}
+	
+	@Test
+	public void updateUser_shouldReplaceTheOwnUserPropertiesOfAUserWithoutEditUsers() throws Exception {
+		authenticateAsUserWithoutPrivileges();
+		Context.getUserService().saveUserProperty("defaultLocation", "8d6c993e-c2cc-11de-8d13-0010c6dffd0f");
+		
+		String json = "{\"userProperties\":{\"defaultLocale\":\"fr\"}}";
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + USER_WITHOUT_PRIVILEGES_UUID);
+		req.setContent(json.getBytes());
+		handle(req);
+		
+		User user = Context.getAuthenticatedUser();
+		Assertions.assertEquals("fr", user.getUserProperty("defaultLocale"));
+		Assertions.assertEquals("", user.getUserProperty("defaultLocation"));
+	}
+	
+	@Test
+	public void updateUser_shouldRequireEditUsersToChangeAnotherFieldOfTheirOwnUser() throws Exception {
+		authenticateAsUserWithoutPrivileges();
+		
+		String json = "{\"userProperties\":{\"defaultLocale\":\"fr\"},\"username\":\"renamed\"}";
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + USER_WITHOUT_PRIVILEGES_UUID);
+		req.setContent(json.getBytes());
+		
+		assertEditUsersRequired(req);
+	}
+	
+	@Test
+	public void updateUser_shouldRequireEditUsersToChangeTheUserPropertiesOfAnotherUser() throws Exception {
+		authenticateAsUserWithoutPrivileges();
+		
+		String json = "{\"userProperties\":{\"defaultLocale\":\"fr\"}}";
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		req.setContent(json.getBytes());
+		
+		assertEditUsersRequired(req);
+	}
+	
+	@Test
+	public void updateUser_shouldLetAUserWithEditUsersChangeTheUserPropertiesOfAnotherUser() throws Exception {
+		Assertions.assertTrue(Context.hasPrivilege(PrivilegeConstants.EDIT_USERS));
+		
+		String json = "{\"userProperties\":{\"defaultLocale\":\"fr\"}}";
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		req.setContent(json.getBytes());
+		handle(req);
+		
+		Assertions.assertEquals("fr", service.getUserByUuid(getUuid()).getUserProperty("defaultLocale"));
+	}
+	
+	/**
+	 * Signs in as a user who holds no role, so neither Get Users nor Edit Users.
+	 */
+	private void authenticateAsUserWithoutPrivileges() throws Exception {
+		executeDataSet("sessionControllerTestDataset.xml");
+		Context.logout();
+		Context.authenticate("test_user", "test");
+	}
+	
+	/**
+	 * Get Users is added as a proxy privilege, like a role that can look users up but not edit them,
+	 * so that the update is refused for lack of Edit Users.
+	 */
+	private void assertEditUsersRequired(MockHttpServletRequest req) {
+		try {
+			Context.addProxyPrivilege(PrivilegeConstants.GET_USERS);
+			Assertions.assertThrows(APIAuthenticationException.class, () -> handle(req));
+		}
+		finally {
+			Context.removeProxyPrivilege(PrivilegeConstants.GET_USERS);
+		}
+	}
+	
 	/**
 	 * @see UserController#retireUser(User,String,WebRequest)
 	 * @throws Exception
