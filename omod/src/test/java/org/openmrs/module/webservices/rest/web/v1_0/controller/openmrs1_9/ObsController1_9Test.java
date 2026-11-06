@@ -20,6 +20,7 @@ import org.openmrs.Concept;
 import org.openmrs.ConceptComplex;
 import org.openmrs.ConceptName;
 import org.openmrs.Drug;
+import org.openmrs.Encounter;
 import org.openmrs.GlobalProperty;
 import org.openmrs.Obs;
 import org.openmrs.Person;
@@ -326,6 +327,38 @@ public class ObsController1_9Test extends MainResourceControllerTest {
     	Obs obs = obsService.getObsByUuid(getUuid());
     	assertEquals(obs.getUuid(), PropertyUtils.getProperty(result, "uuid"));
     }
+
+	@Test
+	public void shouldGiveGroupMembersTheGroupEncounterWhenPostingObsGroup() throws Exception {
+		// RESTWS-1062: members posted inside a group must get the group's encounter
+		Encounter encounter = Context.getEncounterService().getEncounter(3); // from standard test dataset
+		String patientUuid = encounter.getPatient().getUuid();
+		String setConceptUuid = Context.getConceptService().getConcept(23).getUuid();
+		String numericConceptUuid = Context.getConceptService().getConcept(5089).getUuid();
+		String datetime = "2008-08-01T00:00:00.000+0000";
+
+		String json = "{\"person\":\"" + patientUuid + "\","
+		        + "\"concept\":\"" + setConceptUuid + "\","
+		        + "\"obsDatetime\":\"" + datetime + "\","
+		        + "\"encounter\":\"" + encounter.getUuid() + "\","
+		        + "\"groupMembers\":["
+		        + "{\"person\":\"" + patientUuid + "\",\"concept\":\"" + numericConceptUuid + "\",\"value\":81,\"obsDatetime\":\"" + datetime + "\"},"
+		        + "{\"person\":\"" + patientUuid + "\",\"concept\":\"" + numericConceptUuid + "\",\"value\":82,\"obsDatetime\":\"" + datetime + "\"}"
+		        + "]}";
+
+		SimpleObject created = deserialize(handle(newPostRequest(getURI(), json)));
+
+		Context.flushSession();
+		Context.clearSession();
+
+		Obs group = Context.getObsService().getObsByUuid((String) created.get("uuid"));
+		assertEquals(encounter.getUuid(), group.getEncounter().getUuid());
+		assertEquals(2, group.getGroupMembers().size());
+		for (Obs member : group.getGroupMembers()) {
+			Assertions.assertNotNull(member.getEncounter());
+			assertEquals(encounter.getUuid(), member.getEncounter().getUuid());
+		}
+	}
 
     private ConceptComplex newConceptComplex() {
 		setupBinaryDataHandler();
