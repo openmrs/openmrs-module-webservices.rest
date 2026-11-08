@@ -358,6 +358,17 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 			Assertions.assertNotNull(member.getEncounter());
 			assertEquals(encounter.getUuid(), member.getEncounter().getUuid());
 		}
+
+		// sending the group back unchanged with POST /encounter must not create new versions of it
+		handle(newPostRequest("encounter/" + encounter.getUuid(), "{\"obs\":[{\"uuid\":\"" + group.getUuid() + "\"}]}"));
+		Context.flushSession();
+		Context.clearSession();
+
+		Obs reloaded = Context.getObsService().getObsByUuid(group.getUuid());
+		Assertions.assertFalse(reloaded.getVoided());
+		for (Obs member : reloaded.getGroupMembers(true)) {
+			Assertions.assertFalse(member.getVoided());
+		}
 	}
 
     private ConceptComplex newConceptComplex() {
