@@ -430,23 +430,44 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	}
 
 	/**
-	 * Gives members posted inside an obs group the group's encounter, as Encounter.addObs does for
-	 * groups sent with POST /encounter (RESTWS-1062). Voided members are historical records and are
-	 * left unchanged, as are members that already have an encounter. Nested groups are handled
-	 * recursively. This runs at save time rather than in setGroupMembers, because property setters
-	 * can run in any order and the group's encounter may not be set yet when members are set.
+	 * Gives obs created inside an obs group the group's encounter, and new obs that have an encounter
+	 * but no location the encounter's location, as Encounter.addObs does for obs sent with
+	 * POST /encounter (RESTWS-1062), so that sending them back through POST /encounter changes
+	 * nothing. Existing obs are left alone, because changing one makes core save it as a new version.
+	 * Each obs is walked once, so a group that contains itself is rejected by core's ObsValidator on
+	 * save instead of overflowing the stack. This runs at save time rather than in setGroupMembers,
+	 * because property setters can run in any order and the group's encounter may not be set yet when
+	 * members are set.
 	 *
-	 * @param group the obs group about to be saved
+	 * @param group the obs about to be saved
 	 */
 	private void propagateEncounterToGroupMembers(Obs group) {
-		if (group == null || group.getEncounter() == null || group.getGroupMembers() == null) {
+		fillNewObsFromEncounter(group, group == null ? null : group.getEncounter(),
+		    Collections.newSetFromMap(new IdentityHashMap<Obs, Boolean>()));
+	}
+
+	/**
+	 * @param encounter the encounter of the closest enclosing obs that has one
+	 * @param visited the obs already walked, by identity
+	 */
+	private void fillNewObsFromEncounter(Obs obs, Encounter encounter, Set<Obs> visited) {
+		if (obs == null || !visited.add(obs)) {
 			return;
 		}
-		for (Obs member : group.getGroupMembers()) {
-			if (member.getEncounter() == null) {
-				member.setEncounter(group.getEncounter());
+		Encounter own = obs.getEncounter();
+		if (obs.getObsId() == null) {
+			if (own == null && encounter != null) {
+				obs.setEncounter(encounter);
+				own = encounter;
 			}
-			propagateEncounterToGroupMembers(member);
+			if (own != null && obs.getLocation() == null) {
+				obs.setLocation(own.getLocation());
+			}
+		}
+		if (obs.getGroupMembers() != null) {
+			for (Obs member : obs.getGroupMembers()) {
+				fillNewObsFromEncounter(member, own != null ? own : encounter, visited);
+			}
 		}
 	}
 	
