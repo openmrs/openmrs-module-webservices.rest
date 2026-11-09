@@ -268,8 +268,8 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	 */
 	@Override
 	public Obs save(Obs delegate) {
-    	propagateEncounterToGroupMembers(delegate);
-    	Obs savedObs = Context.getObsService().saveObs(delegate, "REST web service");
+		propagateEncounterToGroupMembers(delegate);
+		Obs savedObs = Context.getObsService().saveObs(delegate, "REST web service");
 		return Context.getObsService().getObs(savedObs.getId());
 	}
 	
