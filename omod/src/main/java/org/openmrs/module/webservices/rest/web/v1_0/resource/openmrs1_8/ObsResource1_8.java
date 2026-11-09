@@ -436,8 +436,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	 * nothing. Existing obs are left alone, because changing one makes core save it as a new version.
 	 * Each obs is walked once, so a group that contains itself is rejected by core's ObsValidator on
 	 * save instead of overflowing the stack. This runs at save time rather than in setGroupMembers,
-	 * because property setters can run in any order and the group's encounter may not be set yet when
-	 * members are set.
+	 * because a single obs needs the location too, and it never reaches setGroupMembers.
 	 *
 	 * @param group the obs about to be saved
 	 */
