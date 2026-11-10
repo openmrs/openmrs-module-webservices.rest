@@ -10,7 +10,7 @@
 package org.openmrs.module.webservices.rest.web;
 
 import org.openmrs.module.webservices.helper.ServerLogActionWrapper;
-import org.openmrs.util.MemoryAppender;
+import org.openmrs.logging.MemoryAppender;
 
 import java.util.ArrayList;
 import java.util.List;

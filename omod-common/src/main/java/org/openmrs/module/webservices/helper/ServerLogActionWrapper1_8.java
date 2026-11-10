@@ -10,7 +10,7 @@
 package org.openmrs.module.webservices.helper;
 
 import org.apache.log4j.Logger;
-import org.openmrs.util.MemoryAppender;
+import org.openmrs.logging.MemoryAppender;
 
 public class ServerLogActionWrapper1_8 extends ServerLogActionWrapper {
 
