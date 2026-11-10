@@ -20,6 +20,7 @@ import org.openmrs.Concept;
 import org.openmrs.ConceptComplex;
 import org.openmrs.ConceptName;
 import org.openmrs.Drug;
+import org.openmrs.Encounter;
 import org.openmrs.GlobalProperty;
 import org.openmrs.Obs;
 import org.openmrs.Person;
@@ -326,6 +327,190 @@ public class ObsController1_9Test extends MainResourceControllerTest {
     	Obs obs = obsService.getObsByUuid(getUuid());
     	assertEquals(obs.getUuid(), PropertyUtils.getProperty(result, "uuid"));
     }
+
+	@Test
+	public void shouldGiveGroupMembersTheGroupEncounterWhenPostingObsGroup() throws Exception {
+		// RESTWS-1062: members posted inside a group must get the group's encounter
+		Encounter encounter = Context.getEncounterService().getEncounter(3); // from standard test dataset
+		String patientUuid = encounter.getPatient().getUuid();
+		String setConceptUuid = Context.getConceptService().getConcept(23).getUuid();
+		String numericConceptUuid = Context.getConceptService().getConcept(5089).getUuid();
+		String datetime = "2008-08-01T00:00:00.000+0000";
+
+		String json = "{\"person\":\"" + patientUuid + "\","
+		        + "\"concept\":\"" + setConceptUuid + "\","
+		        + "\"obsDatetime\":\"" + datetime + "\","
+		        + "\"encounter\":\"" + encounter.getUuid() + "\","
+		        + "\"groupMembers\":["
+		        + "{\"person\":\"" + patientUuid + "\",\"concept\":\"" + numericConceptUuid + "\",\"value\":81,\"obsDatetime\":\"" + datetime + "\"},"
+		        + "{\"person\":\"" + patientUuid + "\",\"concept\":\"" + numericConceptUuid + "\",\"value\":82,\"obsDatetime\":\"" + datetime + "\"}"
+		        + "]}";
+
+		SimpleObject created = deserialize(handle(newPostRequest(getURI(), json)));
+
+		Context.flushSession();
+		Context.clearSession();
+
+		Obs group = Context.getObsService().getObsByUuid((String) created.get("uuid"));
+		assertEquals(encounter.getUuid(), group.getEncounter().getUuid());
+		assertEquals(2, group.getGroupMembers().size());
+		for (Obs member : group.getGroupMembers()) {
+			Assertions.assertNotNull(member.getEncounter());
+			assertEquals(encounter.getUuid(), member.getEncounter().getUuid());
+		}
+
+		// sending the group back unchanged with POST /encounter must not create new versions of it
+		handle(newPostRequest("encounter/" + encounter.getUuid(), "{\"obs\":[{\"uuid\":\"" + group.getUuid() + "\"}]}"));
+		Context.flushSession();
+		Context.clearSession();
+
+		Obs reloaded = Context.getObsService().getObsByUuid(group.getUuid());
+		Assertions.assertFalse(reloaded.getVoided());
+		for (Obs member : reloaded.getGroupMembers(true)) {
+			Assertions.assertFalse(member.getVoided());
+		}
+	}
+
+	@Test
+	public void shouldGiveMembersOfNestedGroupTheEncounterWhenPostingObsGroup() throws Exception {
+		Encounter encounter = Context.getEncounterService().getEncounter(3);
+		String patientUuid = encounter.getPatient().getUuid();
+		String setConceptUuid = Context.getConceptService().getConcept(23).getUuid();
+		String numericConceptUuid = Context.getConceptService().getConcept(5089).getUuid();
+		String datetime = "2008-08-01T00:00:00.000+0000";
+
+		String innerMember = "{\"person\":\"" + patientUuid + "\",\"concept\":\"" + numericConceptUuid
+		        + "\",\"value\":81,\"obsDatetime\":\"" + datetime + "\"}";
+		String innerGroup = "{\"person\":\"" + patientUuid + "\",\"concept\":\"" + setConceptUuid
+		        + "\",\"obsDatetime\":\"" + datetime + "\",\"groupMembers\":[" + innerMember + "]}";
+		String outerMember = "{\"person\":\"" + patientUuid + "\",\"concept\":\"" + numericConceptUuid
+		        + "\",\"value\":82,\"obsDatetime\":\"" + datetime + "\"}";
+		String json = "{\"person\":\"" + patientUuid + "\",\"concept\":\"" + setConceptUuid
+		        + "\",\"obsDatetime\":\"" + datetime + "\",\"encounter\":\"" + encounter.getUuid()
+		        + "\",\"groupMembers\":[" + innerGroup + "," + outerMember + "]}";
+
+		SimpleObject created = deserialize(handle(newPostRequest(getURI(), json)));
+
+		Context.flushSession();
+		Context.clearSession();
+
+		Obs outer = Context.getObsService().getObsByUuid((String) created.get("uuid"));
+		assertEquals(2, outer.getGroupMembers().size());
+		int nestedGroups = 0;
+		for (Obs member : outer.getGroupMembers()) {
+			Assertions.assertNotNull(member.getEncounter());
+			assertEquals(encounter.getUuid(), member.getEncounter().getUuid());
+			if (member.getGroupMembers() != null && !member.getGroupMembers().isEmpty()) {
+				nestedGroups++;
+				assertEquals(1, member.getGroupMembers().size());
+				for (Obs nested : member.getGroupMembers()) {
+					Assertions.assertNotNull(nested.getEncounter());
+					assertEquals(encounter.getUuid(), nested.getEncounter().getUuid());
+				}
+			}
+		}
+		assertEquals(1, nestedGroups);
+	}
+
+	@Test
+	public void shouldGiveNewMembersTheEncounterWhenAddingThemToAnExistingGroup() throws Exception {
+		Encounter encounter = Context.getEncounterService().getEncounter(3);
+		String patientUuid = encounter.getPatient().getUuid();
+		String setConceptUuid = Context.getConceptService().getConcept(23).getUuid();
+		String numericConceptUuid = Context.getConceptService().getConcept(5089).getUuid();
+		String datetime = "2008-08-01T00:00:00.000+0000";
+
+		String memberJson = "{\"person\":\"" + patientUuid + "\",\"concept\":\"" + numericConceptUuid
+		        + "\",\"value\":81,\"obsDatetime\":\"" + datetime + "\"}";
+		String createJson = "{\"person\":\"" + patientUuid + "\",\"concept\":\"" + setConceptUuid
+		        + "\",\"obsDatetime\":\"" + datetime + "\",\"encounter\":\"" + encounter.getUuid()
+		        + "\",\"groupMembers\":[" + memberJson + "]}";
+		SimpleObject created = deserialize(handle(newPostRequest(getURI(), createJson)));
+
+		Context.flushSession();
+		Context.clearSession();
+
+		Obs group = Context.getObsService().getObsByUuid((String) created.get("uuid"));
+		String existingMemberUuid = group.getGroupMembers().iterator().next().getUuid();
+
+		String newMemberJson = "{\"person\":\"" + patientUuid + "\",\"concept\":\"" + numericConceptUuid
+		        + "\",\"value\":82,\"obsDatetime\":\"" + datetime + "\"}";
+		String updateJson = "{\"groupMembers\":[{\"uuid\":\"" + existingMemberUuid + "\"}," + newMemberJson + "]}";
+		SimpleObject updated = deserialize(handle(newPostRequest(getURI() + "/" + group.getUuid(), updateJson)));
+
+		Context.flushSession();
+		Context.clearSession();
+
+		// use the uuid from the response, in case core saved the group as a new version
+		Obs reloaded = Context.getObsService().getObsByUuid((String) updated.get("uuid"));
+		assertEquals(2, reloaded.getGroupMembers().size());
+		for (Obs member : reloaded.getGroupMembers()) {
+			Assertions.assertNotNull(member.getEncounter());
+			assertEquals(encounter.getUuid(), member.getEncounter().getUuid());
+		}
+	}
+
+	@Test
+	public void shouldFillLocationFromEncounterWhenUploadingComplexObs() throws Exception {
+		ConceptComplex conceptComplex = newConceptComplex();
+		Encounter encounter = Context.getEncounterService().getEncounter(3);
+
+		InputStream in = getClass().getClassLoader().getResourceAsStream("customTestDataset.xml");
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		IOUtils.copy(in, out);
+
+		String json = "{\"concept\":\"" + conceptComplex.getUuid() + "\",\"person\":\""
+		        + encounter.getPatient().getUuid() + "\",\"encounter\":\"" + encounter.getUuid()
+		        + "\",\"obsDatetime\":\"2008-08-01T00:00:00.000+0000\"}";
+
+		MockMultipartHttpServletRequest request = newUploadRequest(getURI());
+		request.addFile(new MockMultipartFile("file", "customTestDataset.xml", null, out.toByteArray()));
+		request.addParameter("json", json);
+		SimpleObject response = deserialize(handle(request));
+
+		Context.flushSession();
+		Context.clearSession();
+
+		Obs obs = Context.getObsService().getObsByUuid((String) response.get("uuid"));
+		Assertions.assertNotNull(obs.getLocation());
+		assertEquals(encounter.getLocation().getUuid(), obs.getLocation().getUuid());
+	}
+
+	@Test
+	public void shouldLeaveExistingMembersUnchangedWhenGroupIsUpdated() throws Exception {
+		Encounter encounter = Context.getEncounterService().getEncounter(3);
+
+		Obs member = new Obs();
+		member.setPerson(encounter.getPatient());
+		member.setConcept(Context.getConceptService().getConcept(5089));
+		member.setValueNumeric(81.0);
+		member.setObsDatetime(encounter.getEncounterDatetime());
+
+		Obs group = new Obs();
+		group.setPerson(encounter.getPatient());
+		group.setConcept(Context.getConceptService().getConcept(23));
+		group.setObsDatetime(encounter.getEncounterDatetime());
+		group.setEncounter(encounter);
+		group.setLocation(encounter.getLocation());
+		group.addGroupMember(member);
+		Context.getObsService().saveObs(group, "test");
+
+		Context.flushSession();
+		Context.clearSession();
+
+		String memberUuid = member.getUuid();
+		Assertions.assertNull(Context.getObsService().getObsByUuid(memberUuid).getEncounter());
+
+		// an update that changes nothing must not give the existing member an encounter
+		handle(newPostRequest(getURI() + "/" + group.getUuid(), "{}"));
+
+		Context.flushSession();
+		Context.clearSession();
+
+		Obs reloaded = Context.getObsService().getObsByUuid(memberUuid);
+		Assertions.assertFalse(reloaded.getVoided());
+		Assertions.assertNull(reloaded.getEncounter());
+	}
 
     private ConceptComplex newConceptComplex() {
 		setupBinaryDataHandler();
