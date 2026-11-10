@@ -147,5 +147,24 @@ public class ReflectionUtil {
 			throw new RuntimeException("No suitable method \"" + name + "\" in " + clazz);
 		return ret;
 	}
-	
+
+	/**
+	 * Find a @PropertyGetter-annotated method on any plain object
+	 * (not necessarily a DelegatingPropertyAccessor).
+	 * Used by PropertyDecorator support to look up getter methods
+	 * on decorator instances.
+	 *
+	 * @param object the decorator object to search
+	 * @param propName the property name to look for
+	 * @return the Method if found, null otherwise
+	 */
+	public static Method findPropertyGetterMethodOnObject(Object object, String propName) {
+		for (Method method : object.getClass().getMethods()) {
+			PropertyGetter ann = method.getAnnotation(PropertyGetter.class);
+			if (ann != null && ann.value().equals(propName)) {
+				return method;
+			}
+		}
+		return null;
+	}
 }
