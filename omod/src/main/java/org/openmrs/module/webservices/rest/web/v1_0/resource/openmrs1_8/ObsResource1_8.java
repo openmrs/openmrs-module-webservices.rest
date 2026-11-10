@@ -701,7 +701,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 		
 		ComplexData complexData = new ComplexData(file.getOriginalFilename(), new ByteArrayInputStream(file.getBytes()));
 		obs.setComplexData(complexData);
-		
+		propagateEncounterToGroupMembers(obs);
 		obs = obsService.saveObs(obs, null);
 		
 		return (SimpleObject) ConversionUtil.convertToRepresentation(obs, Representation.DEFAULT);

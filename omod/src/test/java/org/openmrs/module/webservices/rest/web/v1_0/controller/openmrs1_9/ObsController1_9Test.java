@@ -450,6 +450,68 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 		}
 	}
 
+	@Test
+	public void shouldFillLocationFromEncounterWhenUploadingComplexObs() throws Exception {
+		ConceptComplex conceptComplex = newConceptComplex();
+		Encounter encounter = Context.getEncounterService().getEncounter(3);
+
+		InputStream in = getClass().getClassLoader().getResourceAsStream("customTestDataset.xml");
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		IOUtils.copy(in, out);
+
+		String json = "{\"concept\":\"" + conceptComplex.getUuid() + "\",\"person\":\""
+		        + encounter.getPatient().getUuid() + "\",\"encounter\":\"" + encounter.getUuid()
+		        + "\",\"obsDatetime\":\"2008-08-01T00:00:00.000+0000\"}";
+
+		MockMultipartHttpServletRequest request = newUploadRequest(getURI());
+		request.addFile(new MockMultipartFile("file", "customTestDataset.xml", null, out.toByteArray()));
+		request.addParameter("json", json);
+		SimpleObject response = deserialize(handle(request));
+
+		Context.flushSession();
+		Context.clearSession();
+
+		Obs obs = Context.getObsService().getObsByUuid((String) response.get("uuid"));
+		Assertions.assertNotNull(obs.getLocation());
+		assertEquals(encounter.getLocation().getUuid(), obs.getLocation().getUuid());
+	}
+
+	@Test
+	public void shouldLeaveExistingMembersUnchangedWhenGroupIsUpdated() throws Exception {
+		Encounter encounter = Context.getEncounterService().getEncounter(3);
+
+		Obs member = new Obs();
+		member.setPerson(encounter.getPatient());
+		member.setConcept(Context.getConceptService().getConcept(5089));
+		member.setValueNumeric(81.0);
+		member.setObsDatetime(encounter.getEncounterDatetime());
+
+		Obs group = new Obs();
+		group.setPerson(encounter.getPatient());
+		group.setConcept(Context.getConceptService().getConcept(23));
+		group.setObsDatetime(encounter.getEncounterDatetime());
+		group.setEncounter(encounter);
+		group.setLocation(encounter.getLocation());
+		group.addGroupMember(member);
+		Context.getObsService().saveObs(group, "test");
+
+		Context.flushSession();
+		Context.clearSession();
+
+		String memberUuid = member.getUuid();
+		Assertions.assertNull(Context.getObsService().getObsByUuid(memberUuid).getEncounter());
+
+		// an update that changes nothing must not give the existing member an encounter
+		handle(newPostRequest(getURI() + "/" + group.getUuid(), "{}"));
+
+		Context.flushSession();
+		Context.clearSession();
+
+		Obs reloaded = Context.getObsService().getObsByUuid(memberUuid);
+		Assertions.assertFalse(reloaded.getVoided());
+		Assertions.assertNull(reloaded.getEncounter());
+	}
+
     private ConceptComplex newConceptComplex() {
 		setupBinaryDataHandler();
 
