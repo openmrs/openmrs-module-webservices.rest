@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/openmrs/openmrs-module-webservices.rest/actions/workflows/maven.yml/badge.svg)](https://github.com/openmrs/openmrs-module-webservices.rest/actions/workflows/maven.yml) [![Coverage Status](https://coveralls.io/repos/github/openmrs/openmrs-module-webservices.rest/badge.svg?branch=master)](https://coveralls.io/github/openmrs/openmrs-module-webservices.rest?branch=master)
+[![Build Status](https://github.com/openmrs/openmrs-module-webservices.rest/actions/workflows/build.yml/badge.svg)](https://github.com/openmrs/openmrs-module-webservices.rest/actions/workflows/build.yml)
 
 <img src="https://talk.openmrs.org/uploads/default/original/2X/f/f1ec579b0398cb04c80a54c56da219b2440fe249.jpg" alt="OpenMRS"/>
 
@@ -6,16 +6,12 @@
 
 > REST API for [OpenMRS](http://openmrs.org)
 
-<a href="https://ci.openmrs.org/browse/RESTWS-RESTWS"><img src="https://omrs-shields.psbrandt.io/build/RESTWS/RESTWS" alt="Build"/></a>
-<a href="https://modules.openmrs.org/#/show/153/webservices-rest"><img src="https://omrs-shields.psbrandt.io/version/153" alt="Version"/></a>
-<a href="https://modules.openmrs.org/#/show/153/webservices-rest"><img src="https://omrs-shields.psbrandt.io/omrsversion/153" alt="OpenMRS Version"/></a>
-
 The module exposes the OpenMRS API as REST web services. If an OpenMRS instance is running the `webservice.rest` module, other applications can retrieve and post certain information to an OpenMRS database.
 
 ## Download
 
 If you are not a developer, or just want to install the REST Web Services module into your
-system, visit [the module download page](https://modules.openmrs.org/#/show/153/webservices-rest) instead.
+system, visit [the module download page](https://addons.openmrs.org/show/org.openmrs.module.webservices-rest) instead.
 
 > The required OpenMRS version to run the REST Web Services Module is `1.8.4+` or `1.9.0+`
 

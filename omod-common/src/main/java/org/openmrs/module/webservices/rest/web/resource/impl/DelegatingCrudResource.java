@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -30,7 +31,6 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainSubResourceController;
-import org.openmrs.module.webservices.validation.ValidateUtil;
 
 /**
  * A base implementation of a {@link CrudResource} that delegates CRUD operations to a wrapped
@@ -74,7 +74,6 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	@Override
 	public Object create(SimpleObject propertiesToCreate, RequestContext context) throws ResponseException {
 		T delegate = convert(propertiesToCreate);
-		ValidateUtil.validate(delegate);
 		delegate = save(delegate);
 		SimpleObject ret = (SimpleObject) ConversionUtil.convertToRepresentation(delegate, context.getRepresentation());
 		
@@ -98,12 +97,9 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 		} else {
 			handler = this;
 		}
-		
+
 		T delegate = handler.newDelegate(propertiesToCreate);
-		DelegatingResourceDescription description = handler.getCreatableProperties();
-		if (propertiesToCreate.containsKey("uuid")) {
-			description.addProperty("uuid");
-		}
+		DelegatingResourceDescription description = buildCreatableProperties(delegate, handler, propertiesToCreate);
 		setConvertedProperties(delegate, propertiesToCreate, description, true);
 		return delegate;
 	}
@@ -140,7 +136,6 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 		}
 		
 		setConvertedProperties(delegate, propertiesToUpdate, description, false);
-		ValidateUtil.validate(delegate);
 		delegate = save(delegate);
 		
 		SimpleObject ret = (SimpleObject) ConversionUtil.convertToRepresentation(delegate, context.getRepresentation());
@@ -291,5 +286,30 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	 */
 	public boolean isVoidable() {
 		return false;
+	}
+
+	/**
+	 * This code is largely copied from the UI Framework:
+	 * org.openmrs.ui.framework.FormatterImpl#format(org.openmrs.OpenmrsMetadata, java.util.Locale)
+	 *
+	 * @param shortClassName
+	 * @param uuid
+	 * @return localization for the given metadata, from message source, in the authenticated locale
+	 */
+    protected String getLocalization(String shortClassName, String uuid) {
+		// in case this is a hibernate proxy, strip off anything after an underscore
+		// ie: EncounterType_$$_javassist_26 needs to be converted to EncounterType
+		int underscoreIndex = shortClassName.indexOf("_$");
+		if (underscoreIndex > 0) {
+			shortClassName = shortClassName.substring(0, underscoreIndex);
+		}
+
+		String code = "ui.i18n." + shortClassName + ".name." + uuid;
+		String localization = Context.getMessageSourceService().getMessage(code);
+		if (localization == null || localization.equals(code)) {
+			return null;
+		} else {
+			return localization;
+		}
 	}
 }

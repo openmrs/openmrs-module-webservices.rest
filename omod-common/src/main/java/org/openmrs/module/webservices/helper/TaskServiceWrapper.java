@@ -11,9 +11,7 @@
 package org.openmrs.module.webservices.helper;
 
 import org.openmrs.scheduler.TaskDefinition;
-import org.openmrs.scheduler.TaskFactory;
 import org.openmrs.scheduler.SchedulerException;
-import org.openmrs.scheduler.Task;
 import org.openmrs.api.context.Context;
 
 import java.util.Collection;
@@ -105,7 +103,6 @@ public class TaskServiceWrapper {
 	 * @throws SchedulerException - It will throw in case of any SchedulerService exceptions
 	 */
 	public void runTask(TaskDefinition taskDefinition) throws SchedulerException {
-		Task task = TaskFactory.getInstance().createInstance(taskDefinition);
-		task.execute();
+		Context.getSchedulerService().schedule(taskDefinition);
 	}
 }

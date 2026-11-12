@@ -52,7 +52,11 @@ public abstract class BasePageableResult<T> implements PageableResult {
 	public SimpleObject toSimpleObject(Converter preferredConverter) throws ResponseException {
 		List<Object> results = new ArrayList<Object>();
 		for (T match : getPageOfResults()) {
-			results.add(ConversionUtil.convertToRepresentation(match, context.getRepresentation(), preferredConverter));
+			Object converted = ConversionUtil.convertToRepresentation(match, context.getRepresentation(), preferredConverter);
+			if (converted == ConversionUtil.PRIVILEGE_DENIED) {
+				continue;
+			}
+			results.add(converted);
 		}
 		
 		SimpleObject ret = new SimpleObject().add("results", results);

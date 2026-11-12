@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+
+    This Source Code Form is subject to the terms of the Mozilla Public License,
+    v. 2.0. If a copy of the MPL was not distributed with this file, You can
+    obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+    the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+
+    Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+    graphic logo is a trademark of OpenMRS Inc.
+
+-->
+<!--
+    A coded observation that records which of the answer concept's names was picked, which no
+    dataset in core or this module had - every obs row leaves value_coded_name_id null.
+
+      concept_id="21"           FOOD ASSISTANCE FOR ENTIRE FAMILY, datatype Coded
+      value_coded="22"          UNKNOWN, the answer
+      value_coded_name_id="2471" that concept's FULLY_SPECIFIED name, "UNKNOWN"
+
+    The obs representation carries the name under valueCodedName as a record of its own, so this is
+    the fixture for a Concept rule having to reach the ConceptName hanging off the concept it
+    refuses.
+-->
+<dataset>
+	<obs obs_id="5300" person_id="7" concept_id="21" value_coded="22" value_coded_name_id="2471" status="FINAL"
+		 obs_datetime="2008-08-15 00:00:00.0" creator="1" date_created="2008-08-19 12:32:59.0" voided="false"
+		 uuid="3f9c5d81-2b70-4a2e-8c53-9d1f0b7a4e62"/>
+</dataset>

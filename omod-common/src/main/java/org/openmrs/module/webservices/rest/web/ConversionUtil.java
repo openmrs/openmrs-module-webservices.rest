@@ -9,6 +9,36 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.openmrs.Auditable;
+import org.openmrs.ConceptName;
+import org.openmrs.OpenmrsObject;
+import org.openmrs.Retireable;
+import org.openmrs.Voidable;
+import org.openmrs.api.APIException;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.Converter;
+import org.openmrs.module.webservices.rest.web.resource.api.Resource;
+import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription.Property;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.security.Authorize;
+import org.openmrs.security.DomainObjectAuthorizationRule;
+import org.openmrs.util.HandlerUtil;
+import org.openmrs.util.LocaleUtility;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -29,36 +59,35 @@ import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.openmrs.Auditable;
-import org.openmrs.Retireable;
-import org.openmrs.Voidable;
-import org.openmrs.api.APIException;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
-import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.api.Converter;
-import org.openmrs.module.webservices.rest.web.resource.api.Resource;
-import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
-import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription.Property;
-import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler;
-import org.openmrs.module.webservices.rest.web.response.ConversionException;
-import org.openmrs.util.HandlerUtil;
-import org.openmrs.util.LocaleUtility;
+import static org.openmrs.module.webservices.rest.web.representation.Representation.DEFAULT;
+import static org.openmrs.module.webservices.rest.web.representation.Representation.FULL;
+import static org.openmrs.module.webservices.rest.web.representation.Representation.REF;
 
 public class ConversionUtil {
 	
 	static final Log log = LogFactory.getLog(ConversionUtil.class);
 	
 	public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+
+	public static final Object PRIVILEGE_DENIED = new Object();
 	
+	/**
+	 * The property a representation carries in place of an object a
+	 * {@link DomainObjectAuthorizationRule} refused, so a reader can tell data that is hidden from data
+	 * that does not exist.
+	 */
+	public static final String MASKED_PROPERTY = "masked";
+
+	/**
+	 * What a display string says when a {@link DomainObjectAuthorizationRule} refuses a record the
+	 * display was read from. A resource that computes one has to substitute this itself, because a
+	 * derived value is not an object this funnel ever sees: see {@link #isRefusedByARule(Object)}.
+	 * <p>
+	 * The same literal {@code Authorize} prints for a mask's own {@code toString()}, so a reader meets
+	 * one spelling of "hidden" however the value reached them.
+	 */
+	public static final String MASKED_DISPLAY = "[hidden]";
+
 	// This would better be a Map<Pair<Class, String>, Type> but adding the dependency for
 	//  org.apache.commons.lang3.tuple.Pair (through omrs-api) messed up other tests
 	private static final Map<String, Type> typeVariableMap = new ConcurrentHashMap<String, Type>();
@@ -356,8 +385,13 @@ public class ConversionUtil {
 		}
 		if (o instanceof Collection) {
 			List<Object> ret = new ArrayList<Object>();
-			for (Object element : (Collection<?>) o)
-				ret.add(convertToRepresentation(element, rep));
+			for (Object element : (Collection<?>) o) {
+				Object converted = convertToRepresentation(element, rep);
+				if (converted == PRIVILEGE_DENIED) {
+					return PRIVILEGE_DENIED;
+				}
+				ret.add(converted);
+			}
 			return ret;
 		} else {
 			o = convertToRepresentation(o, rep);
@@ -385,21 +419,43 @@ public class ConversionUtil {
 		if (o instanceof Collection) {
 			List ret = new ArrayList();
 			for (Object item : ((Collection) o)) {
-				ret.add(convertToRepresentation(item, rep, specificConverter));
+				Object converted = convertToRepresentation(item, rep, specificConverter);
+				if (converted == PRIVILEGE_DENIED) {
+					return PRIVILEGE_DENIED;
+				}
+				ret.add(converted);
 			}
 			return ret;
+		} else if (isAMask(o)) {
+			// a getter that resolved its own record and found it refused: already the stand-in, and the
+			// Map branch below would take it apart. See maskedRepresentation()
+			return o;
 		} else if (o instanceof Map) {
 			if (rep instanceof CustomRepresentation) {
 				return convertToCustomRepresentation(o, (CustomRepresentation) rep);
 			}
 			SimpleObject ret = new SimpleObject();
 			for (Map.Entry<?, ?> entry : ((Map<?, ?>) o).entrySet()) {
-				ret.put(entry.getKey().toString(),
-				    convertToRepresentation(entry.getValue(), Representation.REF, (Converter) null));
+				Object converted = convertToRepresentation(entry.getValue(), Representation.REF, (Converter) null);
+				if (converted == PRIVILEGE_DENIED) {
+					return PRIVILEGE_DENIED;
+				}
+				ret.put(entry.getKey().toString(), converted);
 			}
 			return ret;
 		} else {
 			Converter<S> converter = specificConverter != null ? specificConverter : (Converter) getConverter(o.getClass());
+			if (converter instanceof BaseDelegatingResource) {
+				String requiredPrivilege = ((BaseDelegatingResource<?>) converter).getRequiredGetPrivilege();
+				if (requiredPrivilege != null && !Context.hasPrivilege(requiredPrivilege)) {
+					return PRIVILEGE_DENIED;
+				}
+			}
+			// after the privilege check, so a privilege denial keeps dropping the property as it always has,
+			// but before the no-converter shortcut, which would otherwise hand the object to the serializer whole
+			if (isRefusedByARule(o)) {
+				return maskedRepresentation();
+			}
 			if (converter == null) {
 				// try a few known datatypes
 				if (o instanceof Date) {
@@ -415,6 +471,98 @@ public class ConversionUtil {
 				throw new ConversionException("converting " + o.getClass() + " to " + rep, ex);
 			}
 		}
+	}
+	
+	/**
+	 * Whether a registered {@link DomainObjectAuthorizationRule} refuses this object to the current
+	 * user. Asked here because this is the one place every object a representation contains passes
+	 * through, nested ones included, and by the time they do they have been unwrapped to real entities.
+	 * <p>
+	 * A service method has usually applied the same rules already, through {@code @PostFilter} or a
+	 * {@code hasPermission} guard, and then this agrees with it and changes nothing. It earns its place
+	 * on what the service never saw: a nested object reached by following a property off the object the
+	 * service returned.
+	 * <p>
+	 * <strong>A value a resource derives from a record never passes through here.</strong> Only objects
+	 * a representation <em>contains</em> do. A {@code display} string built by reading a related
+	 * record's fields is a plain String by the time it is a property, so masking the record does
+	 * nothing for it and the same response can carry both the mask and what it hides. That is why this
+	 * is public: <strong>any display that reads a record other than its own delegate has to ask this
+	 * itself and substitute {@link #MASKED_DISPLAY}</strong>. A refused delegate never reaches its own
+	 * display, because the representation is masked before the converter runs; a record reached off it
+	 * is not covered by anything.
+	 * <p>
+	 * Deliberately no list of the getters that do: there are too many to keep in step with, and a list
+	 * that falls behind reads as a complete one.
+	 * <p>
+	 * A {@link ConceptName} is judged by the concept it names as well as by itself: see below.
+	 *
+	 * @param o the object to ask the rules about, may be null or of any type
+	 * @return true if a registered rule refuses {@code o} to the current user, or refuses the concept
+	 *         {@code o} names when it is a {@link ConceptName}
+	 */
+	public static boolean isRefusedByARule(Object o) {
+		if (!(o instanceof OpenmrsObject)) {
+			return false;
+		}
+		if (Authorize.isMasked(o)) {
+			return true;
+		}
+		// Only when there is no identity at all. A rule is asked about an Authentication, which
+		// LegacyContextAuthentication takes from the security context when one is published and builds
+		// from the UserContext otherwise, so either alone is enough to judge by and only the absence of
+		// both leaves nothing to ask with. Testing the session alone would skip the rules on a worker
+		// that carries a published Authentication and no UserContext.
+		// Nothing is given up by returning false here: a display getter reached with neither is being
+		// called on objects the caller built itself, in a unit test of this module or of one depending
+		// on it, since nothing can be loaded from the database without an identity. Failing instead
+		// would make every guarded getter require a session to run.
+		if (!Context.isSessionOpen() && SecurityContextHolder.getContext().getAuthentication() == null) {
+			return false;
+		}
+		if (Authorize.maskIfDenied((OpenmrsObject) o) != o) {
+			return true;
+		}
+		// A ConceptName is how the concept it hangs off is spelled, and it is a record a response puts
+		// on its own: obs.valueCodedName and CodedOrFreeText.specificName are both ConceptName
+		// properties. Rules are matched by type and judge nothing reachable through what they are
+		// handed, so no Concept rule reaches one - without this, a refused concept came back masked
+		// under value and spelled out in full under valueCodedName in the same response.
+		// Asked here rather than at those two properties so that every ConceptName a representation
+		// contains is covered, whichever resource put it there.
+		return o instanceof ConceptName && isRefusedByARule(((ConceptName) o).getConcept());
+	}
+	
+	/**
+	 * What stands in for a refused object: a marker and nothing else.
+	 * <p>
+	 * Deliberately not the object's own representation with the fields blanked. Converting the stand-in
+	 * through its resource would hand a client a uuid and a self link for a record it may not read and
+	 * which resolves to nothing, and the type is itself a disclosure. A marker also keeps a collection's
+	 * size honest, where {@link #PRIVILEGE_DENIED} drops the element and leaves the reader unable to
+	 * tell six observations with two hidden from four observations.
+	 * <p>
+	 * Public for the same reason {@link #MASKED_DISPLAY} is, and it is the counterpart of it for a
+	 * property that is not a string: <strong>a getter that resolves a record itself, rather than handing
+	 * one to this funnel, has to substitute the mask on its own</strong>. The case that needs it is a
+	 * getter whose resolution <em>fails</em> - an attribute's value comes back from a service whose
+	 * guard throws rather than masking, so there is no object left for
+	 * {@link #isRefusedByARule(Object)} to judge, only an exception. Whatever this returns is treated as
+	 * final by {@link #convertToRepresentation(Object, Representation, Converter)}, so a getter may
+	 * return it under any representation.
+	 */
+	public static SimpleObject maskedRepresentation() {
+		return new SimpleObject().add(MASKED_PROPERTY, Boolean.TRUE);
+	}
+
+	/**
+	 * Whether this is already the stand-in {@link #maskedRepresentation()} builds, in which case there
+	 * is nothing left to convert: it holds a marker and no record. Converting it again would take the
+	 * marker for the record - a custom representation asks the mask for the properties it named and
+	 * gets {@code {"uuid": null}} back, which has lost the one thing the mask was there to say.
+	 */
+	private static boolean isAMask(Object o) {
+		return o instanceof Map && Boolean.TRUE.equals(((Map<?, ?>) o).get(MASKED_PROPERTY));
 	}
 	
 	/**
@@ -539,56 +687,46 @@ public class ConversionUtil {
 		String def = representation.getRepresentation();
 		def = def.startsWith("(") ? def.substring(1) : def;
 		def = def.endsWith(")") ? def.substring(0, def.length() - 1) : def;
-		String[] fragments = def.split(",");
-		for (int i = 0; i < fragments.length; i++) {
-			String[] field = fragments[i].split(":"); //split into field and representation
-			if (field.length == 1) {
-				if (!field[0].equals("links"))
-					desc.addProperty(field[0]);
-				if (field[0].equals("links")) {
+
+		int startIndex = 0;
+		List<String> properties = new ArrayList<String>();
+		int nestingLevel = 0;
+		for (int i=0; i < def.length(); i++) {
+			char c = def.charAt(i);
+			if (c == '(') {
+				nestingLevel++;
+			}
+			else if (c == ')') {
+				nestingLevel--;
+			}
+			else if (c == ',' && nestingLevel == 0) {
+				properties.add(def.substring(startIndex, i));
+				startIndex = i + 1;
+			}
+		}
+		properties.add(def.substring(startIndex));
+
+		for (String propertyDefinition : properties) {
+			if (propertyDefinition.contains(":")) {
+				String[] propertyAndRepresentation = propertyDefinition.split(":", 2);
+				String property = propertyAndRepresentation[0];
+				String rep = propertyAndRepresentation[1];
+				Representation r;
+				if (rep.startsWith("(")) {
+					r = new CustomRepresentation(rep);
+				}
+				else {
+					r = rep.equalsIgnoreCase("REF") ? REF : rep.equalsIgnoreCase("FULL") ? FULL : DEFAULT;
+				}
+				desc.addProperty(property, r);
+			}
+			else {
+				if (propertyDefinition.equals("links")) {
 					desc.addSelfLink();
 					desc.addLink("default", ".?v=" + RestConstants.REPRESENTATION_DEFAULT);
 				}
-			} else {
-				String property = field[0];
-				String rep = field[1];
-
-				// if custom representation
-				if (rep.startsWith("(")) {
-					StringBuilder customRep = new StringBuilder();
-					customRep.append(rep);
-					if (!rep.endsWith(")")) {
-						for (int j = 2; j < field.length; j++) {
-							customRep.append(":").append(field[j]);
-						}
-						int open = 1;
-						for (i = i + 1; i < fragments.length; i++) {
-							for (char fragment : fragments[i].toCharArray()) {
-								if (fragment == '(') {
-									open++;
-								} else if (fragment == ')') {
-									open--;
-								}
-							}
-
-							customRep.append(",");
-							customRep.append(fragments[i]);
-
-							if (open == 0) {
-								break;
-							}
-						}
-					}
-					desc.addProperty(property, new CustomRepresentation(customRep.toString()));
-				} else {
-					rep = rep.toUpperCase(); //normalize
-					if (rep.equals("REF")) {
-						desc.addProperty(property, Representation.REF);
-					} else if (rep.equals("FULL")) {
-						desc.addProperty(property, Representation.FULL);
-					} else if (rep.equals("DEFAULT")) {
-						desc.addProperty(property, Representation.DEFAULT);
-					}
+				else {
+					desc.addProperty(propertyDefinition);
 				}
 			}
 		}

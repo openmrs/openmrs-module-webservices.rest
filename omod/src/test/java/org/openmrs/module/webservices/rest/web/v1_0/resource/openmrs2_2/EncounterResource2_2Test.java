@@ -1,0 +1,101 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.openmrs.Encounter;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
+import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_2;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class EncounterResource2_2Test extends BaseDelegatingResourceTest<EncounterResource2_2, Encounter> {
+
+	@BeforeEach
+	public void before() throws Exception {
+		executeDataSet(RestTestConstants2_2.DIAGNOSIS_TEST_DATA_XML);
+	}
+	
+	/**
+	 * @see BaseDelegatingResourceTest#newObject()
+	 */
+	@Override
+	public Encounter newObject() {
+		return Context.getEncounterService().getEncounterByUuid(getUuidProperty());
+	}
+	
+	/**
+	 * @see BaseDelegatingResourceTest#validateDefaultRepresentation()
+	 */
+	@Override
+	public void validateDefaultRepresentation() throws Exception {
+		super.validateDefaultRepresentation();
+		assertPropEquals("encounterDatetime", getObject().getEncounterDatetime());
+		assertPropPresent("patient");
+		assertPropPresent("location");
+		assertPropPresent("form");
+		assertPropPresent("encounterType");
+		assertPropPresent("diagnoses");
+		assertPropPresent("obs");
+		assertPropPresent("orders");
+		assertPropPresent("encounterProviders");
+		assertPropEquals("voided", getObject().getVoided());
+		assertPropPresent("visit");
+		assertPropEquals("resourceVersion", "2.2");
+
+		assertEquals("59bf4fbc-fcdb-4a5b-97ea-0d5c4b4315a7" ,((List<SimpleObject>) getRepresentation().get("diagnoses")).get(0).get("uuid"));
+		assertEquals("Some Diagnosis" ,((List<SimpleObject>) getRepresentation().get("diagnoses")).get(0).get("display"));
+	}
+	
+	/**
+	 * @see BaseDelegatingResourceTest#validateFullRepresentation()
+	 */
+	@Override
+	public void validateFullRepresentation() throws Exception {
+		super.validateFullRepresentation();
+		assertPropEquals("encounterDatetime", getObject().getEncounterDatetime());
+		assertPropPresent("patient");
+		assertPropPresent("location");
+		assertPropPresent("form");
+		assertPropPresent("encounterType");
+		assertPropPresent("encounterProviders");
+		assertPropPresent("diagnoses");
+		assertPropPresent("obs");
+		assertPropPresent("orders");
+		assertPropEquals("voided", getObject().getVoided());
+		assertPropPresent("auditInfo");
+		assertPropPresent("visit");
+		assertPropEquals("resourceVersion", "2.2");
+
+		assertEquals("59bf4fbc-fcdb-4a5b-97ea-0d5c4b4315a7" ,((List<SimpleObject>) getRepresentation().get("diagnoses")).get(0).get("uuid"));
+		assertEquals("Some Diagnosis" ,((List<SimpleObject>) getRepresentation().get("diagnoses")).get(0).get("display"));
+
+	}
+	
+	/**
+	 * @see BaseDelegatingResourceTest#getDisplayProperty()
+	 */
+	@Override
+	public String getDisplayProperty() {
+		return "Emergency 01/08/2008";
+	}
+	
+	/**
+	 * @see BaseDelegatingResourceTest#getUuidProperty()
+	 */
+	@Override
+	public String getUuidProperty() {
+		return "6519d653-393b-4118-9c83-a3715b82d4ac";
+	}  // encounter 3 in test dataset
+}

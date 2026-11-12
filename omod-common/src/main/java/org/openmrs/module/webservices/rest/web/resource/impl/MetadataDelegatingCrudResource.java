@@ -15,7 +15,7 @@ import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.StringProperty;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.OpenmrsMetadata;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -172,31 +172,6 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 			return localization;
 		} else {
 			return StringUtils.isEmpty(delegate.getName()) ? "" : delegate.getName();
-		}
-	}
-	
-	/**
-	 * This code is largely copied from the UI Framework:
-	 * org.openmrs.ui.framework.FormatterImpl#format(org.openmrs.OpenmrsMetadata, java.util.Locale)
-	 * 
-	 * @param shortClassName
-	 * @param uuid
-	 * @return localization for the given metadata, from message source, in the authenticated locale
-	 */
-	private String getLocalization(String shortClassName, String uuid) {
-		// in case this is a hibernate proxy, strip off anything after an underscore
-		// ie: EncounterType_$$_javassist_26 needs to be converted to EncounterType
-		int underscoreIndex = shortClassName.indexOf("_$");
-		if (underscoreIndex > 0) {
-			shortClassName = shortClassName.substring(0, underscoreIndex);
-		}
-		
-		String code = "ui.i18n." + shortClassName + ".name." + uuid;
-		String localization = Context.getMessageSourceService().getMessage(code);
-		if (localization == null || localization.equals(code)) {
-			return null;
-		} else {
-			return localization;
 		}
 	}
 	

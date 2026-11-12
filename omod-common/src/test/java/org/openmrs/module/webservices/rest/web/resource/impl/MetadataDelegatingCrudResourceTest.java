@@ -10,7 +10,7 @@
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
 import io.swagger.models.Model;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.ServiceContext;
 import org.openmrs.messagesource.MessageSourceService;
@@ -19,7 +19,7 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

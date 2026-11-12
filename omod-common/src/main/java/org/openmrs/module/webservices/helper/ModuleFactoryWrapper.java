@@ -11,6 +11,7 @@ package org.openmrs.module.webservices.helper;
 
 import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.web.response.ForbiddenException;
 import org.openmrs.module.Extension;
 import org.openmrs.module.Module;
 import org.openmrs.module.ModuleFactory;
@@ -20,7 +21,7 @@ import org.openmrs.module.web.WebModuleUtil;
 import org.openmrs.util.PrivilegeConstants;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -156,6 +157,14 @@ public class ModuleFactoryWrapper {
 		}
 	}
 	
+	public void checkWebAdminEnabled() {
+		String allowWebAdmin = Context.getRuntimeProperties().getProperty("module.allow_web_admin", "false");
+		if (!"true".equalsIgnoreCase(allowWebAdmin)) {
+			throw new ForbiddenException(
+			    "Module uploads are not allowed. Set the runtime property module.allow_web_admin=true to enable.");
+		}
+	}
+
 	public void checkPrivilege() throws APIAuthenticationException {
 		if (!Context.hasPrivilege(PrivilegeConstants.MANAGE_MODULES)) {
 			throw new APIAuthenticationException("Privilege required: " + PrivilegeConstants.MANAGE_MODULES);

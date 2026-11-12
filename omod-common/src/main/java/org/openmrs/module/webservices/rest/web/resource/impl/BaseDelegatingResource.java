@@ -25,11 +25,14 @@ import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.proxy.HibernateProxy;
+import org.openmrs.Changeable;
 import org.openmrs.OpenmrsObject;
+import org.openmrs.Retireable;
+import org.openmrs.Voidable;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleUtil;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -70,9 +73,13 @@ import io.swagger.models.properties.StringProperty;
  * @param <T> the class we're delegating to
  */
 public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<T> implements Converter<T>, Resource, DelegatingResourceHandler<T> {
-	
+
 	private final Log log = LogFactory.getLog(getClass());
-	
+
+	public String getRequiredGetPrivilege() {
+		return null;
+	}
+
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = new ModelImpl();
@@ -411,7 +418,10 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 		// finally if it is a custom representation and not supported by any other handler
 		if (representation instanceof CustomRepresentation) {
 			repDescription = ConversionUtil.getCustomRepresentationDescription((CustomRepresentation) representation);
-			return convertDelegateToRepresentation(delegate, repDescription);
+			SimpleObject simple = convertDelegateToRepresentation(delegate, repDescription);
+			maybeDecorateWithType(simple, delegate);
+			decorateWithResourceVersion(simple, representation);
+			return simple;
 		}
 		
 		throw new ConversionException("Don't know how to get " + getClass().getSimpleName() + "(" + delegate.getClass()
@@ -674,12 +684,18 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 		try {
 			DelegatingResourceHandler<? extends T> handler = getResourceHandler(instance);
 			
-			// try to find a @PropertyGetter-annotated method
+			// try to find a @PropertyGetter-annotated method on resource handler
 			Method annotatedGetter = ReflectionUtil.findPropertyGetterMethod(handler, propertyName);
 			if (annotatedGetter != null) {
 				return annotatedGetter.invoke(handler, instance);
 			}
-			
+
+			// try to find a @PropertyGetter-annotated method on resource
+			annotatedGetter = ReflectionUtil.findPropertyGetterMethod(this, propertyName);
+			if (annotatedGetter != null) {
+				return annotatedGetter.invoke(this, instance);
+			}
+
 			return PropertyUtils.getProperty(instance, propertyName);
 		}
 		catch (Exception ex) {
@@ -711,8 +727,11 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 				handler = this;
 			}
 			
-			// try to find a @PropertySetter-annotated method
+			// try to find a @PropertySetter-annotated method on either the resource handler or resource
 			Method annotatedSetter = ReflectionUtil.findPropertySetterMethod(handler, propertyName);
+			if (annotatedSetter == null) {
+				annotatedSetter = ReflectionUtil.findPropertySetterMethod(this, propertyName);
+			}
 			if (annotatedSetter != null) {
 				Type expectedType = annotatedSetter.getGenericParameterTypes()[1];
 				value = ConversionUtil.convert(value, expectedType);
@@ -847,5 +866,49 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	public T newDelegate(SimpleObject object) {
 		return newDelegate();
 	}
-	
+
+
+	/**
+	 * Utility method to build a delegating resource description with the proper list of allowed creatable properties by starting
+	 * with the creatable properties defined by the handler, and then 1) adding uuid if it is present in the list of properties to create
+	 * and 2) adding any relevant audit fields based on the class of the delegate
+	 *
+	 * @param delegate
+	 * @param handler
+	 * @param propertiesToCreate
+	 * @return
+	 */
+	protected DelegatingResourceDescription buildCreatableProperties(T delegate, DelegatingResourceHandler<? extends T> handler,  SimpleObject propertiesToCreate) {
+
+		DelegatingResourceDescription description = handler.getCreatableProperties();
+		if (propertiesToCreate.containsKey(RestConstants.PROPERTY_UUID)) {
+			description.addProperty(RestConstants.PROPERTY_UUID);
+		}
+
+		if (Context.hasPrivilege(RestConstants.PRIV_SET_AUDIT_DATA)) {
+			if (delegate instanceof org.openmrs.Creatable) {
+				description.addProperty("dateCreated");
+				description.addProperty("creator");
+			}
+			if (delegate instanceof Changeable) {
+				description.addProperty("dateChanged");
+				description.addProperty("changedBy");
+			}
+			if (delegate instanceof Retireable) {
+				description.addProperty("retired");
+				description.addProperty("retireReason");
+				description.addProperty("retiredBy");
+				description.addProperty("dateRetired");
+
+			}
+			if (delegate instanceof Voidable) {
+				description.addProperty("voided");
+				description.addProperty("voidReason");
+				description.addProperty("voidedBy");
+				description.addProperty("dateVoided");
+			}
+		}
+
+		return description;
+	}
 }

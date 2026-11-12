@@ -24,6 +24,7 @@ import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.Hyperlink;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
+import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
@@ -62,8 +63,15 @@ public abstract class BaseDelegatingConverter<T> implements Converter<T>, Delega
 	public SimpleObject asRepresentation(T delegate, Representation rep) throws ConversionException {
 		if (delegate == null)
 			throw new NullPointerException();
-		
-		DelegatingResourceDescription description = getRepresentationDescription(rep);
+
+		DelegatingResourceDescription description;
+		if (rep instanceof CustomRepresentation) {
+			description = ConversionUtil.getCustomRepresentationDescription((CustomRepresentation) rep);
+		}
+		else {
+			description = getRepresentationDescription(rep);
+		}
+
 		return convertDelegateToRepresentation(delegate, description);
 	}
 	
@@ -140,7 +148,11 @@ public abstract class BaseDelegatingConverter<T> implements Converter<T>, Delega
 			throw new NullPointerException();
 		SimpleObject ret = new SimpleObject();
 		for (Map.Entry<String, DelegatingResourceDescription.Property> e : rep.getProperties().entrySet()) {
-			ret.put(e.getKey(), e.getValue().evaluate(this, delegate));
+			Object value = e.getValue().evaluate(this, delegate);
+			if (value == ConversionUtil.PRIVILEGE_DENIED) {
+				continue;
+			}
+			ret.put(e.getKey(), value);
 		}
 		List<Hyperlink> links = new ArrayList<Hyperlink>();
 		for (Hyperlink link : rep.getLinks()) {

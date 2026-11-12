@@ -1,0 +1,204 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
+
+import org.apache.commons.io.IOUtils;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.openmrs.api.DatatypeService;
+import org.openmrs.api.context.Context;
+import org.openmrs.api.db.ClobDatatypeStorage;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.mock.web.MockMultipartHttpServletRequest;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
+import java.sql.ResultSet;
+
+import jakarta.servlet.http.HttpServletResponse;
+
+public class ClobDatatypeStorageControllerTest extends MainResourceControllerTest {
+	
+	private DatatypeService datatypeService;
+	
+	@BeforeEach
+	public void before() throws Exception {
+		datatypeService = Context.getDatatypeService();
+		executeDataSet(RestTestConstants1_9.FORM_RESOURCE_DATA_SET);
+	}
+	
+	@Test
+	public void shouldAcceptAndStoreClobDataViaPost() throws Exception {
+		long before = getAllCount();
+		
+		byte[] fileData = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream(
+		    RestTestConstants1_9.TEST_RESOURCE_FILE));
+		
+		MockMultipartFile toUpload = new MockMultipartFile("file", "formresource.txt", "text/plain", fileData);
+		
+		MockMultipartHttpServletRequest request = new MockMultipartHttpServletRequest();
+		request.setRequestURI(getBaseRestURI() + getURI());
+		request.setMethod(RequestMethod.POST.name());
+		request.addHeader("Content-Type", "multipart/form-data");
+		
+		request.addFile(toUpload);
+		
+		MockHttpServletResponse response = handle(request);
+		
+		Assertions.assertEquals(HttpServletResponse.SC_CREATED, response.getStatus());
+		Assertions.assertEquals(before + 1, getAllCount());
+	}
+
+	@Test
+	public void shouldStoreClobDataWhenContentEncodingHeaderIsNotACharset() throws Exception {
+		long before = getAllCount();
+
+		byte[] fileData = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream(
+		    RestTestConstants1_9.TEST_RESOURCE_FILE));
+
+		MockMultipartFile toUpload = new MockMultipartFile("file", "formresource.txt", "text/plain", fileData);
+
+		MockMultipartHttpServletRequest request = newUploadRequest(getURI());
+		// Content-Encoding describes compression, not a charset; it must not be used as the read charset.
+		request.addHeader("Content-Encoding", "gzip");
+		request.addFile(toUpload);
+
+		MockHttpServletResponse response = handle(request);
+
+		Assertions.assertEquals(HttpServletResponse.SC_CREATED, response.getStatus());
+		Assertions.assertEquals(before + 1, getAllCount());
+	}
+	
+	@Test
+	public void shouldReturnClobDataAsFileByUuid() throws Exception {
+		ClobDatatypeStorage clob = datatypeService
+		        .getClobDatatypeStorageByUuid(RestTestConstants1_9.CLOBDATATYPESTORAGE_RESOURCE_UUID);
+		
+		Assertions.assertNotNull(clob);
+		int size = clob.getValue().getBytes().length;
+		MockHttpServletResponse response = handle(newGetRequest(getURI() + "/"
+		        + RestTestConstants1_9.CLOBDATATYPESTORAGE_RESOURCE_UUID));
+		
+		Assertions.assertEquals(size, response.getContentAsByteArray().length);
+	}
+
+	@Test
+	public void shouldRoundTripMultibyteContentAsUtf8() throws Exception {
+		String content = "Ωαςαβγ – café – 日本語 – ☺";
+
+		MockMultipartFile toUpload = new MockMultipartFile("file", "multibyte.txt", "text/plain",
+		        content.getBytes(StandardCharsets.UTF_8));
+
+		MockMultipartHttpServletRequest postRequest = newUploadRequest(getURI());
+		postRequest.addFile(toUpload);
+
+		MockHttpServletResponse postResponse = handle(postRequest);
+		Assertions.assertEquals(HttpServletResponse.SC_CREATED, postResponse.getStatus());
+		String uuid = postResponse.getContentAsString();
+
+		MockHttpServletResponse getResponse = handle(newGetRequest(getURI() + "/" + uuid));
+
+		// The controller set text/plain;charset=UTF-8, so getContentAsString() decodes the body as UTF-8.
+		Assertions.assertEquals(content, getResponse.getContentAsString());
+	}
+
+	@Test
+	public void shouldServeClobDataWithNonSniffableHeadersToPreventStoredXss() throws Exception {
+		MockHttpServletResponse response = handle(newGetRequest(getURI() + "/"
+		        + RestTestConstants1_9.CLOBDATATYPESTORAGE_RESOURCE_UUID));
+
+		// Assert the status first so a missing fixture row reads as a 404 failure, not a header regression.
+		Assertions.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+		// Compare parsed media types so the test pins header semantics (type, subtype, charset), not formatting.
+		Assertions.assertEquals(MediaType.parseMediaType("text/plain;charset=UTF-8"),
+		    MediaType.parseMediaType(response.getContentType()));
+		Assertions.assertEquals("nosniff", response.getHeader("X-Content-Type-Options"));
+	}
+
+	@Test
+	public void shouldDeleteAnExistingClobData() throws Exception {
+		ClobDatatypeStorage clob = datatypeService
+		        .getClobDatatypeStorageByUuid(RestTestConstants1_9.CLOBDATATYPESTORAGE_RESOURCE_UUID);
+		
+		Assertions.assertNotNull(clob);
+		
+		MockHttpServletResponse response = handle(newDeleteRequest(getURI() + "/"
+		        + RestTestConstants1_9.CLOBDATATYPESTORAGE_RESOURCE_UUID));
+		
+		clob = datatypeService.getClobDatatypeStorageByUuid(RestTestConstants1_9.CLOBDATATYPESTORAGE_RESOURCE_UUID);
+		
+		Assertions.assertNull(clob);
+		Assertions.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+	}
+	
+	@Test
+	public void shouldReturnHTTP404ForNonExistenceClobdata() throws Exception {
+		MockHttpServletResponse response = handle(newGetRequest(getURI() + "/non-existence-uuid"));
+		Assertions.assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
+	}
+	
+	@Override
+	public String getURI() {
+		return "clobdata";
+	}
+	
+	@Override
+	public String getUuid() {
+		return RestTestConstants1_9.CLOBDATATYPESTORAGE_RESOURCE_UUID;
+	}
+	
+	@Override
+	public long getAllCount() {
+		try {
+			Connection connection = getConnection();
+			
+			ResultSet resultSet = connection.prepareStatement("select count('id') from clob_datatype_storage")
+			        .executeQuery();
+			if (resultSet.next()) {
+				return resultSet.getLong(1);
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
+	
+	@Override
+	@Disabled
+	public void shouldGetRefByUuid() throws Exception {
+		
+	}
+	
+	@Override
+	@Disabled
+	public void shouldGetDefaultByUuid() throws Exception {
+		
+	}
+	
+	@Override
+	@Disabled
+	public void shouldGetFullByUuid() throws Exception {
+		
+	}
+	
+	@Override
+	@Disabled
+	public void shouldGetAll() throws Exception {
+		
+	}
+}

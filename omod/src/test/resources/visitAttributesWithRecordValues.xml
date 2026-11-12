@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+
+    This Source Code Form is subject to the terms of the Mozilla Public License,
+    v. 2.0. If a copy of the MPL was not distributed with this file, You can
+    obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+    the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+
+    Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+    graphic logo is a trademark of OpenMRS Inc.
+
+-->
+<!--
+    Attributes whose value is a record rather than a literal, one per visit so each test asks for
+    "the only attribute of" its own visit.
+
+    Every visit attribute type in core and in this module is a DateDatatype, whose value is its own
+    content and discloses nothing beyond itself. These three store a reference and hand back the
+    record it resolves to, which is what BaseAttributeCrudResource1_9's display prints beside the
+    mask of that same record - and for two of them printing it reaches further records still:
+
+      visit 1  ConceptDatatype   concept 22 "UNKNOWN"; Concept.toString() prints its own id
+      visit 2  ProviderDatatype  provider 1, on person 1 "Super User"; Provider.toString() prints
+                                 every name of that person
+      visit 3  ProgramDatatype   program 1 "HIV PROGRAM"; Program.toString() prints its concept
+                                 (9 "HIV PROGRAM") and its workflows, each as an id
+
+    Every value_reference is a uuid: all three datatypes deserialize one, not an id.
+-->
+<dataset>
+	<visit_attribute_type visit_attribute_type_id="20" name="Primary Diagnosis"
+						  description="A concept-valued visit attribute type"
+						  datatype="org.openmrs.customdatatype.datatype.ConceptDatatype" min_occurs="0" max_occurs="1"
+						  creator="1" date_created="2005-01-01 00:00:00.0" retired="0"
+						  uuid="b2d8f4c1-5e37-4a90-8f6b-7c1e0a9d3b54"/>
+	<visit_attribute visit_attribute_id="20" visit_id="1" attribute_type_id="20"
+					 value_reference="e10ffe54-5184-4efe-8960-cd565ec1cdf8" creator="1"
+					 date_created="2005-02-01 00:00:00.0" voided="0"
+					 uuid="c7a1e9b6-0d42-4f85-b3c9-8a5f2e6d1074"/>
+
+	<visit_attribute_type visit_attribute_type_id="21" name="Attending Provider"
+						  description="A provider-valued visit attribute type"
+						  datatype="org.openmrs.customdatatype.datatype.ProviderDatatype" min_occurs="0" max_occurs="1"
+						  creator="1" date_created="2005-01-01 00:00:00.0" retired="0"
+						  uuid="3e5a7c18-9b24-4df6-8e01-5a7c2f0b6d93"/>
+	<visit_attribute visit_attribute_id="21" visit_id="2" attribute_type_id="21"
+					 value_reference="c2299800-cca9-11e0-9572-0800200c9a66" creator="1"
+					 date_created="2005-02-01 00:00:00.0" voided="0"
+					 uuid="9f4b1d07-6e58-42ac-b5d3-0c81e7a29f46"/>
+
+	<visit_attribute_type visit_attribute_type_id="22" name="Referred From Program"
+						  description="A program-valued visit attribute type"
+						  datatype="org.openmrs.customdatatype.datatype.ProgramDatatype" min_occurs="0" max_occurs="1"
+						  creator="1" date_created="2005-01-01 00:00:00.0" retired="0"
+						  uuid="7c6e2b95-4a13-48df-9e27-1b5d8f0a63c7"/>
+	<visit_attribute visit_attribute_id="22" visit_id="3" attribute_type_id="22"
+					 value_reference="da4a0391-ba62-4fad-ad66-1e3722d16380" creator="1"
+					 date_created="2005-02-01 00:00:00.0" voided="0"
+					 uuid="5d83f0a2-7c41-4e96-ba58-3f2c9e1d7b40"/>
+</dataset>

@@ -18,7 +18,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
-import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
@@ -92,7 +91,7 @@ public abstract class DelegatingSubResource<T, P, PR extends DelegatingCrudResou
 			throw new ObjectNotFoundException();
 		T delegate = newDelegate(post);
 		setParent(delegate, parent);
-		DelegatingResourceDescription description = getBuildCreatableProperties(post);
+		DelegatingResourceDescription description = buildCreatableProperties(delegate, this, post);
 		setConvertedProperties(delegate, post, description, true);
 		delegate = save(delegate);
 		return ConversionUtil.convertToRepresentation(delegate, Representation.DEFAULT);
@@ -243,14 +242,6 @@ public abstract class DelegatingSubResource<T, P, PR extends DelegatingCrudResou
 	@Override
 	public void put(String parentUniqueId, SimpleObject post, RequestContext context) throws ResponseException {
 		throw new ResourceDoesNotSupportOperationException();
-	}
-	
-	private DelegatingResourceDescription getBuildCreatableProperties(SimpleObject propertiesToCreate) {
-		DelegatingResourceDescription description = getCreatableProperties();
-		if (propertiesToCreate.containsKey(RestConstants.PROPERTY_UUID)) {
-			description.addProperty(RestConstants.PROPERTY_UUID);
-		}
-		return description;
 	}
 	
 }

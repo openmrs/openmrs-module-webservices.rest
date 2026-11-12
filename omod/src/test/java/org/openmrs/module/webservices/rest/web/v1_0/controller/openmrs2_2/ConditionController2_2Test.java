@@ -1,0 +1,368 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_2;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.openmrs.CodedOrFreeText;
+import org.openmrs.Concept;
+import org.openmrs.ConceptName;
+import org.openmrs.Condition;
+import org.openmrs.ConditionClinicalStatus;
+import org.openmrs.ConditionVerificationStatus;
+import org.openmrs.Patient;
+import org.openmrs.api.ConditionService;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
+import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_2;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Tests functionality of {@link ConditionController2_2}.
+ */
+public class ConditionController2_2Test extends MainResourceControllerTest {
+	
+	private ConditionService conditionService;
+	
+	private Patient patient;
+	
+	private Concept concept1, concept2;
+	
+	private ConceptName conceptName1, conceptName2;
+	
+	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+	
+	@BeforeEach
+	public void before() throws Exception {
+		executeDataSet(RestTestConstants2_2.CONDITION_TEST_DATA_XML);
+		
+		this.conditionService = Context.getConditionService();
+		this.patient = Context.getPatientService().getPatient(2);
+		this.concept1 = Context.getConceptService().getConcept(111);
+		this.concept2 = Context.getConceptService().getConcept(112);
+		this.conceptName1 = Context.getConceptService().getConceptName(1111);
+		this.conceptName2 = Context.getConceptService().getConceptName(1112);
+	}
+	
+	/**
+	 * @see MainResourceControllerTest#getURI()
+	 */
+	@Override
+	public String getURI() {
+		return "condition";
+	}
+	
+	/**
+	 * @see MainResourceControllerTest#getUuid()
+	 */
+	@Override
+	public String getUuid() {
+		return RestTestConstants2_2.CODED_CONDITION_UUID;
+	}
+	
+	/**
+	 * @see MainResourceControllerTest#getAllCount()
+	 */
+	@Override
+	public long getAllCount() {
+		List<Condition> activeConditions = conditionService.getActiveConditions(patient);
+		int totalConditions = 0;
+		
+		if (activeConditions != null) {
+			totalConditions = totalConditions + activeConditions.size();
+		}
+		
+		return totalConditions;
+	}
+	
+	@Test
+	public void shouldCreateANonCodedCondition() throws Exception {
+		CodedOrFreeText cond = new CodedOrFreeText();
+		cond.setNonCoded("Some condition");
+		
+		SimpleObject conditionSource = new SimpleObject();
+		conditionSource.add("condition", cond);
+		conditionSource.add("patient", patient.getUuid());
+		conditionSource.add("clinicalStatus", ConditionClinicalStatus.ACTIVE);
+		conditionSource.add("verificationStatus", ConditionVerificationStatus.CONFIRMED);
+		conditionSource.add("onsetDate", "2017-01-12 00:00:00");
+		
+		String json = new ObjectMapper().writeValueAsString(conditionSource);
+		
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI());
+		req.setContent(json.getBytes());
+		
+		MockHttpServletResponse res = handle(req);
+		
+		SimpleObject newConditionSource = deserialize(res);
+		String uuid = newConditionSource.get("uuid");
+		LinkedHashMap nonCoded = newConditionSource.get("condition");
+		LinkedHashMap patient = newConditionSource.get("patient");
+		
+		Assertions.assertNotNull(conditionService.getConditionByUuid(uuid));
+		
+		Condition condition = conditionService.getConditionByUuid(uuid);
+		
+		Assertions.assertEquals(nonCoded.get("nonCoded"), condition.getCondition().getNonCoded());
+		Assertions.assertEquals(patient.get("uuid"), condition.getPatient().getUuid());
+		Assertions.assertEquals(newConditionSource.get("clinicalStatus"), condition.getClinicalStatus().toString());
+		Assertions.assertEquals(newConditionSource.get("verificationStatus"), condition.getVerificationStatus().toString());
+		Assertions.assertNotNull(newConditionSource.get("onsetDate"));
+	}
+	
+	@Test
+	public void shouldCreateACodedCondition() throws Exception {
+		SimpleObject codedOrFreeText = new SimpleObject();
+		codedOrFreeText.add("coded", concept1.getUuid());
+		codedOrFreeText.add("specificName", conceptName1.getUuid());
+		
+		SimpleObject conditionSource = new SimpleObject();
+		conditionSource.add("condition", codedOrFreeText);
+		conditionSource.add("patient", patient.getUuid());
+		conditionSource.add("clinicalStatus", ConditionClinicalStatus.ACTIVE);
+		conditionSource.add("verificationStatus", ConditionVerificationStatus.CONFIRMED);
+		conditionSource.add("onsetDate", "2017-01-12 00:00:00");
+		
+		String json = new ObjectMapper().writeValueAsString(conditionSource);
+		
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI());
+		req.setContent(json.getBytes());
+		
+		MockHttpServletResponse res = handle(req);
+		
+		SimpleObject newConditionSource = deserialize(res);
+		String uuid = newConditionSource.get("uuid");
+		LinkedHashMap cond = newConditionSource.get("condition");
+		LinkedHashMap concept = (LinkedHashMap) cond.get("coded");
+		LinkedHashMap conceptName = (LinkedHashMap) cond.get("specificName");
+		LinkedHashMap patient = newConditionSource.get("patient");
+		
+		Assertions.assertNotNull(conditionService.getConditionByUuid(uuid));
+		
+		Condition condition = conditionService.getConditionByUuid(uuid);
+		
+		Assertions.assertEquals(concept.get("uuid"), condition.getCondition().getCoded().getUuid());
+		Assertions.assertEquals(conceptName.get("uuid"), condition.getCondition().getSpecificName().getUuid());
+		Assertions.assertEquals(patient.get("uuid"), condition.getPatient().getUuid());
+		Assertions.assertEquals(newConditionSource.get("clinicalStatus"), condition.getClinicalStatus().toString());
+		Assertions.assertEquals(newConditionSource.get("verificationStatus"), condition.getVerificationStatus().toString());
+		Assertions.assertNotNull(newConditionSource.get("onsetDate"));
+	}
+	
+	@Test
+	public void shouldUpdateANonCodedCondition() throws Exception {
+		final String newNonCoded = "Updated non coded condition";
+		final ConditionClinicalStatus newClinicalStatus = ConditionClinicalStatus.INACTIVE;
+		final ConditionVerificationStatus newVerificationStatus = ConditionVerificationStatus.PROVISIONAL;
+		final Date newOnsetDate = new Date();
+		final Date newEndDate = new Date();
+		final String newAdditionalDetail = "Some extra details.";
+		
+		Condition condition = conditionService.getConditionByUuid(RestTestConstants2_2.NON_CODED_CONDITION_UUID);
+		
+		Assertions.assertNotNull(condition);
+		//sanity checks
+		Assertions.assertFalse(newNonCoded.equalsIgnoreCase(condition.getCondition().getNonCoded()));
+		Assertions.assertFalse(newClinicalStatus.equals(condition.getClinicalStatus()));
+		Assertions.assertFalse(newVerificationStatus.equals(condition.getVerificationStatus()));
+		Assertions.assertFalse(newOnsetDate.equals(condition.getOnsetDate()));
+		Assertions.assertFalse(newEndDate.equals(condition.getEndDate()));
+		Assertions.assertFalse(newAdditionalDetail.equalsIgnoreCase(condition.getAdditionalDetail()));
+		
+		String json = "{ \"condition\":{\"coded\":null,\"specificName\":null,\"nonCoded\":\"" + newNonCoded
+		        + "\"},\"clinicalStatus\":\"" + newClinicalStatus
+		        + "\",\"verificationStatus\":\"" + newVerificationStatus + "\",\"onsetDate\":\""
+		        + DATE_FORMAT.format(newOnsetDate) + "\",\"endDate\":\"" + DATE_FORMAT.format(newEndDate)
+		        + "\",\"additionalDetail\":\"" + newAdditionalDetail + "\"}";
+		
+		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + RestTestConstants2_2.NON_CODED_CONDITION_UUID, json)));
+
+		// Updating a Condition creates a new entity instead of modifying the existing one,
+		// so the UUID returned in the response will differ from the original condition's UUID.
+		Condition updatedCondition = conditionService.getConditionByUuid(response.get("uuid"));
+		
+		Assertions.assertNotNull(updatedCondition);
+		Assertions.assertEquals(newNonCoded, updatedCondition.getCondition().getNonCoded());
+		Assertions.assertEquals(newClinicalStatus, updatedCondition.getClinicalStatus());
+		Assertions.assertEquals(newVerificationStatus, updatedCondition.getVerificationStatus());
+		Assertions.assertEquals(newOnsetDate.toString(), updatedCondition.getOnsetDate().toString());
+		Assertions.assertEquals(newEndDate.toString(), updatedCondition.getEndDate().toString());
+		Assertions.assertEquals(newAdditionalDetail, updatedCondition.getAdditionalDetail());
+	}
+	
+	@Test
+	public void shouldUpdateACodedCondition() throws Exception {
+		final String newCoded = concept2.getUuid();
+		final String newSpecificName = conceptName2.getUuid();
+		final ConditionClinicalStatus newClinicalStatus = ConditionClinicalStatus.INACTIVE;
+		final ConditionVerificationStatus newVerificationStatus = ConditionVerificationStatus.PROVISIONAL;
+		final Date newOnsetDate = new Date();
+		final Date newEndDate = new Date();
+		final String newAdditionalDetail = "Some extra details.";
+		
+		Condition condition = conditionService.getConditionByUuid(RestTestConstants2_2.CODED_CONDITION_UUID);
+		
+		Assertions.assertNotNull(condition);
+		//sanity checks
+		Assertions.assertFalse(newCoded.equalsIgnoreCase(condition.getCondition().getCoded().getUuid()));
+		Assertions.assertFalse(newSpecificName.equalsIgnoreCase(condition.getCondition().getSpecificName().getUuid()));
+		Assertions.assertFalse(newClinicalStatus.equals(condition.getClinicalStatus()));
+		Assertions.assertFalse(newVerificationStatus.equals(condition.getVerificationStatus()));
+		Assertions.assertFalse(newOnsetDate.equals(condition.getOnsetDate()));
+		Assertions.assertFalse(newEndDate.equals(condition.getEndDate()));
+		Assertions.assertFalse(newAdditionalDetail.equalsIgnoreCase(condition.getAdditionalDetail()));
+		
+		String json = "{\"condition\":{\"coded\":\"" + newCoded + "\",\"specificName\":\"" + newSpecificName
+		        + "\"},\"clinicalStatus\":\"" + newClinicalStatus
+		        + "\",\"verificationStatus\":\"" + newVerificationStatus + "\",\"onsetDate\":\""
+		        + DATE_FORMAT.format(newOnsetDate) + "\",\"endDate\":\"" + DATE_FORMAT.format(newEndDate)
+		        + "\",\"additionalDetail\":\"" + newAdditionalDetail + "\"}";
+		
+		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + RestTestConstants2_2.CODED_CONDITION_UUID, json)));
+
+		// Updating a Condition creates a new entity instead of modifying the existing one,
+		// so the UUID returned in the response will differ from the original condition's UUID.
+		Condition updatedCondition = conditionService.getConditionByUuid(response.get("uuid"));
+		
+		Assertions.assertNotNull(updatedCondition);
+		Assertions.assertEquals(newCoded, updatedCondition.getCondition().getCoded().getUuid());
+		Assertions.assertEquals(newSpecificName, updatedCondition.getCondition().getSpecificName().getUuid());
+		Assertions.assertEquals(newClinicalStatus, updatedCondition.getClinicalStatus());
+		Assertions.assertEquals(newVerificationStatus, updatedCondition.getVerificationStatus());
+		Assertions.assertEquals(newOnsetDate.toString(), updatedCondition.getOnsetDate().toString());
+		Assertions.assertEquals(newEndDate.toString(), updatedCondition.getEndDate().toString());
+		Assertions.assertEquals(newAdditionalDetail, updatedCondition.getAdditionalDetail());
+	}
+	
+	@Test
+	public void shouldVoidACondition() throws Exception {
+		Condition condition = conditionService.getConditionByUuid(getUuid());
+		Assertions.assertFalse(condition.isVoided());
+		
+		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
+		req.addParameter("reason", "unit test");
+		handle(req);
+		
+		condition = conditionService.getConditionByUuid(getUuid());
+		Assertions.assertEquals(Context.getAuthenticatedUser().getUuid(), condition.getVoidedBy().getUuid());
+		Assertions.assertTrue(condition.isVoided());
+		Assertions.assertEquals("unit test", condition.getVoidReason());
+		Assertions.assertNotNull(condition.getDateVoided());
+	}
+	
+	@Test
+	public void shouldUnvoidACondition() throws Exception {
+		
+		String voidedUuid = RestTestConstants2_2.VOIDED_CONDITION_UUID;
+		
+		Condition condition = conditionService.getConditionByUuid(voidedUuid);
+		Assertions.assertEquals(true, condition.getVoided());
+		
+		SimpleObject attributes = new SimpleObject();
+		attributes.add("voided", false);
+		
+		String json = new ObjectMapper().writeValueAsString(attributes);
+		
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + voidedUuid);
+		req.setContent(json.getBytes());
+		SimpleObject response = deserialize(handle(req));
+
+		// Updating a Condition creates a new entity instead of modifying the existing one,
+		// so the UUID returned in the response will differ from the original voided condition's UUID.
+
+		condition = conditionService.getConditionByUuid(response.get("uuid"));
+		Assertions.assertEquals(false, condition.getVoided());
+	}
+	
+	@Test
+	public void shouldPurgeCondition() throws Exception {
+		
+		Assertions.assertNotNull(conditionService.getConditionByUuid(getUuid()));
+		
+		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
+		req.addParameter("purge", "true");
+		handle(req);
+		
+		Assertions.assertNull(conditionService.getConditionByUuid(getUuid()));
+	}
+	
+	/**
+	 * @see MainResourceControllerTest#shouldGetAll()
+	 */
+	@Override
+	@Test
+	public void shouldGetAll() throws Exception {
+		assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
+			super.shouldGetAll();
+		});
+	}
+
+	@Test
+	public void shouldReturnActiveConditions() throws Exception {
+		MockHttpServletRequest request = request(RequestMethod.GET, getURI());
+		request.addParameter("patientUuid", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5");
+		request.addParameter("includeInactive", "false");
+		SimpleObject result = deserialize(handle(request));
+		List<Condition> conditions = result.get("results");
+		Assertions.assertEquals(3, conditions.size());
+	}
+
+	@Test
+	public void shouldReturnAllConditions() throws Exception {
+		MockHttpServletRequest request = request(RequestMethod.GET, getURI());
+		request.addParameter("patientUuid", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5");
+		request.addParameter("includeInactive", "true");
+		SimpleObject result = deserialize(handle(request));
+		List<Condition> conditions = result.get("results");
+		Assertions.assertEquals(3, conditions.size());
+	}
+
+	@Test
+	public void shouldGetACustomRepresentation() throws Exception {
+		MockHttpServletRequest request = request(RequestMethod.GET, getURI());
+		request.addParameter("patientUuid", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5");
+		request.addParameter("includeInactive", "true");
+		request.addParameter("v", "custom:(uuid,display,clinicalStatus,onsetDate,endDate,additionalDetail,condition:(coded:(id,uuid)))");
+		SimpleObject result = deserialize(handle(request));
+		List<Map<String, Object>> conditions = result.get("results");
+		Assertions.assertEquals(3, conditions.size());
+		Map<String, Object> c1 = conditions.get(0);
+		Assertions.assertEquals(8, c1.size()); // note that `resourceVersion` is implicitly included
+		Assertions.assertEquals("c1d4185b-0364-4978-a635-3165a82a3178", c1.get("uuid"));
+		Assertions.assertEquals("Concept 1", c1.get("display"));
+		Assertions.assertEquals("ACTIVE", c1.get("clinicalStatus"));
+		Assertions.assertNotNull(c1.get("onsetDate"));
+		Assertions.assertNull(c1.get("endDate"));
+		Assertions.assertNull(c1.get("additionalDetail"));
+		Assertions.assertNotNull(c1.get("resourceVersion"));
+		Map<String, Object> codedOrNonCoded = (Map<String, Object>) c1.get("condition");
+		Assertions.assertNotNull(codedOrNonCoded);
+		Assertions.assertEquals(1, codedOrNonCoded.size());
+		Map<String, Object> conditionCoded = (Map<String, Object>) codedOrNonCoded.get("coded");
+		Assertions.assertEquals(3, conditionCoded.size());
+		Assertions.assertEquals(111, conditionCoded.get("id"));
+		Assertions.assertEquals("62a26128-006f-4e77-859b-4aa502e3dd62", conditionCoded.get("uuid"));
+		Assertions.assertNotNull(conditionCoded.get("resourceVersion"));
+	}
+}

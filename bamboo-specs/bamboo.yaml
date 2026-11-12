@@ -1,0 +1,207 @@
+---
+version: 2
+plan:
+  project-key: RESTWS
+  key: RESTWS
+  name: Rest Webservices Module
+  description: Builds and runs unit tests. More details of the release in https://wiki.openmrs.org/x/i4DTAw
+stages:
+- Default Stage:
+    manual: false
+    final: false
+    jobs:
+    - Build and Test JDK 21
+- Deploy:
+    manual: false
+    final: false
+    jobs:
+    - Deploy to Maven
+- Release:
+    manual: true
+    final: false
+    jobs:
+    - Release to Maven
+
+Build and Test JDK 21:
+  key: BTJ21
+  tasks:
+  - checkout:
+      force-clean-build: 'false'
+      description: Checkout default repository
+  - script:
+      interpreter: SHELL
+      scripts:
+      - |-
+        #!/bin/bash -eu
+        set -x
+        export IMAGE="maven:3.9.9-amazoncorretto-21"
+        docker pull ${IMAGE}
+        docker run -v m2-repo:/root/.m2/repository -v ${PWD}:/module --rm -w="/module" ${IMAGE} bash -c 'mvn clean package && chmod -R 777 .'
+      description: Build and test
+  final-tasks:
+  - script:
+      interpreter: SHELL
+      scripts:
+      - |-
+        #!/bin/bash -eu
+
+        set -x
+
+        # Fix ownership so things can get discarded
+        ${bamboo.docker.run.cleanup}
+      description: Cleanup
+  artifact-subscriptions: []
+Deploy to Maven:
+  key: DTM
+  tasks:
+  - checkout:
+      force-clean-build: 'false'
+      description: Checkout default repository
+  - script:
+      interpreter: SHELL
+      scripts:
+      - |-
+        #!/bin/bash -eu
+        set -x
+        export IMAGE="maven:3.9.9-amazoncorretto-21"
+        docker pull ${IMAGE}
+        docker run -v m2-repo:/root/.m2/repository -v ~/.m2/settings.xml:/.m2/settings.xml:ro -v ${PWD}:/module --rm -w="/module" ${IMAGE} bash -c 'mvn deploy -DskipTests --settings /.m2/settings.xml'
+      description: Deploy
+  final-tasks:
+  - script:
+      interpreter: SHELL
+      scripts:
+      - |-
+        #!/bin/bash -eu
+
+        set -x
+
+        # Fix ownership so things can get discarded
+        ${bamboo.docker.run.cleanup}
+      description: Cleanup
+  artifact-subscriptions: []
+Release to Maven:
+  key: RTM
+  tasks:
+  - checkout:
+      force-clean-build: 'false'
+      description: Checkout Default Repository
+  - checkout:
+      repository: Release scripts
+      path: release-scripts
+      force-clean-build: 'false'
+      description: Checkout Default Repository
+  - script:
+      interpreter: SHELL
+      scripts:
+      - |-
+        #!/bin/bash -eu
+        set -x
+        export IMAGE="maven:3.9.9-amazoncorretto-21"
+        docker pull ${IMAGE}
+        docker run \
+          -v m2-repo:/root/.m2/repository \
+          -v ~/.m2/settings.xml:/root/.m2/settings.xml:ro \
+          -v ${PWD}:/module \
+          -v ~/.ssh/github:/root/.ssh:ro \
+          -e GIT_USER_NAME=$GIT_USER_NAME \
+          -e GIT_USER_EMAIL=$GIT_USER_EMAIL \
+          -e GIT_SSH_COMMAND='ssh -i /root/.ssh/id_rsa -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' \
+          --rm \
+          -w='/module' \
+          ${IMAGE} \
+          bash -c '
+            yum -y install git &&
+            yum clean all &&
+            git config --global user.email "$GIT_USER_EMAIL" &&
+            git config --global user.name "$GIT_USER_NAME" &&
+            git config --global --add safe.directory /module &&
+            ./release-scripts/release-prepare-perform.sh \
+              -r ${bamboo.maven.release.version} \
+              -d ${bamboo.maven.development.version} \
+              -e ${bamboo.planRepository.repositoryUrl}
+          '
+      environment: GIT_USER_NAME=${bamboo.git.user.name} GIT_USER_EMAIL=${bamboo.git.user.email}
+      description: Release prepare perform
+  - any-task:
+      plugin-key: com.atlassian.bamboo.plugins.variable.updater.variable-updater-generic:variable-extractor
+      configuration:
+        variable: maven.release.version
+        removeSnapshot: 'true'
+        variableScope: PLAN
+      description: Save next release version
+  - any-task:
+      plugin-key: com.atlassian.bamboo.plugins.variable.updater.variable-updater-generic:variable-extractor
+      configuration:
+        variable: maven.development.version
+        variableScope: JOB
+      description: Retrieve next snaphot version
+  final-tasks:
+  - script:
+      interpreter: SHELL
+      scripts:
+      - |-
+        #!/bin/bash -eu
+
+        set -x
+
+        # Fix ownership so things can get discarded
+        ${bamboo.docker.run.cleanup}
+      description: Cleanup
+  artifact-subscriptions: []
+variables:
+  maven.development.version: 2.51.0-SNAPSHOT
+  maven.release.version: 2.50.0
+  refapp.distro.property: webservices.restVersion
+repositories:
+- openmrs-module-webservices.rest:
+    scope: global
+- Release scripts:
+    scope: global
+triggers:
+- polling:
+    period: '180'
+    repositories:
+    - openmrs-module-webservices.rest
+branches:
+  create: manually
+  delete: never
+  link-to-jira: true
+notifications:
+- events:
+  - plan-failed
+  recipients:
+  - committers
+  - watchers
+labels:
+- platform
+dependencies:
+  require-all-stages-passing: false
+  enabled-for-branches: true
+  block-strategy: none
+  plans:
+  - CA-CA
+  - REFAPP-OMODDISTRO
+  - EMRAPI-EMRAPI
+other:
+  concurrent-build-plugin: system-default
+---
+version: 2
+plan:
+  key: RESTWS-RESTWS
+plan-permissions:
+- users:
+  - ibacher
+  roles:
+  - logged-in
+  permissions:
+  - view
+  - edit
+  - build
+  - clone
+  - admin
+- roles:
+  - anonymous
+  permissions:
+  - view
+...

@@ -1,0 +1,26 @@
+name: Build with Maven
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    uses: openmrs/openmrs-contrib-gha-workflows/.github/workflows/build-backend-module.yml@main
+    secrets:
+      MAVEN_REPO_USERNAME: ${{ secrets.MAVEN_REPO_USERNAME }}
+      MAVEN_REPO_API_KEY: ${{ secrets.MAVEN_REPO_API_KEY }}
+
+  owasp-dependency-check:
+    if: ${{ github.event_name != 'pull_request' }}
+    uses: openmrs/openmrs-contrib-gha-workflows/.github/workflows/owasp-dependency-check.yml@main
+    secrets:
+      NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+      BOT_GH_TOKEN: ${{ secrets.OMRS_BOT_GH_TOKEN }}

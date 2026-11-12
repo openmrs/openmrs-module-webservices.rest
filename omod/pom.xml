@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.openmrs.module</groupId>
 		<artifactId>webservices.rest</artifactId>
-		<version>2.45.0-SNAPSHOT</version>
+		<version>5.0.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>webservices.rest-omod</artifactId>
 	<packaging>jar</packaging>
@@ -23,142 +23,25 @@
 			<classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>
+
 		<dependency>
-			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>${project.parent.artifactId}-omod-1.8</artifactId>
-			<version>${project.parent.version}</version>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>legacyui-omod</artifactId>
+			<scope>provided</scope>
+			<optional>true</optional>
 		</dependency>
+
+		<!-- Add jackson-dataformat-yaml with test scope to support tests without bundling -->
 		<dependency>
-			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>${project.parent.artifactId}-omod-1.8</artifactId>
-			<version>${project.parent.version}</version>
-			<classifier>tests</classifier>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>${project.parent.artifactId}-omod-1.9</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>${project.parent.artifactId}-omod-1.9</artifactId>
-			<version>${project.parent.version}</version>
-			<classifier>tests</classifier>
-			<scope>test</scope>
-		</dependency>
-        <dependency>
-            <groupId>${project.parent.groupId}</groupId>
-            <artifactId>${project.parent.artifactId}-omod-1.10</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.parent.groupId}</groupId>
-            <artifactId>${project.parent.artifactId}-omod-1.10</artifactId>
-            <version>${project.parent.version}</version>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-        </dependency>
-         <dependency>
-            <groupId>${project.parent.groupId}</groupId>
-            <artifactId>${project.parent.artifactId}-omod-1.11</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.parent.groupId}</groupId>
-            <artifactId>${project.parent.artifactId}-omod-1.11</artifactId>
-            <version>${project.parent.version}</version>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>${project.parent.groupId}</groupId>
-            <artifactId>${project.parent.artifactId}-omod-2.0</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.parent.groupId}</groupId>
-            <artifactId>${project.parent.artifactId}-omod-2.0</artifactId>
-            <version>${project.parent.version}</version>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-        </dependency>
-		<dependency>
-			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>${project.parent.artifactId}-omod-1.12</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>${project.parent.artifactId}-omod-1.12</artifactId>
-			<version>${project.parent.version}</version>
-			<classifier>tests</classifier>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>${project.parent.artifactId}-omod-2.1</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>${project.parent.artifactId}-omod-2.1</artifactId>
-			<version>${project.parent.version}</version>
-			<classifier>tests</classifier>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>${project.parent.artifactId}-omod-2.2</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>${project.parent.artifactId}-omod-2.2</artifactId>
-			<version>${project.parent.version}</version>
-			<classifier>tests</classifier>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>${project.parent.artifactId}-omod-2.3</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>${project.parent.artifactId}-omod-2.3</artifactId>
-			<version>${project.parent.version}</version>
-			<classifier>tests</classifier>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>${project.parent.artifactId}-omod-2.4</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>${project.parent.artifactId}-omod-2.4</artifactId>
-			<version>${project.parent.version}</version>
-			<classifier>tests</classifier>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>${project.parent.artifactId}-omod-2.5</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>${project.parent.artifactId}-omod-2.5</artifactId>
-			<version>${project.parent.version}</version>
-			<classifier>tests</classifier>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-yaml</artifactId>
+			<version>2.13.3</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	
 	<build>
-        <finalName>${project.parent.artifactId}-${project.parent.version}.${revisionNumber}</finalName>
+        <finalName>${project.parent.artifactId}-${project.parent.version}</finalName>
 		
 		<plugins>
 			<plugin>

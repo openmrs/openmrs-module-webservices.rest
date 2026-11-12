@@ -10,22 +10,22 @@
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Order;
 import org.openmrs.Patient;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
@@ -47,7 +47,7 @@ public class AlreadyPagedTest extends BaseModuleWebContextSensitiveTest {
 	
 	List<Order> orders = new ArrayList<Order>();
 	
-	@Before
+	@BeforeEach
 	public void setUp() {
 		
 		converter = ConversionUtil.getConverter(Order.class);

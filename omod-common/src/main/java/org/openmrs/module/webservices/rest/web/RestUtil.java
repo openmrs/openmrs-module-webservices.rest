@@ -9,6 +9,33 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.GlobalProperty;
+import org.openmrs.OpenmrsData;
+import org.openmrs.OpenmrsMetadata;
+import org.openmrs.api.GlobalPropertyListener;
+import org.openmrs.api.ValidationException;
+import org.openmrs.api.context.Context;
+import org.openmrs.messagesource.MessageSourceService;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.Resource;
+import org.openmrs.module.webservices.rest.web.resource.api.SubResource;
+import org.openmrs.util.OpenmrsClassLoader;
+import org.openmrs.util.PrivilegeConstants;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.ServletRequestBindingException;
+import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -26,36 +53,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.regex.Pattern;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.openmrs.GlobalProperty;
-import org.openmrs.OpenmrsData;
-import org.openmrs.OpenmrsMetadata;
-import org.openmrs.api.GlobalPropertyListener;
-import org.openmrs.api.context.Context;
-import org.openmrs.messagesource.MessageSourceService;
-import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.api.Resource;
-import org.openmrs.module.webservices.rest.web.resource.api.SubResource;
-import org.openmrs.module.webservices.validation.ValidationException;
-import org.openmrs.util.OpenmrsClassLoader;
-import org.openmrs.util.PrivilegeConstants;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.ServletRequestBindingException;
-import org.springframework.web.bind.ServletRequestUtils;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.context.request.WebRequest;
 
 /**
  * Convenient helper methods for the Rest Web Services module.
@@ -65,17 +62,30 @@ public class RestUtil implements GlobalPropertyListener {
 	private static Log log = LogFactory.getLog(RestUtil.class);
 	
 	private static boolean contextEnabled = true;
+
+	/**
+	 * Returns the global property value with the given name
+	 * @param propertyName the global property to retrieve
+	 * @return the global property value with the given name
+	 */
+	private static String getGlobalProperty(String propertyName, String defaultValue) {
+		try {
+			Context.addProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
+			return Context.getAdministrationService().getGlobalProperty(propertyName, defaultValue);
+		}
+		finally {
+			Context.removeProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
+		}
+	}
 	
 	/**
 	 * Looks up the admin defined global property for the system limit
 	 * 
 	 * @return Integer limit
-	 * @see #getLimit(WebRequest)
 	 * @see RestConstants#MAX_RESULTS_DEFAULT_GLOBAL_PROPERTY_NAME
 	 */
 	public static Integer getDefaultLimit() {
-		String limit = Context.getAdministrationService()
-		        .getGlobalProperty(RestConstants.MAX_RESULTS_DEFAULT_GLOBAL_PROPERTY_NAME);
+		String limit = getGlobalProperty(RestConstants.MAX_RESULTS_DEFAULT_GLOBAL_PROPERTY_NAME, null);
 		if (StringUtils.isNotEmpty(limit)) {
 			try {
 				return Integer.parseInt(limit);
@@ -94,12 +104,10 @@ public class RestUtil implements GlobalPropertyListener {
 	 * Looks up the admin defined global property for the absolute limit to results of REST calls
 	 * 
 	 * @return Integer limit
-	 * @see #getLimit(WebRequest)
 	 * @see RestConstants#MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME
 	 */
 	public static Integer getAbsoluteLimit() {
-		String limit = Context.getAdministrationService()
-		        .getGlobalProperty(RestConstants.MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME);
+		String limit = getGlobalProperty(RestConstants.MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME, null);
 		if (StringUtils.isNotEmpty(limit)) {
 			try {
 				return Integer.parseInt(limit);
@@ -215,8 +223,7 @@ public class RestUtil implements GlobalPropertyListener {
 		String allowedIpsProperty = "";
 		try {
 			Context.addProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
-			allowedIpsProperty = Context.getAdministrationService()
-					.getGlobalProperty(RestConstants.ALLOWED_IPS_GLOBAL_PROPERTY_NAME, allowedIpsProperty);
+			allowedIpsProperty = getGlobalProperty(RestConstants.ALLOWED_IPS_GLOBAL_PROPERTY_NAME, allowedIpsProperty);
 		}
 		finally {
 			Context.removeProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
@@ -449,11 +456,8 @@ public class RestUtil implements GlobalPropertyListener {
 		String temp = request.getParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION);
 		if ("".equals(temp)) {
 			throw new IllegalArgumentException("?v=(empty string) is not allowed");
-		} else if (temp == null) {
+		} else if (temp == null || temp.equalsIgnoreCase(defaultView.getRepresentation())) {
 			ret.setRepresentation(defaultView);
-		} else if (temp.equals(defaultView.getRepresentation())) {
-			throw new IllegalArgumentException(
-			        "Do not specify ?v=" + temp + " because it is the default behavior for this request");
 		} else {
 			ret.setRepresentation(Context.getService(RestService.class).getRepresentation(temp));
 		}
@@ -492,7 +496,7 @@ public class RestUtil implements GlobalPropertyListener {
 	 * @param request the current http web request
 	 * @param response the current http web response
 	 * @return a {@link RequestContext} object filled with all the necessary values
-	 * @see getRequestContext(javax.servlet.http.HttpServletRequest,
+	 * @see getRequestContext(jakarta.servlet.http.HttpServletRequest,
 	 *      org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	public static RequestContext getRequestContext(HttpServletRequest request, HttpServletResponse response) {
@@ -548,11 +552,7 @@ public class RestUtil implements GlobalPropertyListener {
 	public static void setResponseStatus(Throwable ex, HttpServletResponse response) {
 		ResponseStatus ann = ex.getClass().getAnnotation(ResponseStatus.class);
 		if (ann != null) {
-			if (StringUtils.isNotBlank(ann.reason())) {
-				response.setStatus(ann.value().value(), ann.reason());
-			} else {
-				response.setStatus(ann.value().value());
-			}
+			response.setStatus(ann.value().value());
 		} else {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
@@ -611,8 +611,7 @@ public class RestUtil implements GlobalPropertyListener {
 	 */
 	public static void setUriPrefix() {
 		if (contextEnabled) {
-			RestConstants.URI_PREFIX = Context.getAdministrationService()
-			        .getGlobalProperty(RestConstants.URI_PREFIX_GLOBAL_PROPERTY_NAME);
+			RestConstants.URI_PREFIX = getGlobalProperty(RestConstants.URI_PREFIX_GLOBAL_PROPERTY_NAME, null);
 		}
 		
 		if (StringUtils.isBlank(RestConstants.URI_PREFIX)) {
@@ -832,7 +831,7 @@ public class RestUtil implements GlobalPropertyListener {
 			cause = cause.getCause();
 		}
 		
-		LinkedHashMap map = new LinkedHashMap();
+		LinkedHashMap<String, String> map = new LinkedHashMap<>();
 		if (reason != null && !reason.isEmpty()) {
 			map.put("message", reason + " [" + message + "]");
 		} else {
@@ -844,8 +843,7 @@ public class RestUtil implements GlobalPropertyListener {
 			String stackTraceDetailsEnabledGp = null;
 			try {
 				Context.addProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
-				stackTraceDetailsEnabledGp = Context.getAdministrationService()
-						.getGlobalPropertyValue(RestConstants.ENABLE_STACK_TRACE_DETAILS_GLOBAL_PROPERTY_NAME, "false");
+				stackTraceDetailsEnabledGp = getGlobalProperty(RestConstants.ENABLE_STACK_TRACE_DETAILS_GLOBAL_PROPERTY_NAME, "false");
 			}
 			finally {
 				Context.removeProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
@@ -860,6 +858,10 @@ public class RestUtil implements GlobalPropertyListener {
 			map.put("code", "");
 			map.put("detail", "");
 		}
+		map.put("rawMessage", ex.getMessage());
+		String translatedMessage = Context.getMessageSourceService().getMessage(ex.getMessage(), null, null, Context.getLocale());
+		map.put("translatedMessage", translatedMessage);
+		
 		return new SimpleObject().add("error", map);
 	}
 	
@@ -886,7 +888,7 @@ public class RestUtil implements GlobalPropertyListener {
 			for (Object errObj : ex.getErrors().getGlobalErrors()) {
 				
 				ObjectError err = (ObjectError) errObj;
-				String message = messageSourceService.getMessage(err.getCode());
+				String message = messageSourceService.getMessage(err.getCode(), err.getArguments(), err.getDefaultMessage(), Context.getLocale());
 				
 				SimpleObject globalError = new SimpleObject();
 				globalError.put("code", err.getCode());
@@ -900,7 +902,7 @@ public class RestUtil implements GlobalPropertyListener {
 			
 			for (Object errObj : ex.getErrors().getFieldErrors()) {
 				FieldError err = (FieldError) errObj;
-				String message = messageSourceService.getMessage(err.getCode());
+				String message = messageSourceService.getMessage(err.getCode(), err.getArguments(), err.getDefaultMessage(), Context.getLocale());
 				
 				SimpleObject fieldError = new SimpleObject();
 				fieldError.put("code", err.getCode());
@@ -941,4 +943,43 @@ public class RestUtil implements GlobalPropertyListener {
 	public static boolean isValidUuid(String uuid) {
 		return uuid != null && (uuid.length() == 36 || uuid.length() == 38 || uuid.indexOf(' ') < 0 || uuid.indexOf('.') < 0);
 	}
+
+    /**
+     * Given an HttpServetRequest, determine the scheme, host, port, and path from it, taking into account
+     * how any proxy server may have manipulated the request
+     *
+     * @param request
+     * @return
+     */
+    public static StringBuffer determineSchemeHostAndPortFromRequest(HttpServletRequest request) {
+        String scheme;
+        if (StringUtils.isNotBlank(request.getHeader("X-Forwarded-Proto"))) {
+            scheme = request.getHeader("X-Forwarded-Proto");
+        } else {
+            scheme = request.getScheme();
+        }
+        String host;
+        if (StringUtils.isNotBlank(request.getHeader("X-Forwarded-Host"))) {
+            host = request.getHeader("X-Forwarded-Host");
+        } else {
+            host = request.getServerName();
+        }
+        int serverPort = request.getServerPort();
+        String port;
+        if (StringUtils.isNotBlank(request.getHeader("X-Forwarded-Port"))) {
+            port = ":" + request.getHeader("X-Forwarded-Port");
+            if (scheme.equalsIgnoreCase("http") && port.equals(":80")) {
+                port = "";
+            } else if (scheme.equalsIgnoreCase("https") && port.equals(":443")) {
+                port = "";
+            }
+        } else if ("http".equalsIgnoreCase(request.getScheme())) {
+            port = serverPort == 80 ? "" : ":" + serverPort;
+        } else if ("https".equalsIgnoreCase(request.getScheme())) {
+            port = serverPort == 443 ? "" : ":" + serverPort;
+        } else {
+            port = ":" + serverPort;
+        }
+        return new StringBuffer(scheme + "://" + host + port);
+    }
 }

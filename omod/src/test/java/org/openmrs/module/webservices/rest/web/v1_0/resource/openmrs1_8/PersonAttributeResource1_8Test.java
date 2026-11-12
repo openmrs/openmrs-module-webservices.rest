@@ -1,0 +1,232 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.openmrs.Attributable;
+import org.openmrs.Concept;
+import org.openmrs.Location;
+import org.openmrs.PersonAttribute;
+import org.openmrs.PersonAttributeType;
+import org.openmrs.api.ConceptService;
+import org.openmrs.api.LocationService;
+import org.openmrs.api.PersonService;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalToIgnoringCase;
+
+public class PersonAttributeResource1_8Test extends BaseModuleWebContextSensitiveTest {
+
+	public static final String PERSON_ATTRIBUTE_JSON = "{\"value\": \"Bangalore\", \"uuid\": \"592349ed-d012-4552-a274-d5d8e73b9401\", \"attributeType\": { \"uuid\": \"54fc8400-1683-4d71-a1ac-98d40836ff7c\" }}";
+
+	public static final String PERSON_ATTRIBUTE_JSON_WITHOUT_UUID = "{\"value\": \"Bangalore\", \"uuid\": \"\", \"attributeType\": { \"uuid\": \"54fc8400-1683-4d71-a1ac-98d40836ff7c\" }}";
+
+	private SimpleObject personAttributeSimpleObject = new SimpleObject();
+	
+	private PersonAttributeResource1_8 resource;
+
+	@Autowired
+	private ConceptService conceptService;
+	
+	@Autowired
+	private PersonService personService;
+	
+	@Autowired
+	private LocationService locationService;
+	
+	@BeforeEach
+	public void beforeEachTests() throws Exception {
+		personAttributeSimpleObject.putAll(new ObjectMapper().readValue(PERSON_ATTRIBUTE_JSON, HashMap.class));
+		resource = (PersonAttributeResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
+		    PersonAttribute.class);
+	}
+	
+	@Test
+	public void shouldCreatePersonAttribute() throws Exception {
+		SimpleObject created = (SimpleObject) resource.create("da7f524f-27ce-4bb2-86d6-6d1d05312bd5",
+		    personAttributeSimpleObject, new RequestContext());
+		Assertions.assertEquals("Bangalore", created.get("value"));
+	}
+
+	@Test
+	public void getValue_shouldFallBackToHydratedObjectWhenUuidIsEmpty() throws Exception {
+		personAttributeSimpleObject.putAll(new ObjectMapper().readValue(PERSON_ATTRIBUTE_JSON_WITHOUT_UUID, HashMap.class));
+		SimpleObject created = (SimpleObject) resource.create("da7f524f-27ce-4bb2-86d6-6d1d05312bd5",
+				personAttributeSimpleObject, new RequestContext());
+		Assertions.assertEquals("Bangalore", created.get("value"));
+	}
+
+	@Test
+	public void getDisplayString_shouldGetDisplayStringForConcept() {
+		// arrange
+		PersonAttributeType type = new PersonAttributeType();
+		type.setFormat("org.openmrs.Concept");
+		type.setName("Some Concept");
+		type.setDescription("Some Attribute Type Description");
+		type.setSearchable(false);
+		type = personService.savePersonAttributeType(type);
+
+		Concept trueConcept = conceptService.getTrueConcept();
+
+		PersonAttribute attribute = new PersonAttribute(type, String.valueOf(trueConcept.getId()));
+
+		// act
+		String displayString = resource.getDisplayString(attribute);
+
+		assertThat(displayString, equalToIgnoringCase("Yes"));
+	}
+
+	/**
+	 * {@code PersonAttribute#getHydratedObject()} caches nothing, so every call repeats the service
+	 * lookup - and the access check with it - for a record-backed value. The display getter has to
+	 * resolve once and both judge and print from that, rather than hydrating for its check and again to
+	 * build the string.
+	 */
+	@Test
+	public void getDisplayString_shouldHydrateTheValueOnlyOnce() {
+		PersonAttributeType type = new PersonAttributeType();
+		type.setFormat("org.openmrs.Concept");
+		type.setName("Counted Concept");
+		type.setDescription("Some Attribute Type Description");
+		type.setSearchable(false);
+		type = personService.savePersonAttributeType(type);
+		Concept trueConcept = conceptService.getTrueConcept();
+		AtomicInteger hydrations = new AtomicInteger();
+		PersonAttribute attribute = new PersonAttribute(type, String.valueOf(trueConcept.getId())) {
+
+			@Override
+			public Object getHydratedObject() {
+				hydrations.incrementAndGet();
+				return super.getHydratedObject();
+			}
+		};
+
+		String displayString = resource.getDisplayString(attribute);
+
+		assertThat(displayString, equalToIgnoringCase("Yes"));
+		Assertions.assertEquals(1, hydrations.get(), "the value should be resolved once per display");
+	}
+
+	@Test
+	public void getDisplayString_shouldGetDisplayStringForLocation() {
+		// arrange
+		PersonAttributeType type = new PersonAttributeType();
+		type.setFormat("org.openmrs.Location");
+		type.setName("Some Location");
+		type.setDescription("Some Attribute Type Description");
+		type.setSearchable(false);
+		type = personService.savePersonAttributeType(type);
+
+		Location location = locationService.getLocation(1);
+
+		PersonAttribute attribute = new PersonAttribute(type, String.valueOf(location.getId()));
+
+		// act
+		String displayString = resource.getDisplayString(attribute);
+
+		assertThat(displayString, equalToIgnoringCase("Unknown Location"));
+	}
+
+	@Test
+	public void getValue_shouldGetValueForPersonAttributeWhenLocationUuidIsSet() {
+		Location location = locationService.getLocation(1);
+		PersonAttribute attribute = new PersonAttribute();
+
+		resource.setValue(attribute, location.getUuid());
+
+		Assertions.assertEquals(location.getId().toString(), resource.getValue(attribute));
+	}
+
+	@Test
+	public void getDisplayString_shouldGetDisplayStringForString() {
+		// arrange
+		PersonAttributeType type = new PersonAttributeType();
+		type.setFormat("java.lang.String");
+		type.setName("Some String");
+		type.setDescription("Some Attribute Type Description");
+		type.setSearchable(false);
+		type = personService.savePersonAttributeType(type);
+
+		PersonAttribute attribute = new PersonAttribute(type, "A Value");
+
+		// act
+		String displayString = resource.getDisplayString(attribute);
+
+		assertThat(displayString, equalToIgnoringCase("A Value"));
+	}
+	
+	@Test
+	public void setValue_shouldSetProperAttributableIdIfFound() {
+		PersonAttributeType type = new PersonAttributeType();
+		type.setFormat("org.openmrs.Location");
+		type.setName("Second Home");
+		type.setDescription("Testing Attributable domain objects");
+		type.setSortWeight(5.5);
+		type.setSearchable(false);
+		type = personService.savePersonAttributeType(type);
+		
+		//Get the first location in from the list
+		Location location = locationService.getAllLocations().get(0);
+		
+		PersonAttribute attribute = new PersonAttribute(type, null);
+		attribute.setAttributeType(type);
+		Assertions.assertNull(attribute.getValue());
+		
+		resource.setValue(attribute, location.getUuid());
+		Assertions.assertEquals(location.getId().toString(), attribute.getValue());
+	}
+	
+	@Test
+	public void setValue_shouldSetPassedValueIfCouldNotBeConvertedToAttributable() throws ClassNotFoundException {
+		PersonAttributeType type = new PersonAttributeType();
+		type.setFormat("org.openmrs.Location");
+		type.setName("Second Home");
+		type.setDescription("Testing Attributable domain objects");
+		type.setSortWeight(5.5);
+		type.setSearchable(false);
+		type = personService.savePersonAttributeType(type);
+		
+		String nonExistenceLocationUuid = "this-uuid-does-not-exist-of-course";
+		PersonAttribute attribute = new PersonAttribute(type, null);
+		
+		Assertions.assertNull(attribute.getValue());
+		Assertions.assertTrue(Attributable.class.isAssignableFrom(Context.loadClass(type.getFormat())));
+		
+		resource.setValue(attribute, nonExistenceLocationUuid);
+		
+		Assertions.assertEquals(nonExistenceLocationUuid, attribute.getValue());
+	}
+	
+	@Test
+	public void setValue_shouldSetThePassedValueForNonAttributableClasses() throws ClassNotFoundException {
+		PersonAttributeType type = personService.getPersonAttributeTypeByName("Race");
+		PersonAttribute attribute = new PersonAttribute(type, null);
+		
+		Assertions.assertNull(attribute.getValue());
+		Assertions.assertEquals("java.lang.String", type.getFormat());
+		Assertions.assertFalse(Attributable.class.isAssignableFrom(Context.loadClass(type.getFormat())));
+		
+		resource.setValue(attribute, "arab");
+		
+		Assertions.assertEquals("arab", attribute.getValue());
+	}
+}

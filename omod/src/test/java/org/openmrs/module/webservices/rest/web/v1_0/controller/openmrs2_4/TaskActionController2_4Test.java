@@ -1,0 +1,138 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_4;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.openmrs.api.context.Context;
+
+import java.util.Date;
+import org.openmrs.module.webservices.helper.openmrs2_4.TaskServiceWrapper2_4;
+import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8.TaskActionController1_8Test;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_4.TaskDefinitionResource2_4;
+import org.openmrs.scheduler.SchedulerService;
+import org.openmrs.scheduler.TaskDefinition;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsNot.not;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_4.CHRONIC_CARE_UUID;
+import static org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_4.EQUIPMENT_MAINTENANCE_UUID;
+import static org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_4.NURSE_PRECEPTING_UUID;
+import static org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_4.NURSING_EDUCATION_UUID;
+import static org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_4.TASK_SCHEDULER_XML;
+
+public class TaskActionController2_4Test extends TaskActionController1_8Test {
+
+	@Autowired
+	RestService restService;
+
+    private SchedulerService schedulerService;
+
+	private final TaskServiceWrapper2_4 TASK_SERVICE_WRAPPER = new TaskServiceWrapper2_4();
+	
+	@BeforeEach
+	public void setUp() throws Exception {
+		executeDataSet(TASK_SCHEDULER_XML);
+		this.schedulerService = Context.getSchedulerService();
+		TaskDefinitionResource2_4 taskResource = (TaskDefinitionResource2_4) restService
+				.getResourceBySupportedClass(TaskDefinition.class);
+		taskResource.setTaskServiceWrapper(TASK_SERVICE_WRAPPER);
+	}
+
+	private TaskDefinition getTaskByUuid(String uuid) {
+		return TASK_SERVICE_WRAPPER.getTaskByUuid(uuid);
+	}
+	
+	@Test
+	public void shouldScheduleTask() throws Exception {
+		assertThat(schedulerService.getScheduledTasks(), not(hasItem(getTaskByUuid(EQUIPMENT_MAINTENANCE_UUID))));
+		deserialize(handle(newPostRequest(getURI(),
+				"{\"action\": \"scheduletask\", \"tasks\":[\"" + EQUIPMENT_MAINTENANCE_UUID + "\"]}")));
+		assertThat(schedulerService.getScheduledTasks(), hasItem(getTaskByUuid(EQUIPMENT_MAINTENANCE_UUID)));
+	}
+
+	@Test
+	public void scheduleTask_shouldDoNothingIfTaskAlreadyScheduled() throws Exception {
+		schedulerService.scheduleTask(getTaskByUuid(NURSE_PRECEPTING_UUID));
+		assertThat(schedulerService.getScheduledTasks(), hasItem(getTaskByUuid(NURSE_PRECEPTING_UUID)));
+		deserialize(handle(newPostRequest(getURI(),
+				"{\"action\": \"scheduletask\", \"tasks\":[\"" + NURSE_PRECEPTING_UUID + "\"]}")));
+		assertThat(schedulerService.getScheduledTasks(), hasItem(getTaskByUuid(NURSE_PRECEPTING_UUID)));
+	}
+	
+	@Test
+	public void shouldShutdownTask() throws Exception {
+		schedulerService.scheduleTask(getTaskByUuid(NURSE_PRECEPTING_UUID));
+		assertThat(schedulerService.getScheduledTasks(), hasItem(getTaskByUuid(NURSE_PRECEPTING_UUID)));
+		deserialize(handle(newPostRequest(getURI(),
+				"{\"action\": \"shutdowntask\", \"tasks\":[\"" + NURSE_PRECEPTING_UUID + "\"]}")));
+		assertThat(schedulerService.getScheduledTasks(), not(hasItem(getTaskByUuid(NURSE_PRECEPTING_UUID))));
+	}
+	
+	@Test
+	public void shutdownTask_shouldDoNothingIfTaskAlreadyShutdown() throws Exception {
+		assertThat(schedulerService.getScheduledTasks(), not(hasItem(getTaskByUuid(NURSE_PRECEPTING_UUID))));
+		assertThat(schedulerService.getRegisteredTasks(), hasItem(getTaskByUuid(NURSE_PRECEPTING_UUID)));
+		deserialize(handle(newPostRequest(getURI(),
+				"{\"action\": \"shutdowntask\", \"tasks\":[\"" + NURSE_PRECEPTING_UUID + "\"]}")));
+		assertThat(schedulerService.getScheduledTasks(), not(hasItem(getTaskByUuid(NURSE_PRECEPTING_UUID))));
+		assertThat(schedulerService.getRegisteredTasks(), hasItem(getTaskByUuid(NURSE_PRECEPTING_UUID)));
+	}
+	
+	@Test
+	@Disabled// see: https://openmrs.atlassian.net/browse/RESTWS-1032
+	public void shouldRunTask() throws Exception {
+		TaskDefinition taskDefinition = getTaskByUuid(CHRONIC_CARE_UUID);
+		taskDefinition.setTaskClass(DummyTask.class.getName());
+		// startTime is 1 hour in the future — verifies runTask() ignores it and runs the task almost immediately (within 15 seconds)
+		taskDefinition.setStartTime(new Date(System.currentTimeMillis() + 3_600_000L));
+		// repeatInterval is 1s — verifies runTask() ignores it and runs the task exactly once
+		taskDefinition.setRepeatInterval(1L);
+		assertEquals(4, schedulerService.getRegisteredTasks().size());
+		int countBefore = count;
+		deserialize(handle(newPostRequest(getURI(),
+				"{\"action\": \"runtask\", \"tasks\":[\"" + CHRONIC_CARE_UUID + "\"]}")));
+		assertThat(schedulerService.getRegisteredTasks(), hasItem(getTaskByUuid(CHRONIC_CARE_UUID)));
+		assertEquals(4, schedulerService.getRegisteredTasks().size());
+		// Task runs asynchronously via JobRunr — poll until executed or timeout
+		// By default, JobRunr's BackgroundJobServer has a polling interval of 15 seconds, see:
+		// https://javadoc.io/static/org.jobrunr/jobrunr/5.3.2/org/jobrunr/server/BackgroundJobServerConfiguration.html#usingStandardBackgroundJobServerConfiguration()
+		long deadline = System.currentTimeMillis() + 15_000L;
+		while (count == countBefore && System.currentTimeMillis() < deadline) {
+			Thread.sleep(200);
+		}
+		assertEquals(countBefore + 1, count, "Task should have run almost immediately despite future startTime");
+		// Wait longer than repeatInterval to verify the task did not repeat
+		Thread.sleep(2_000L);
+		assertEquals(countBefore + 1, count, "Task should have run exactly once (repeatInterval should be ignored)");
+	}
+
+	@Test
+	public void shouldRescheduleTask() throws Exception {
+		schedulerService.scheduleTask(getTaskByUuid(NURSING_EDUCATION_UUID));
+		assertThat(schedulerService.getScheduledTasks(), hasItem(getTaskByUuid(NURSING_EDUCATION_UUID)));
+		deserialize(handle(newPostRequest(getURI(),
+				"{\"action\": \"rescheduletask\", \"tasks\":[\"" + NURSING_EDUCATION_UUID + "\"]}")));
+		assertThat(schedulerService.getScheduledTasks(), hasItem(getTaskByUuid(NURSING_EDUCATION_UUID)));
+	}
+	
+	@Test
+	public void shouldDeleteTask() throws Exception {
+		assertThat(schedulerService.getRegisteredTasks(), hasItem(getTaskByUuid(NURSING_EDUCATION_UUID)));
+		deserialize(handle(newPostRequest(getURI(),
+				"{\"action\": \"delete\", \"tasks\":[\"" + NURSING_EDUCATION_UUID + "\"]}")));
+		assertThat(schedulerService.getRegisteredTasks(), not(hasItem(getTaskByUuid(NURSING_EDUCATION_UUID))));
+	}
+}

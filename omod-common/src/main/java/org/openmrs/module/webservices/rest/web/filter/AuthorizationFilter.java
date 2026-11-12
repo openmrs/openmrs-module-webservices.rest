@@ -12,17 +12,17 @@ package org.openmrs.module.webservices.rest.web.filter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
@@ -41,8 +41,10 @@ public class AuthorizationFilter implements Filter {
 	
 	private static final Logger log = LoggerFactory.getLogger(AuthorizationFilter.class);
 	
+	private static final String SESSION_PATH = "/ws/rest/" + RestConstants.VERSION_1 + "/session";
+	
 	/**
-	 * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
+	 * @see jakarta.servlet.Filter#init(jakarta.servlet.FilterConfig)
 	 */
 	@Override
 	public void init(FilterConfig arg0) throws ServletException {
@@ -50,7 +52,7 @@ public class AuthorizationFilter implements Filter {
 	}
 	
 	/**
-	 * @see javax.servlet.Filter#destroy()
+	 * @see jakarta.servlet.Filter#destroy()
 	 */
 	@Override
 	public void destroy() {
@@ -58,8 +60,8 @@ public class AuthorizationFilter implements Filter {
 	}
 	
 	/**
-	 * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse,
-	 *      javax.servlet.FilterChain)
+	 * @see jakarta.servlet.Filter#doFilter(jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse,
+	 *      jakarta.servlet.FilterChain)
 	 */
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -77,7 +79,8 @@ public class AuthorizationFilter implements Filter {
 		// skip if the session has timed out, we're already authenticated, or it's not an HTTP request
 		if (request instanceof HttpServletRequest) {
 			HttpServletRequest httpRequest = (HttpServletRequest) request;
-			if (httpRequest.getRequestedSessionId() != null && !httpRequest.isRequestedSessionIdValid()) {
+			if (httpRequest.getRequestedSessionId() != null && !httpRequest.isRequestedSessionIdValid()
+			        && !isSessionEndpoint(httpRequest)) {
 				HttpServletResponse httpResponse = (HttpServletResponse) response;
 				httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Session timed out");
 			}
@@ -119,5 +122,14 @@ public class AuthorizationFilter implements Filter {
 		
 		// continue with the filter chain (unless IP is not allowed)
 		chain.doFilter(request, response);
+	}
+	
+	/**
+	 * The session endpoint is how clients find out that their session has expired and log in again, so a stale
+	 * session cookie must not cause requests to it to fail.
+	 */
+	private boolean isSessionEndpoint(HttpServletRequest request) {
+		String path = StringUtils.removeStart(request.getRequestURI(), request.getContextPath());
+		return SESSION_PATH.equals(path) || (SESSION_PATH + "/").equals(path);
 	}
 }

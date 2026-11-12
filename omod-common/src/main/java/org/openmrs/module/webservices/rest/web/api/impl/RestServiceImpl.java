@@ -18,8 +18,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.proxy.HibernateProxy;
 import org.openmrs.api.APIException;
 import org.openmrs.module.ModuleUtil;
@@ -62,6 +63,8 @@ public class RestServiceImpl implements RestService {
 	private RestHelperService restHelperService;
 	
 	private OpenmrsClassScanner openmrsClassScanner;
+
+	private ExecutorService executorService;
 	
 	public RestHelperService getRestHelperService() {
 		return restHelperService;
@@ -78,7 +81,15 @@ public class RestServiceImpl implements RestService {
 	public void setOpenmrsClassScanner(OpenmrsClassScanner openmrsClassScanner) {
 		this.openmrsClassScanner = openmrsClassScanner;
 	}
-	
+
+	public ExecutorService getExecutorService() {
+		return executorService;
+	}
+
+	public void setExecutorService(ExecutorService executorService) {
+		this.executorService = executorService;
+	}
+
 	public RestServiceImpl() {
 	}
 	
@@ -152,7 +163,8 @@ public class RestServiceImpl implements RestService {
 		
 		Map<String, ResourceDefinition> tempResourceDefinitionsByNames = new HashMap<String, ResourceDefinition>();
 		Map<Class<?>, Resource> tempResourcesBySupportedClasses = new HashMap<Class<?>, Resource>();
-		
+		Map<Class<?>, Integer> tempOrdersBySupportedClasses = new HashMap<Class<?>, Integer>();
+
 		List<Class<? extends Resource>> resources;
 		try {
 			resources = openmrsClassScanner.getClasses(Resource.class, true);
@@ -165,18 +177,49 @@ public class RestServiceImpl implements RestService {
 			ResourceMetadata resourceMetadata = getResourceMetadata(resource);
 			if (resourceMetadata == null)
 				continue;
-			
-			if (isResourceToBeAdded(resourceMetadata, tempResourceDefinitionsByNames.get(resourceMetadata.getName()))) {
+
+			boolean preferredForName = isResourceToBeAdded(resourceMetadata,
+			    tempResourceDefinitionsByNames.get(resourceMetadata.getName()));
+			boolean preferredForClass = isResourceOrderBetter(resourceMetadata.getOrder(),
+			    tempOrdersBySupportedClasses.get(resourceMetadata.getSupportedClass()));
+
+			if (preferredForName || preferredForClass) {
 				Resource newResource = newResource(resource);
-				
-				tempResourceDefinitionsByNames.put(resourceMetadata.getName(), new ResourceDefinition(newResource,
-				        resourceMetadata.getOrder()));
-				tempResourcesBySupportedClasses.put(resourceMetadata.getSupportedClass(), newResource);
+
+				if (preferredForName) {
+					tempResourceDefinitionsByNames.put(resourceMetadata.getName(), new ResourceDefinition(newResource,
+					        resourceMetadata.getOrder()));
+				}
+				if (preferredForClass) {
+					// A resource registered under a different name than the one that "owns" this class (e.g. a
+					// resource contributed by an unrelated module that also happens to declare the same
+					// supportedClass) must not be able to clobber this map just by virtue of being scanned last -
+					// only a resource with a strictly better (lower) order for this specific class may replace
+					// whatever currently holds it, mirroring the order-based arbitration already done above for
+					// resourceDefinitionsByNames.
+					tempResourcesBySupportedClasses.put(resourceMetadata.getSupportedClass(), newResource);
+					tempOrdersBySupportedClasses.put(resourceMetadata.getSupportedClass(), resourceMetadata.getOrder());
+				}
 			}
 		}
 		
 		resourcesBySupportedClasses = tempResourcesBySupportedClasses;
 		resourceDefinitionsByNames = tempResourceDefinitionsByNames;
+	}
+
+	/**
+	 * Determines whether a resource with the given order should replace whatever is currently registered for a
+	 * given supported class. Unlike {@link #isResourceToBeAdded(ResourceMetadata, ResourceDefinition)}, this does
+	 * not throw on an order tie: two resources registered under different names that happen to declare the same
+	 * class and order are a much less clear-cut misconfiguration than two resources sharing an identical name and
+	 * order, so ties are simply resolved in favor of whichever was already there.
+	 *
+	 * @param candidateOrder the order of the resource being considered
+	 * @param existingOrder the order of the resource currently registered for this class, or null if none
+	 * @return true if the candidate should become (or remain) the registered resource for this class
+	 */
+	private boolean isResourceOrderBetter(int candidateOrder, Integer existingOrder) {
+		return existingOrder == null || candidateOrder < existingOrder;
 	}
 	
 	/**
@@ -701,15 +744,26 @@ public class RestServiceImpl implements RestService {
 	 */
 	@Override
 	public void initialize() {
-		
 		// first clear out any existing values
 		resourceDefinitionsByNames = null;
 		resourcesBySupportedClasses = null;
 		searchHandlersByIds = null;
 		searchHandlersByParameter = null;
 		searchHandlersByResource = null;
-		
+
 		initializeResources();
 		initializeSearchHandlers();
+	}
+
+	@Override
+	public void initializeAsync() {
+		RestServiceImpl restService = this;
+		executorService.submit(new Runnable() {
+
+			@Override
+			public void run() {
+				restService.initialize();
+			}
+		});
 	}
 }

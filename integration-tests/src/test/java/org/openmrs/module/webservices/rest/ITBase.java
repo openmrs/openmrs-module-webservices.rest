@@ -16,7 +16,7 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 
 import java.io.IOException;
 import java.net.URI;
@@ -54,7 +54,7 @@ public abstract class ITBase {
 		}
 	}
 	
-	@BeforeClass
+	@BeforeAll
 	public static void waitForServerToStart() {
 		synchronized (serverStartupLock) {
 			if (!serverStarted) {
