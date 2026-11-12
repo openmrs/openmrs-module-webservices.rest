@@ -9,17 +9,13 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_5;
 
-import java.util.List;
-
 import org.openmrs.OrderAttributeType;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
-import org.openmrs.module.webservices.rest.web.resource.impl.AlreadyPaged;
-import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
-import org.openmrs.module.webservices.rest.web.api.RestHelperService;
+import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.BaseAttributeTypeCrudResource1_9;
 
@@ -50,22 +46,8 @@ public class OrderAttributeTypeResource2_5 extends BaseAttributeTypeCrudResource
      * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(RequestContext)
      */
     @Override
-    protected PageableResult doGetAll(RequestContext context) throws ResponseException {
-        return getAttributeTypes(null, context);
-    }
-
-    @Override
-    protected PageableResult doSearch(RequestContext context) {
-        return getAttributeTypes(context.getParameter("q"), context);
-    }
-
-    private PageableResult getAttributeTypes(String query, RequestContext context) {
-        RestHelperService helper = Context.getService(RestHelperService.class);
-        List<OrderAttributeType> results = helper.getOrderAttributeTypes(query, context.getIncludeAll(),
-                context.getStartIndex(), context.getLimit());
-        long count = helper.getOrderAttributeTypeCount(query, context.getIncludeAll());
-        boolean hasMore = (long) context.getStartIndex() + results.size() < count;
-        return new AlreadyPaged<>(context, results, hasMore, count);
+    protected NeedsPaging<OrderAttributeType> doGetAll(RequestContext context) throws ResponseException {
+        return new NeedsPaging<>(service().getAllOrderAttributeTypes(), context);
     }
 
     /**

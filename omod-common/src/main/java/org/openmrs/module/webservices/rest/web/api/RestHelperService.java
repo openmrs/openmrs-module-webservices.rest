@@ -11,8 +11,6 @@ package org.openmrs.module.webservices.rest.web.api;
 
 import org.openmrs.ConceptMap;
 import org.openmrs.Patient;
-import org.openmrs.OrderAttributeType;
-import org.openmrs.util.PrivilegeConstants;
 import org.openmrs.annotation.Authorized;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler;
@@ -37,13 +35,6 @@ public interface RestHelperService {
 	@Authorized({ "View Patients" })
 	List<Patient> findPatientsByIdentifierStartingWith(String identifier, boolean includeAll);
 	
-    /** Searches literal, case-insensitive names, with prefix matches first and database paging. */
-    @Authorized(PrivilegeConstants.GET_ORDERS)
-    List<OrderAttributeType> getOrderAttributeTypes(String query, boolean includeRetired, int startIndex, int limit);
-
-    @Authorized(PrivilegeConstants.GET_ORDERS)
-    long getOrderAttributeTypeCount(String query, boolean includeRetired);
-
 	List<SearchHandler> getRegisteredSearchHandlers();
 	
 	List<DelegatingSubclassHandler> getRegisteredRegisteredSubclassHandlers();
