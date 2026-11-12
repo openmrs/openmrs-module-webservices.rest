@@ -48,7 +48,7 @@ public class OrderAttributeTypeController2_5Test extends MainResourceControllerT
      */
     @Override
     public long getAllCount() {
-        return service.getAllOrderAttributeTypes().size();
+        return service.getAllOrderAttributeTypes().stream().filter(type -> !type.getRetired()).count();
     }
 
     @BeforeEach
@@ -138,5 +138,80 @@ public class OrderAttributeTypeController2_5Test extends MainResourceControllerT
         Assertions.assertNotNull(orderAttributeType.getDateRetired());
         Assertions.assertNotNull(orderAttributeType.getRetiredBy());
         Assertions.assertEquals("let it retire for a while", orderAttributeType.getRetireReason());
+    }
+    @Test
+    public void shouldIncludeRetiredTypesOnlyWhenRequested() throws Exception {
+        MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+        req.addParameter("includeAll", "true");
+        SimpleObject result = deserialize(handle(req));
+        Assertions.assertEquals(service.getAllOrderAttributeTypes().size(), Util.getResultsSize(result));
+    }
+
+    @Test
+    public void shouldSearchCaseInsensitivelyAndExcludeRetiredTypes() throws Exception {
+        MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+        req.addParameter("q", "SAMPLE");
+        SimpleObject result = deserialize(handle(req));
+        Assertions.assertEquals(1, Util.getResultsSize(result));
+    }
+
+    @Test
+    public void shouldIncludeRetiredTypesInSearchWhenRequested() throws Exception {
+        MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+        req.addParameter("q", "");
+        req.addParameter("includeAll", "true");
+        SimpleObject result = deserialize(handle(req));
+        Assertions.assertEquals(service.getAllOrderAttributeTypes().size(), Util.getResultsSize(result));
+    }
+    private OrderAttributeType createType(String name) {
+        OrderAttributeType type = new OrderAttributeType();
+        type.setName(name);
+        type.setDatatypeClassname("org.openmrs.customdatatype.datatype.FreeTextDatatype");
+        type.setMinOccurs(0);
+        type.setMaxOccurs(1);
+        return service.saveOrderAttributeType(type);
+    }
+
+    @Test
+    public void shouldPagePrefixMatchesBeforeContainingMatchesAndReturnTotalCount() throws Exception {
+        createType("A sample containing match");
+        OrderAttributeType prefix = createType("Sample prefix match");
+        MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+        req.addParameter("q", "SAMPLE");
+        req.addParameter("limit", "1");
+        req.addParameter("startIndex", "1");
+        req.addParameter("totalCount", "true");
+        SimpleObject result = deserialize(handle(req));
+        Assertions.assertEquals(1, Util.getResultsSize(result));
+        Assertions.assertEquals(prefix.getUuid(), PropertyUtils.getProperty(Util.getResultsList(result).get(0), "uuid"));
+        Assertions.assertEquals(3, ((Number) result.get("totalCount")).intValue());
+        Assertions.assertFalse(((java.util.List<?>) result.get("links")).isEmpty());
+    }
+
+    @Test
+    public void shouldTreatSqlWildcardsAsLiteralCharacters() throws Exception {
+        OrderAttributeType literal = createType("Literal %_! attribute");
+        createType("Literal unrelated attribute");
+        MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+        req.addParameter("q", "%_!");
+        req.addParameter("totalCount", "true");
+        SimpleObject result = deserialize(handle(req));
+        Assertions.assertEquals(1, Util.getResultsSize(result));
+        Assertions.assertEquals(literal.getUuid(), PropertyUtils.getProperty(Util.getResultsList(result).get(0), "uuid"));
+        Assertions.assertEquals(1, ((Number) result.get("totalCount")).intValue());
+    }
+
+    @Test
+    public void shouldFilterRetiredSearchMatchesAndCountConsistently() throws Exception {
+        MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+        req.addParameter("q", "retired");
+        req.addParameter("totalCount", "true");
+        SimpleObject result = deserialize(handle(req));
+        Assertions.assertEquals(0, Util.getResultsSize(result));
+        Assertions.assertEquals(0, ((Number) result.get("totalCount")).intValue());
+        req.addParameter("includeAll", "true");
+        result = deserialize(handle(req));
+        Assertions.assertEquals(1, Util.getResultsSize(result));
+        Assertions.assertEquals(1, ((Number) result.get("totalCount")).intValue());
     }
 }
