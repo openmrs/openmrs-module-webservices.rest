@@ -10,6 +10,13 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_5;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
+import org.openmrs.OrderAttribute;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import org.openmrs.Order;
 import org.openmrs.api.context.Context;
 
@@ -43,4 +50,67 @@ public class OrderResource2_5Test extends BaseDelegatingResourceTest<OrderResour
 	public String getUuidProperty() {
 		return RestTestConstants2_5.ORDER_UUID;
 	}
+    @Test
+    public void shouldUpdateExistingAttributeByUuidWithoutRemovingOmittedAttributes() {
+        Order order = newObject();
+        OrderAttribute existing = Context.getOrderService().getOrderAttributeByUuid("3a2bdb18-nadm-11e0-8414-001e378eb67e");
+        OrderAttribute update = new OrderAttribute();
+        update.setUuid(existing.getUuid());
+        update.setAttributeType(existing.getAttributeType());
+        update.setValue("Updated organization");
+        int originalCount = order.getAttributes().size();
+        OrderResource2_5.setAttributes(order, Collections.singletonList(update));
+        Assertions.assertEquals(originalCount, order.getAttributes().size());
+        Assertions.assertTrue(order.getAttributes().contains(existing));
+        Assertions.assertEquals("Updated organization", existing.getValue());
+        Assertions.assertEquals("Updated organization", existing.getValueReference());
+        Assertions.assertTrue(order.getAttributes().stream().noneMatch(OrderAttribute::getVoided));
+    }
+
+    @Test
+    public void shouldMergeConvertedAttributeUpdateWithoutDuplicatingIt() {
+        Order order = newObject();
+        OrderAttribute existing = Context.getOrderService().getOrderAttributeByUuid("3a2bdb18-nadm-11e0-8414-001e378eb67e");
+        Map<String, Object> values = new HashMap<>();
+        values.put("uuid", existing.getUuid());
+        values.put("value", "Updated organization");
+        OrderAttribute update = (OrderAttribute) ConversionUtil.convertMap(values, OrderAttribute.class);
+        int originalCount = order.getAttributes().size();
+        OrderResource2_5.setAttributes(order, Collections.singletonList(update));
+        Assertions.assertEquals(originalCount, order.getAttributes().size());
+        Assertions.assertEquals("Updated organization", existing.getValue());
+        Assertions.assertSame(order, existing.getOrder());
+    }
+
+    @Test
+    public void shouldPreserveAllAttributesWhenSubmittedListIsEmpty() {
+        Order order = newObject();
+        int originalCount = order.getAttributes().size();
+        OrderResource2_5.setAttributes(order, Collections.emptyList());
+        Assertions.assertEquals(originalCount, order.getAttributes().size());
+    }
+
+    @Test
+    public void shouldAddNewAttributeWithoutReplacingOtherAttributes() {
+        Order order = newObject();
+        OrderAttribute attribute = new OrderAttribute();
+        attribute.setAttributeType(Context.getOrderService().getOrderAttributeTypeByUuid("9516cc50-6f9f-132r-6556-001e378eb67f"));
+        attribute.setValue("Another organization");
+        int originalCount = order.getAttributes().size();
+        OrderResource2_5.setAttributes(order, Collections.singletonList(attribute));
+        Assertions.assertEquals(originalCount + 1, order.getAttributes().size());
+        Assertions.assertSame(order, attribute.getOrder());
+        Assertions.assertEquals("Another organization", attribute.getValueReference());
+    }
+
+    @Test
+    public void shouldRejectAttributeFromAnotherOrder() {
+        Order order = newObject();
+        OrderAttribute attribute = new OrderAttribute();
+        attribute.setOrder(new Order());
+        int originalCount = order.getAttributes().size();
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> OrderResource2_5.setAttributes(order, Collections.singletonList(attribute)));
+        Assertions.assertEquals(originalCount, order.getAttributes().size());
+    }
 }

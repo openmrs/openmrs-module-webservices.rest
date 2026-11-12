@@ -10,6 +10,8 @@
 package org.openmrs.module.webservices.rest.web.api.impl;
 
 import org.openmrs.Patient;
+import org.openmrs.OrderAttributeType;
+import java.util.Locale;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.api.impl.BaseOpenmrsService;
@@ -136,6 +138,51 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 		return session.createQuery(cq).getResultList();
 	}
 	
+    @Override
+    @Transactional(readOnly = true)
+    public List<OrderAttributeType> getOrderAttributeTypes(String query, boolean includeRetired, int startIndex, int limit) {
+        Session session = getHibernateSession();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<OrderAttributeType> cq = cb.createQuery(OrderAttributeType.class);
+        Root<OrderAttributeType> root = cq.from(OrderAttributeType.class);
+        cq.where(orderAttributeTypePredicates(cb, root, query, includeRetired));
+        if (query != null && !query.isEmpty()) {
+            cq.orderBy(cb.asc(cb.<Integer>selectCase()
+                    .when(cb.like(cb.lower(root.get("name")), escapeLike(query) + "%", '!'), 0).otherwise(1)),
+                    cb.asc(cb.lower(root.get("name"))), cb.asc(root.get("orderAttributeTypeId")));
+        } else {
+            cq.orderBy(cb.asc(cb.lower(root.get("name"))), cb.asc(root.get("orderAttributeTypeId")));
+        }
+        return session.createQuery(cq).setFirstResult(startIndex).setMaxResults(limit).getResultList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public long getOrderAttributeTypeCount(String query, boolean includeRetired) {
+        Session session = getHibernateSession();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<OrderAttributeType> root = cq.from(OrderAttributeType.class);
+        cq.select(cb.count(root)).where(orderAttributeTypePredicates(cb, root, query, includeRetired));
+        return session.createQuery(cq).getSingleResult();
+    }
+
+    private Predicate[] orderAttributeTypePredicates(CriteriaBuilder cb, Root<OrderAttributeType> root,
+            String query, boolean includeRetired) {
+        List<Predicate> predicates = new ArrayList<>();
+        if (!includeRetired) {
+            predicates.add(cb.isFalse(root.get("retired")));
+        }
+        if (query != null && !query.isEmpty()) {
+            predicates.add(cb.like(cb.lower(root.get("name")), "%" + escapeLike(query) + "%", '!'));
+        }
+        return predicates.toArray(new Predicate[0]);
+    }
+
+    private String escapeLike(String query) {
+        return query.toLowerCase(Locale.ROOT).replace("!", "!!").replace("%", "!%").replace("_", "!_");
+    }
+
 	/**
 	 * @see RestHelperService#getRegisteredSearchHandlers()
 	 */

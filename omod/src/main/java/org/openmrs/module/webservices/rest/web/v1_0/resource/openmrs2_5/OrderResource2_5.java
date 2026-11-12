@@ -27,19 +27,42 @@ import java.util.List;
 @Resource(name = RestConstants.VERSION_1 + "/order", supportedClass = Order.class, supportedOpenmrsVersions = { "2.5.* - 9.*" })
 public class OrderResource2_5 extends OrderResource2_2 {
 
-	/**
-	 * Sets attributes on the given Order.
-	 *
-	 * @param instance
-	 * @param attrs
-	 */
-	@PropertySetter("attributes")
-	public static void setAttributes(Order instance, List<OrderAttribute> attrs) {
-		for (OrderAttribute attr : attrs) {
-			CustomDatatypeUtil.saveIfDirty(attr);
-			instance.addAttribute(attr);
-		}
-	}
+    /**
+     * Merges submitted attributes by UUID. Omitted attributes are preserved; an empty list
+     * does not clear the collection. Existing attributes retain their identity and audit data.
+     * This does not bypass the core API's restrictions on saving an existing order.
+     */
+    @PropertySetter("attributes")
+    public static void setAttributes(Order instance, List<OrderAttribute> attrs) {
+        for (OrderAttribute submitted : attrs) {
+            if (submitted.getOrder() != null && !submitted.getOrder().equals(instance)) {
+                throw new IllegalArgumentException("An attribute cannot be moved from another order");
+            }
+        }
+        for (OrderAttribute submitted : attrs) {
+            OrderAttribute existing = null;
+            if (instance.getAttributes() != null) {
+                for (OrderAttribute candidate : instance.getAttributes()) {
+                    if (candidate.getUuid().equals(submitted.getUuid())) {
+                        existing = candidate;
+                        break;
+                    }
+                }
+            }
+            if (existing == null) {
+                CustomDatatypeUtil.saveIfDirty(submitted);
+                instance.addAttribute(submitted);
+            } else {
+                if (!existing.getAttributeType().equals(submitted.getAttributeType())) {
+                    throw new IllegalArgumentException("An existing attribute's type cannot be changed");
+                }
+                if (existing != submitted) {
+                    existing.setValue(submitted.getValue());
+                }
+                CustomDatatypeUtil.saveIfDirty(existing);
+            }
+        }
+    }
 
 	/**
 	 * @see DelegatingCrudResource#getRepresentationDescription(Representation)
