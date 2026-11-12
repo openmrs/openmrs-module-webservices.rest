@@ -13,20 +13,22 @@ import org.openmrs.Order;
 import org.openmrs.OrderAttribute;
 import org.openmrs.OrderAttributeType;
 import org.openmrs.api.context.Context;
-import org.openmrs.api.OrderContext;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.BaseAttributeCrudResource1_9;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2.OrderResource2_2;
 
-import java.util.List;
+import java.util.ArrayList;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 
 /**
- * {@link Resource} for OrderAttributes, supporting standard CRUD operations
+ * Read access to order attributes. New attributes are supplied when creating the parent order.
  */
 @SubResource(parent = OrderResource2_5.class, path = "attribute", supportedClass = OrderAttribute.class, supportedOpenmrsVersions = {
         "2.5.* - 9.*"})
@@ -82,47 +84,40 @@ public class OrderAttributeResource2_5 extends BaseAttributeCrudResource1_9<Orde
      */
     @Override
     public NeedsPaging<OrderAttribute> doGetAll(Order parent, RequestContext context) throws ResponseException {
-        return new NeedsPaging<OrderAttribute>((List<OrderAttribute>) parent.getActiveAttributes(), context);
+        if (parent == null) {
+            throw new ObjectNotFoundException();
+        }
+        return new NeedsPaging<>(new ArrayList<>(context.getIncludeAll() ? parent.getAttributes() : parent.getActiveAttributes()), context);
     }
 
-    /**
-     * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
-     */
+    @Override
+    public DelegatingResourceDescription getCreatableProperties() throws ResourceDoesNotSupportOperationException {
+        throw new ResourceDoesNotSupportOperationException();
+    }
+
+    @Override
+    public Object create(String parentUniqueId, SimpleObject post, RequestContext context) throws ResponseException {
+        throw new ResourceDoesNotSupportOperationException();
+    }
+
+    @Override
+    public Object update(String parentUniqueId, String uuid, SimpleObject post, RequestContext context) throws ResponseException {
+        throw new ResourceDoesNotSupportOperationException();
+    }
+
     @Override
     public OrderAttribute save(OrderAttribute delegate) {
-        // make sure it has not already been added to the order
-
-        delegate.getOrder().addAttribute(delegate);
-
-        OrderContext orderContext = new OrderContext();
-        orderContext.setCareSetting(delegate.getOrder().getCareSetting());
-        orderContext.setOrderType(delegate.getOrder().getOrderType());
-        delegate.getOrder().setAction(Order.Action.REVISE);
-
-        Context.getOrderService().saveOrder(delegate.getOrder(), orderContext);
-        return delegate;
+        throw new UnsupportedOperationException("Create attributes with a new order; saved-order attributes are read-only");
     }
 
-    /**
-     * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#delete(java.lang.Object,
-     *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
-     */
     @Override
     protected void delete(OrderAttribute delegate, String reason, RequestContext context) throws ResponseException {
-        OrderContext orderContext = new OrderContext();
-        orderContext.setCareSetting(delegate.getOrder().getCareSetting());
-        orderContext.setOrderType(delegate.getOrder().getOrderType());
-        delegate.getOrder().setAction(Order.Action.REVISE);
-        Context.getOrderService().saveOrder(delegate.getOrder(), orderContext);
+        throw new ResourceDoesNotSupportOperationException();
     }
 
-    /**
-     * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(java.lang.Object,
-     *      org.openmrs.module.webservices.rest.web.RequestContext)
-     */
     @Override
     public void purge(OrderAttribute delegate, RequestContext context) throws ResponseException {
-        throw new UnsupportedOperationException("Cannot purge OrderAttribute");
+        throw new ResourceDoesNotSupportOperationException();
     }
 
     /**

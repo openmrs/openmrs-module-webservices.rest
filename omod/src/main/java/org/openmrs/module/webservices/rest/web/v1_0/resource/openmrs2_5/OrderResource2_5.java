@@ -78,7 +78,7 @@ public class OrderResource2_5 extends OrderResource2_2 {
 			description.addProperty("attributes", Representation.FULL);
 			return description;
 		}
-		return null;
+		return super.getRepresentationDescription(rep);
 	}
 
 	/**
@@ -91,15 +91,6 @@ public class OrderResource2_5 extends OrderResource2_2 {
 		return description;
 	}
 
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
-	 */
-	@Override
-	public DelegatingResourceDescription getUpdatableProperties() {
-		DelegatingResourceDescription description = super.getUpdatableProperties();
-		description.addProperty("attributes");
-		return description;
-	}
 
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getPropertiesToExposeAsSubResources()
