@@ -49,9 +49,18 @@ public class NeedsPagingTest extends BaseModuleWebContextSensitiveTest {
 	
 	@Before
 	public void setUp() {
-		
-		converter = ConversionUtil.getConverter(Order.class);
-		
+		converter = new Converter<Order>() {
+			@Override
+			public Order newInstance(String type) { return new Order(); }
+			@Override
+			public Order getByUniqueId(String string) { return new Order(); }
+			@Override
+			public SimpleObject asRepresentation(Order instance, org.openmrs.module.webservices.rest.web.representation.Representation rep) { return new SimpleObject(); }
+			@Override
+			public Object getProperty(Order instance, String propertyName) { return null; }
+			@Override
+			public void setProperty(Object instance, String propertyName, Object value) { }
+		};
 		order1.setPatient(patientWithOrders);
 		order2.setPatient(patientWithOrders);
 		orders.add(order1);

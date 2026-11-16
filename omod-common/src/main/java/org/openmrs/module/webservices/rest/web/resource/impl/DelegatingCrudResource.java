@@ -209,7 +209,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.Listable#getAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public TypedSimpleObject<PageableResultDto<? extends T>> getAll(RequestContext context) throws ResponseException {
+	public TypedSimpleObject<PageableResultDto<T>> getAll(RequestContext context) throws ResponseException {
 		if (context.getType() != null) {
 			if (!hasTypesDefined())
 				throw new IllegalArgumentException(getClass() + " does not support "
@@ -221,14 +221,12 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 			if (handler == null)
 				throw new IllegalArgumentException("No handler is specified for " + RestConstants.REQUEST_PROPERTY_FOR_TYPE
 				        + "=" + context.getType());
-			PageableResult<? extends T> result = handler.getAllByType(context);
-			@SuppressWarnings("unchecked")
-			TypedSimpleObject<PageableResultDto<? extends T>> typedResult = (TypedSimpleObject<PageableResultDto<? extends T>>) (Object) result.toSimpleObject(this);
+			PageableResult<T> result = handler.getAllByType(context);
+			TypedSimpleObject<PageableResultDto<T>> typedResult = result.toSimpleObject(this);
 			return typedResult;
 		} else {
 			PageableResult<T> result = doGetAll(context);
-			@SuppressWarnings("unchecked")
-			TypedSimpleObject<PageableResultDto<? extends T>> typedResult = (TypedSimpleObject<PageableResultDto<? extends T>>) (Object) result.toSimpleObject(this);
+			TypedSimpleObject<PageableResultDto<T>> typedResult = result.toSimpleObject(this);
 			return typedResult;
 		}
 	}

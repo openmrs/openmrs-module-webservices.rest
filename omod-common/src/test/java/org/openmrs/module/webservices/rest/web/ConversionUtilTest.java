@@ -22,6 +22,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Collections;
 import java.util.TimeZone;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -29,8 +30,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.api.ConceptNameType;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.TypedSimpleObject;
 import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.PageableResultDto;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
 public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
@@ -371,4 +374,24 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 	public class GreatGrandchildGenericType_Int extends GrandchildGenericType_Int {}
 	
 	public class ChildMultiGenericType extends BaseMultiGenericType<Integer, String, Temp> {}
+	
+	@Test
+	public void toTypedSimpleObject_shouldReflectivelyConvertPojoAndOmitNullsAndClassProperty() {
+		PageableResultDto<String> dto = new PageableResultDto<>();
+		dto.setResults(Collections.<SimpleObject>singletonList(new SimpleObject().add("key", "val")));
+		dto.setTotalCount(42L);
+		// links is left null
+		
+		TypedSimpleObject<PageableResultDto<String>> result = ConversionUtil.toTypedSimpleObject(dto);
+		Assert.assertNotNull(result);
+		Assert.assertTrue(result.containsKey("results"));
+		Assert.assertEquals(Long.valueOf(42L), result.get("totalCount"));
+		Assert.assertFalse(result.containsKey("links"));
+		Assert.assertFalse(result.containsKey("class"));
+	}
+	
+	@Test
+	public void toTypedSimpleObject_shouldReturnNullWhenGivenNull() {
+		Assert.assertNull(ConversionUtil.toTypedSimpleObject(null));
+	}
 }

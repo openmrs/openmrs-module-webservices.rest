@@ -57,13 +57,7 @@ public abstract class BasePageableResult<T> implements PageableResult<T> {
 			if (converted == ConversionUtil.PRIVILEGE_DENIED) {
 				continue;
 			}
-			if (converted instanceof org.openmrs.module.webservices.rest.SimpleObject) {
-				results.add((org.openmrs.module.webservices.rest.SimpleObject) converted);
-			} else {
-				// In tests, the converter might be missing and return the raw domain object.
-				// Wrap it in an empty SimpleObject to satisfy the List<SimpleObject> contract.
-				results.add(new org.openmrs.module.webservices.rest.SimpleObject());
-			}
+			results.add((org.openmrs.module.webservices.rest.SimpleObject) converted);
 		}
 		
 		PageableResultDto<T> dto = new PageableResultDto<>();
