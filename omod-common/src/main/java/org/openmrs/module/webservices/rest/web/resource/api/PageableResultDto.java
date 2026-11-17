@@ -11,7 +11,6 @@ package org.openmrs.module.webservices.rest.web.resource.api;
 
 import java.util.List;
 
-import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.Hyperlink;
 
 /**
@@ -21,17 +20,17 @@ import org.openmrs.module.webservices.rest.web.Hyperlink;
  */
 public class PageableResultDto<T> {
 	
-	private List<SimpleObject> results;
+	private List<?> results;
 	
 	private Long totalCount;
 	
 	private List<Hyperlink> links;
 	
-	public List<SimpleObject> getResults() {
+	public List<?> getResults() {
 		return results;
 	}
 	
-	public void setResults(List<SimpleObject> results) {
+	public void setResults(List<?> results) {
 		this.results = results;
 	}
 	

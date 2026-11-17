@@ -29,7 +29,7 @@ public class EmptySearchResult<T> implements PageableResult<T> {
 	@Override
 	public TypedSimpleObject<PageableResultDto<T>> toSimpleObject(Converter<? super T> preferredConverter) throws ResponseException {
 		PageableResultDto<T> dto = new PageableResultDto<>();
-		dto.setResults(Collections.<org.openmrs.module.webservices.rest.SimpleObject>emptyList());
+		dto.setResults(Collections.emptyList());
 		return ConversionUtil.toTypedSimpleObject(dto);
 	}
 	

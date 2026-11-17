@@ -51,13 +51,13 @@ public abstract class BasePageableResult<T> implements PageableResult<T> {
 	 */
 	@Override
 	public TypedSimpleObject<PageableResultDto<T>> toSimpleObject(Converter<? super T> preferredConverter) throws ResponseException {
-		List<org.openmrs.module.webservices.rest.SimpleObject> results = new ArrayList<>();
+		List<Object> results = new ArrayList<>();
 		for (T match : getPageOfResults()) {
 			Object converted = ConversionUtil.convertToRepresentation(match, context.getRepresentation(), preferredConverter);
 			if (converted == ConversionUtil.PRIVILEGE_DENIED) {
 				continue;
 			}
-			results.add((org.openmrs.module.webservices.rest.SimpleObject) converted);
+			results.add(converted);
 		}
 		
 		PageableResultDto<T> dto = new PageableResultDto<>();
