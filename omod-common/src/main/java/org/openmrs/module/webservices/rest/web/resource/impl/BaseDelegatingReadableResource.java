@@ -9,7 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
-import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.TypedSimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResultDto;
