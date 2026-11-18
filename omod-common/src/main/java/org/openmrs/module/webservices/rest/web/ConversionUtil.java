@@ -20,6 +20,7 @@ import org.openmrs.Voidable;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.TypedSimpleObject;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
@@ -34,6 +35,7 @@ import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.util.HandlerUtil;
 import org.openmrs.util.LocaleUtility;
 
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -609,5 +611,40 @@ public class ConversionUtil {
 		}
 
 		return desc;
+	}
+
+	/**
+	 * Converts any POJO into a {@link TypedSimpleObject} reflectively using JavaBean property descriptors.
+	 * Properties with null values and the "class" property are omitted.
+	 *
+	 * @param value the object to convert
+	 * @param <T> the type of the object
+	 * @return a TypedSimpleObject populated with property-name to value mappings, or null if value is null
+	 */
+	public static <T> TypedSimpleObject<T> toTypedSimpleObject(T value) {
+		if (value == null) {
+			return null;
+		}
+		TypedSimpleObject<T> ret = new TypedSimpleObject<>();
+		try {
+			PropertyDescriptor[] descriptors = PropertyUtils.getPropertyDescriptors(value);
+			for (PropertyDescriptor pd : descriptors) {
+				String name = pd.getName();
+				if ("class".equals(name)) {
+					continue;
+				}
+				Method readMethod = PropertyUtils.getReadMethod(pd);
+				if (readMethod != null) {
+					Object propVal = PropertyUtils.getProperty(value, name);
+					if (propVal != null) {
+						ret.put(name, propVal);
+					}
+				}
+			}
+		}
+		catch (Exception e) {
+			throw new ConversionException("Failed to convert " + value.getClass().getName() + " to TypedSimpleObject", e);
+		}
+		return ret;
 	}
 }

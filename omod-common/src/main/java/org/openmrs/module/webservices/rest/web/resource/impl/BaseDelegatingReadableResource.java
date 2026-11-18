@@ -9,8 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
-import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.TypedSimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.resource.api.PageableResultDto;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
@@ -60,7 +61,7 @@ public abstract class BaseDelegatingReadableResource<T> extends BaseDelegatingRe
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.Listable#getAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public SimpleObject getAll(RequestContext context) throws ResponseException {
+	public TypedSimpleObject<PageableResultDto<T>> getAll(RequestContext context) throws ResponseException {
 		if (context.getType() != null) {
 			if (!hasTypesDefined())
 				throw new IllegalArgumentException(getClass() + " does not support "
@@ -72,11 +73,13 @@ public abstract class BaseDelegatingReadableResource<T> extends BaseDelegatingRe
 			if (handler == null)
 				throw new IllegalArgumentException("No handler is specified for " + RestConstants.REQUEST_PROPERTY_FOR_TYPE
 				        + "=" + context.getType());
-			PageableResult result = handler.getAllByType(context);
-			return result.toSimpleObject(this);
+			PageableResult<T> result = handler.getAllByType(context);
+			TypedSimpleObject<PageableResultDto<T>> typedResult = result.toSimpleObject(this);
+			return typedResult;
 		} else {
-			PageableResult result = doGetAll(context);
-			return result.toSimpleObject(this);
+			PageableResult<T> result = doGetAll(context);
+			TypedSimpleObject<PageableResultDto<T>> typedResult = result.toSimpleObject(this);
+			return typedResult;
 		}
 	}
 	
@@ -86,15 +89,15 @@ public abstract class BaseDelegatingReadableResource<T> extends BaseDelegatingRe
 	 * @param context
 	 * @return
 	 */
-	public PageableResult doGetAll(RequestContext context) {
+	public PageableResult<T> doGetAll(RequestContext context) {
 		throw new ResourceDoesNotSupportOperationException();
 	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.Searchable#search(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
-	public SimpleObject search(RequestContext context) throws ResponseException {
-		PageableResult result = doSearch(context);
+	public TypedSimpleObject<PageableResultDto<T>> search(RequestContext context) throws ResponseException {
+		PageableResult<T> result = doSearch(context);
 		return result.toSimpleObject(this);
 	}
 	
@@ -102,7 +105,7 @@ public abstract class BaseDelegatingReadableResource<T> extends BaseDelegatingRe
 	 * Implementations should override this method and implement Searchable if they are actually
 	 * searchable.
 	 */
-	protected PageableResult doSearch(RequestContext context) {
+	protected PageableResult<T> doSearch(RequestContext context) {
 		throw new ResourceDoesNotSupportOperationException("not searchable");
 	}
 }

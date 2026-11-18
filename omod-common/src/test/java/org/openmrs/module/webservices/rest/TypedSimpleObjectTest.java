@@ -110,4 +110,14 @@ public class TypedSimpleObjectTest {
 		assertEquals("a", keys[1]);
 		assertEquals("m", keys[2]);
 	}
+	
+	@Test
+	public void mapConstructor_shouldPopulateEntries() {
+		SimpleObject source = new SimpleObject();
+		source.put("key", "val");
+		TypedSimpleObject<?> obj = new TypedSimpleObject<>(source);
+		assertEquals("val", obj.get("key"));
+	}
+	
+
 }
