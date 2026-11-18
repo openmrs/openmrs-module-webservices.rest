@@ -491,7 +491,6 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 		group.setConcept(Context.getConceptService().getConcept(23));
 		group.setObsDatetime(encounter.getEncounterDatetime());
 		group.setEncounter(encounter);
-		group.setLocation(encounter.getLocation());
 		group.addGroupMember(member);
 		Context.getObsService().saveObs(group, "test");
 
