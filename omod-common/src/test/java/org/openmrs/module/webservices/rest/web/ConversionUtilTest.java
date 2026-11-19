@@ -81,6 +81,18 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 	
 	/**
 	 * @see ConversionUtil#convert(Object,Type)
+	 * @verifies String to Date conversion for the UTC designator that JavaScript's Date.toISOString sends
+	 */
+	@Test
+	public void convert_shouldReturnCorrectDateWhenParsingStringWithUtcDesignator() throws Exception {
+		Date expected = (Date) ConversionUtil.convert("2026-11-19T07:00:00.000+0000", Date.class);
+		for (String date : new String[] { "2026-11-19T07:00:00.000Z", "2026-11-19T07:00:00Z" }) {
+			Assertions.assertEquals(expected, ConversionUtil.convert(date, Date.class));
+		}
+	}
+
+	/**
+	 * @see ConversionUtil#convert(Object,Type)
 	 * @verifies String to Date conversion by assert false for date mismatches
 	 */
 	@Test
