@@ -14,13 +14,13 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.joda.time.DateTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -192,7 +192,9 @@ public class ObsResource1_9Test extends BaseDelegatingResourceTest<ObsResource2_
 		Date datetime = new Date();
 		obs.setValueDate(datetime);
 		SimpleObject rep = getResource().asRepresentation(obs, Representation.DEFAULT);
-		Assertions.assertEquals(new DateTime(datetime).withTimeAtStartOfDay().toDate(), ConversionUtil.convert(rep.get("value"), Date.class));
+		ZoneId zone = ZoneId.systemDefault();
+		Date startOfDay = Date.from(datetime.toInstant().atZone(zone).toLocalDate().atStartOfDay(zone).toInstant());
+		Assertions.assertEquals(startOfDay, ConversionUtil.convert(rep.get("value"), Date.class));
 	}
 
 	@Test

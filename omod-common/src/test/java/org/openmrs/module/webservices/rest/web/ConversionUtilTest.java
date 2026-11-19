@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -32,6 +33,7 @@ import org.openmrs.api.ConceptNameType;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 
 public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
@@ -79,6 +81,76 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 		}
 	}
 	
+	/**
+	 * @see ConversionUtil#convert(Object,Type)
+	 * @verifies String to Date conversion for the UTC designator that JavaScript's Date.toISOString sends
+	 */
+	@Test
+	public void convert_shouldReturnCorrectDateWhenParsingStringWithUtcDesignator() throws Exception {
+		Date expected = (Date) ConversionUtil.convert("2026-11-19T07:00:00.000+0000", Date.class);
+		for (String date : new String[] { "2026-11-19T07:00:00.000Z", "2026-11-19T07:00:00Z" }) {
+			Assertions.assertEquals(expected, ConversionUtil.convert(date, Date.class));
+		}
+	}
+
+	/**
+	 * @see ConversionUtil#convert(Object,Type)
+	 * @verifies String to Date conversion for one digit fields, fractions of one to three digits and
+	 *           lower case separators
+	 */
+	@Test
+	public void convert_shouldAcceptShortFieldsFractionsAndLowerCaseSeparators() throws Exception {
+		assertEquals(Date.from(Instant.parse("2011-05-01T01:02:03Z")), ConversionUtil.convert("2011-5-1T1:2:3Z", Date.class));
+		assertEquals(Date.from(Instant.parse("2011-05-01T10:20:30.100Z")),
+		    ConversionUtil.convert("2011-05-01T10:20:30.1Z", Date.class));
+		assertEquals(Date.from(Instant.parse("2011-05-01T10:20:30.120Z")),
+		    ConversionUtil.convert("2011-05-01T10:20:30.12Z", Date.class));
+		assertEquals(Date.from(Instant.parse("2011-05-01T10:20:30.123Z")),
+		    ConversionUtil.convert("2011-05-01T10:20:30.123Z", Date.class));
+		assertEquals(Date.from(Instant.parse("2011-05-01T10:20:30Z")), ConversionUtil.convert("2011-05-01t10:20:30Z", Date.class));
+		assertEquals(Date.from(Instant.parse("2011-05-01T10:20:30Z")), ConversionUtil.convert("2011-05-01T10:20:30z", Date.class));
+	}
+
+	/**
+	 * @see ConversionUtil#convert(Object,Type)
+	 * @verifies String to Date conversion fails for dates that do not exist and for longer fractions
+	 */
+	@Test
+	public void convert_shouldFailForDatesThatDoNotExist() throws Exception {
+		for (String date : new String[] { "2011-02-29", "2011-04-31", "2011-13-01", "2011-05-01T24:00:00Z",
+		        "2011-05-01T10:20:30.1234Z" }) {
+			assertThrows(ConversionException.class, () -> ConversionUtil.convert(date, Date.class), date);
+		}
+	}
+
+	/**
+	 * @see ConversionUtil#convert(Object,Type)
+	 * @verifies String to Date conversion around daylight saving time changes in the server time zone
+	 */
+	@Test
+	public void convert_shouldHandleDaylightSavingTimeChangesInTheServerTimeZone() throws Exception {
+		TimeZone original = TimeZone.getDefault();
+		try {
+			TimeZone.setDefault(TimeZone.getTimeZone("America/New_York"));
+			// the clocks went forward at 2:00, so 2:30 did not exist that day
+			ConversionException e = assertThrows(ConversionException.class,
+			    () -> ConversionUtil.convert("2023-03-12T02:30:00", Date.class));
+			assertEquals("Illegal instant due to time zone offset transition (America/New_York)", e.getCause().getMessage());
+			// the clocks went back at 2:00, so 1:30 happened twice, and the first one is taken
+			assertEquals(Date.from(Instant.parse("2023-11-05T05:30:00Z")),
+			    ConversionUtil.convert("2023-11-05T01:30:00", Date.class));
+			TimeZone.setDefault(TimeZone.getTimeZone("America/Lima"));
+			// the clocks went from 0:00 to 1:00 on 1 January 1990, so that day started at 1:00
+			assertEquals(Date.from(Instant.parse("1990-01-01T05:00:00Z")), ConversionUtil.convert("1990-01-01", Date.class));
+			TimeZone.setDefault(TimeZone.getTimeZone("Pacific/Apia"));
+			// the clocks skipped the whole of 30 December 2011, so that date does not exist
+			assertThrows(ConversionException.class, () -> ConversionUtil.convert("2011-12-30", Date.class));
+		}
+		finally {
+			TimeZone.setDefault(original);
+		}
+	}
+
 	/**
 	 * @see ConversionUtil#convert(Object,Type)
 	 * @verifies String to Date conversion by assert false for date mismatches

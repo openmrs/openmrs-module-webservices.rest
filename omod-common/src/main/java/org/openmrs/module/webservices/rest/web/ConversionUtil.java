@@ -12,8 +12,6 @@ package org.openmrs.module.webservices.rest.web;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
 import org.openmrs.Auditable;
 import org.openmrs.ConceptName;
 import org.openmrs.OpenmrsObject;
@@ -46,6 +44,19 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.text.SimpleDateFormat;
+import java.time.DateTimeException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.ResolverStyle;
+import java.time.format.SignStyle;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -68,6 +79,74 @@ public class ConversionUtil {
 	static final Log log = LogFactory.getLog(ConversionUtil.class);
 	
 	public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+
+	/**
+	 * The shapes a date string may take, tried in order. They accept what the Joda-Time patterns this
+	 * replaced accepted: one or two digit fields, a fraction of 1 to 3 digits, and an offset written as
+	 * Z, +hh, +hhmm or +hh:mm (RESTWS-419, RESTWS-544).
+	 */
+	private static final DateTimeFormatter[] DATE_PARSERS = { dateTimeParser('T', true, true),
+	        dateTimeParser('T', true, false), dateTimeParser('T', false, true), dateTimeParser('T', false, false),
+	        dateTimeParser(' ', false, false), datePart().toFormatter().withResolverStyle(ResolverStyle.STRICT) };
+
+	private static DateTimeFormatterBuilder datePart() {
+		return new DateTimeFormatterBuilder().parseLenient().appendValue(ChronoField.YEAR, 1, 9, SignStyle.NORMAL)
+		        .parseStrict().appendLiteral('-').appendValue(ChronoField.MONTH_OF_YEAR, 1, 2, SignStyle.NOT_NEGATIVE)
+		        .appendLiteral('-').appendValue(ChronoField.DAY_OF_MONTH, 1, 2, SignStyle.NOT_NEGATIVE);
+	}
+
+	private static DateTimeFormatter dateTimeParser(char separator, boolean fraction, boolean offset) {
+		DateTimeFormatterBuilder builder = datePart().parseCaseInsensitive().appendLiteral(separator)
+		        .parseCaseSensitive().appendValue(ChronoField.HOUR_OF_DAY, 1, 2, SignStyle.NOT_NEGATIVE).appendLiteral(':')
+		        .appendValue(ChronoField.MINUTE_OF_HOUR, 1, 2, SignStyle.NOT_NEGATIVE).appendLiteral(':')
+		        .appendValue(ChronoField.SECOND_OF_MINUTE, 1, 2, SignStyle.NOT_NEGATIVE);
+		if (fraction) {
+			builder.appendLiteral('.').appendFraction(ChronoField.NANO_OF_SECOND, 1, 3, false);
+		}
+		if (offset) {
+			builder.parseCaseInsensitive().parseLenient().appendOffset("+HH", "Z").parseStrict().parseCaseSensitive();
+		}
+		return builder.toFormatter().withResolverStyle(ResolverStyle.STRICT);
+	}
+
+	private static Date parseDate(String string) {
+		RuntimeException cause = null;
+		for (DateTimeFormatter parser : DATE_PARSERS) {
+			try {
+				TemporalAccessor parsed = parser.parse(string);
+				LocalDate date = LocalDate.from(parsed);
+				if (!parsed.isSupported(ChronoField.HOUR_OF_DAY)) {
+					// a date starts after the gap where the clocks skipped its midnight, unless they skipped the whole day
+					ZoneId zone = ZoneId.systemDefault();
+					Instant start = date.atStartOfDay(zone).toInstant();
+					if (start.atZone(zone).toLocalDate().equals(date)) {
+						return Date.from(start);
+					}
+				}
+				LocalDateTime local = LocalDateTime.of(date,
+				    parsed.isSupported(ChronoField.HOUR_OF_DAY) ? LocalTime.from(parsed) : LocalTime.MIDNIGHT);
+				Instant instant;
+				if (parsed.isSupported(ChronoField.OFFSET_SECONDS)) {
+					instant = local.toInstant(ZoneOffset.from(parsed));
+				} else {
+					ZoneId zone = ZoneId.systemDefault();
+					if (zone.getRules().getValidOffsets(local).isEmpty()) {
+						// a local time inside a daylight saving gap does not exist, so it is refused
+						cause = new DateTimeException(
+						        "Illegal instant due to time zone offset transition (" + zone.getId() + ")");
+						break;
+					}
+					instant = local.atZone(zone).toInstant();
+				}
+				return Date.from(instant);
+			}
+			catch (DateTimeException | IllegalArgumentException ex) {
+				cause = ex;
+			}
+		}
+		throw new ConversionException(
+		        "Error converting date - correct format (ISO8601 Long): yyyy-MM-dd'T'HH:mm:ss.SSSZ", cause);
+	}
 
 	public static final Object PRIVILEGE_DENIED = new Object();
 	
@@ -268,19 +347,7 @@ public class ConversionUtil {
 				return converter.getByUniqueId(string);
 			
 			if (toClass.isAssignableFrom(Date.class)) {
-				IllegalArgumentException pex = null;
-				String[] supportedFormats = { DATE_FORMAT, "yyyy-MM-dd'T'HH:mm:ss.SSS", "yyyy-MM-dd'T'HH:mm:ssZ",
-				        "yyyy-MM-dd'T'HH:mm:ssXXX", "yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd" };
-				for (int i = 0; i < supportedFormats.length; i++) {
-					try {
-						return DateTime.parse(string, DateTimeFormat.forPattern(supportedFormats[i])).toDate();
-					}
-					catch (IllegalArgumentException ex) {
-						pex = ex;
-					}
-				}
-				throw new ConversionException(
-				        "Error converting date - correct format (ISO8601 Long): yyyy-MM-dd'T'HH:mm:ss.SSSZ", pex);
+				return parseDate(string);
 			} else if (toClass.isAssignableFrom(Locale.class)) {
 				return LocaleUtility.fromSpecification(object.toString());
 			} else if (toClass.isEnum()) {
