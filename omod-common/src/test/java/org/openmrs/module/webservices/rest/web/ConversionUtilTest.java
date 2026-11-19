@@ -133,10 +133,18 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 		try {
 			TimeZone.setDefault(TimeZone.getTimeZone("America/New_York"));
 			// the clocks went forward at 2:00, so 2:30 did not exist that day
-			assertThrows(ConversionException.class, () -> ConversionUtil.convert("2023-03-12T02:30:00", Date.class));
+			ConversionException e = assertThrows(ConversionException.class,
+			    () -> ConversionUtil.convert("2023-03-12T02:30:00", Date.class));
+			assertEquals("Illegal instant due to time zone offset transition (America/New_York)", e.getCause().getMessage());
 			// the clocks went back at 2:00, so 1:30 happened twice, and the first one is taken
 			assertEquals(Date.from(Instant.parse("2023-11-05T05:30:00Z")),
 			    ConversionUtil.convert("2023-11-05T01:30:00", Date.class));
+			TimeZone.setDefault(TimeZone.getTimeZone("America/Lima"));
+			// the clocks went from 0:00 to 1:00 on 1 January 1990, so that day started at 1:00
+			assertEquals(Date.from(Instant.parse("1990-01-01T05:00:00Z")), ConversionUtil.convert("1990-01-01", Date.class));
+			TimeZone.setDefault(TimeZone.getTimeZone("Pacific/Apia"));
+			// the clocks skipped the whole of 30 December 2011, so that date does not exist
+			assertThrows(ConversionException.class, () -> ConversionUtil.convert("2011-12-30", Date.class));
 		}
 		finally {
 			TimeZone.setDefault(original);

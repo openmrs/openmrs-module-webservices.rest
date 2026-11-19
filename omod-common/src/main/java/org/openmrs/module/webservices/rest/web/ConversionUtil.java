@@ -114,7 +114,16 @@ public class ConversionUtil {
 		for (DateTimeFormatter parser : DATE_PARSERS) {
 			try {
 				TemporalAccessor parsed = parser.parse(string);
-				LocalDateTime local = LocalDateTime.of(LocalDate.from(parsed),
+				LocalDate date = LocalDate.from(parsed);
+				if (!parsed.isSupported(ChronoField.HOUR_OF_DAY)) {
+					// a date starts after the gap where the clocks skipped its midnight, unless they skipped the whole day
+					ZoneId zone = ZoneId.systemDefault();
+					Instant start = date.atStartOfDay(zone).toInstant();
+					if (start.atZone(zone).toLocalDate().equals(date)) {
+						return Date.from(start);
+					}
+				}
+				LocalDateTime local = LocalDateTime.of(date,
 				    parsed.isSupported(ChronoField.HOUR_OF_DAY) ? LocalTime.from(parsed) : LocalTime.MIDNIGHT);
 				Instant instant;
 				if (parsed.isSupported(ChronoField.OFFSET_SECONDS)) {
@@ -125,13 +134,13 @@ public class ConversionUtil {
 						// a local time inside a daylight saving gap does not exist, so it is refused
 						cause = new DateTimeException(
 						        "Illegal instant due to time zone offset transition (" + zone.getId() + ")");
-						continue;
+						break;
 					}
 					instant = local.atZone(zone).toInstant();
 				}
 				return Date.from(instant);
 			}
-			catch (DateTimeException | ArithmeticException | IllegalArgumentException ex) {
+			catch (DateTimeException | IllegalArgumentException ex) {
 				cause = ex;
 			}
 		}
