@@ -268,6 +268,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	 */
 	@Override
 	public Obs save(Obs delegate) {
+		propagateEncounterToGroupMembers(delegate);
 		Obs savedObs = Context.getObsService().saveObs(delegate, "REST web service");
 		return Context.getObsService().getObs(savedObs.getId());
 	}
@@ -426,6 +427,47 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 			member.setObsGroup(obsGroup);
 		}
 		obsGroup.setGroupMembers(members);
+	}
+
+	/**
+	 * Gives obs created inside an obs group the group's encounter, and new obs that have an encounter
+	 * but no location the encounter's location, as Encounter.addObs does for obs sent with
+	 * POST /encounter (RESTWS-1062), so that sending them back through POST /encounter changes
+	 * nothing. Existing obs are left alone, because changing one makes core save it as a new version.
+	 * Each obs is walked once, so a group that contains itself is rejected by core's ObsValidator on
+	 * save instead of overflowing the stack. This runs at save time rather than in setGroupMembers,
+	 * because a single obs needs the location too, and it never reaches setGroupMembers.
+	 *
+	 * @param group the obs about to be saved
+	 */
+	private void propagateEncounterToGroupMembers(Obs group) {
+		fillNewObsFromEncounter(group, group == null ? null : group.getEncounter(),
+		    Collections.newSetFromMap(new IdentityHashMap<Obs, Boolean>()));
+	}
+
+	/**
+	 * @param encounter the encounter of the closest enclosing obs that has one
+	 * @param visited the obs already walked, by identity
+	 */
+	private void fillNewObsFromEncounter(Obs obs, Encounter encounter, Set<Obs> visited) {
+		if (obs == null || !visited.add(obs)) {
+			return;
+		}
+		Encounter own = obs.getEncounter();
+		if (obs.getObsId() == null) {
+			if (own == null && encounter != null) {
+				obs.setEncounter(encounter);
+				own = encounter;
+			}
+			if (own != null && obs.getLocation() == null) {
+				obs.setLocation(own.getLocation());
+			}
+		}
+		if (obs.getGroupMembers() != null) {
+			for (Obs member : obs.getGroupMembers()) {
+				fillNewObsFromEncounter(member, own != null ? own : encounter, visited);
+			}
+		}
 	}
 	
 	/**
@@ -659,7 +701,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 		
 		ComplexData complexData = new ComplexData(file.getOriginalFilename(), new ByteArrayInputStream(file.getBytes()));
 		obs.setComplexData(complexData);
-		
+		propagateEncounterToGroupMembers(obs);
 		obs = obsService.saveObs(obs, null);
 		
 		return (SimpleObject) ConversionUtil.convertToRepresentation(obs, Representation.DEFAULT);
