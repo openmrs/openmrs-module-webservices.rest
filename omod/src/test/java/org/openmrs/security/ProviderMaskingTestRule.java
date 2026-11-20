@@ -17,16 +17,9 @@ import org.openmrs.Provider;
  */
 public class ProviderMaskingTestRule extends MaskingTestRule<Provider> {
 
-	public Integer deniedId;
-
 	@Override
 	public Class<?> getTargetType() {
 		return Provider.class;
-	}
-
-	@Override
-	protected Integer deniedId() {
-		return deniedId;
 	}
 
 	@Override

@@ -73,7 +73,9 @@ public class TreeMaskingController1_9Test extends RestControllerTestUtils {
 
 	private final ObsMaskingTestRule obsRule = new ObsMaskingTestRule();
 
-	private final DomainObjectAuthorizationRule[] rules = { conceptRule, obsRule, new UuidMaskingTestRule() };
+	private final UuidMaskingTestRule uuidRule = new UuidMaskingTestRule();
+
+	private final DomainObjectAuthorizationRule[] rules = { conceptRule, obsRule, uuidRule };
 
 	@Autowired
 	private OpenmrsPermissionEvaluator evaluator;
@@ -86,8 +88,7 @@ public class TreeMaskingController1_9Test extends RestControllerTestUtils {
 
 	@AfterEach
 	public void disarmRules() {
-			AuthorizationRules.unregister(evaluator, rules);
-			UuidMaskingTestRule.deniedUuid = null;
+		AuthorizationRules.unregister(evaluator, rules);
 	}
 
 	@Test
@@ -162,7 +163,7 @@ public class TreeMaskingController1_9Test extends RestControllerTestUtils {
 		assertTrue(conceptTree().contains(HEMATOCRIT_NAME), "the tree should name concept "
 		        + HEMATOCRIT_CONCEPT_ID + " when no rule refuses it, or this is testing nothing");
 
-		UuidMaskingTestRule.deniedUuid = HEMATOCRIT_CONCEPT_NAME_UUID;
+		uuidRule.deniedUuid = HEMATOCRIT_CONCEPT_NAME_UUID;
 		String masked = conceptTree();
 
 		assertFalse(masked.contains(HEMATOCRIT_NAME), "a refused name should appear nowhere, got " + masked);
@@ -174,7 +175,7 @@ public class TreeMaskingController1_9Test extends RestControllerTestUtils {
 		assertTrue(obsTree().contains(FAVOURITE_FOOD_NAME), "the tree should name concept "
 		        + FAVOURITE_FOOD_CONCEPT_ID + " when no rule refuses it, or this is testing nothing");
 
-		UuidMaskingTestRule.deniedUuid = FAVOURITE_FOOD_CONCEPT_NAME_UUID;
+		uuidRule.deniedUuid = FAVOURITE_FOOD_CONCEPT_NAME_UUID;
 		String masked = obsTree();
 
 		assertFalse(masked.contains(FAVOURITE_FOOD_NAME), "a refused name should appear nowhere, got " + masked);

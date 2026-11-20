@@ -17,16 +17,9 @@ import org.openmrs.Person;
  */
 public class PersonMaskingTestRule extends MaskingTestRule<Person> {
 
-	public Integer deniedId;
-
 	@Override
 	public Class<?> getTargetType() {
 		return Person.class;
-	}
-
-	@Override
-	protected Integer deniedId() {
-		return deniedId;
 	}
 
 	@Override
