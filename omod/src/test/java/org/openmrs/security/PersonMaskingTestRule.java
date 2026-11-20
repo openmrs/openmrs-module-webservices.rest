@@ -17,7 +17,7 @@ import org.openmrs.Person;
  */
 public class PersonMaskingTestRule extends MaskingTestRule<Person> {
 
-	public static volatile Integer deniedId;
+	public Integer deniedId;
 
 	@Override
 	public Class<?> getTargetType() {

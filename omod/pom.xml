@@ -23,6 +23,12 @@
 			<classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>2.12.7</version>
+			<scope>test</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>org.openmrs.module</groupId>

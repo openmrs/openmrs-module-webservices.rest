@@ -69,8 +69,11 @@ public class TreeMaskingController1_9Test extends RestControllerTestUtils {
 	private static final String YES_NAME = "YES";
 
 	/** Only the three these tests arm: see {@link org.openmrs.security.MaskingTestRule} on why. */
-	private final DomainObjectAuthorizationRule[] rules = { new ConceptMaskingTestRule(), new ObsMaskingTestRule(),
-	        new UuidMaskingTestRule() };
+	private final ConceptMaskingTestRule conceptRule = new ConceptMaskingTestRule();
+
+	private final ObsMaskingTestRule obsRule = new ObsMaskingTestRule();
+
+	private final DomainObjectAuthorizationRule[] rules = { conceptRule, obsRule, new UuidMaskingTestRule() };
 
 	@Autowired
 	private OpenmrsPermissionEvaluator evaluator;
@@ -83,10 +86,8 @@ public class TreeMaskingController1_9Test extends RestControllerTestUtils {
 
 	@AfterEach
 	public void disarmRules() {
-		AuthorizationRules.unregister(evaluator, rules);
-		ConceptMaskingTestRule.deniedId = null;
-		ObsMaskingTestRule.deniedId = null;
-		UuidMaskingTestRule.deniedUuid = null;
+			AuthorizationRules.unregister(evaluator, rules);
+			UuidMaskingTestRule.deniedUuid = null;
 	}
 
 	@Test
@@ -94,7 +95,7 @@ public class TreeMaskingController1_9Test extends RestControllerTestUtils {
 		assertTrue(conceptTree().contains(HEMATOCRIT_NAME), "the tree should name concept "
 		        + HEMATOCRIT_CONCEPT_ID + " when no rule refuses it, or this is testing nothing");
 
-		ConceptMaskingTestRule.deniedId = HEMATOCRIT_CONCEPT_ID;
+		conceptRule.deniedId = HEMATOCRIT_CONCEPT_ID;
 		String masked = conceptTree();
 
 		assertFalse(masked.contains(HEMATOCRIT_NAME), "a refused concept should be named nowhere, got " + masked);
@@ -106,7 +107,7 @@ public class TreeMaskingController1_9Test extends RestControllerTestUtils {
 		assertTrue(obsTree().contains(FAVOURITE_FOOD_NAME), "the tree should name concept "
 		        + FAVOURITE_FOOD_CONCEPT_ID + " when no rule refuses it, or this is testing nothing");
 
-		ConceptMaskingTestRule.deniedId = FAVOURITE_FOOD_CONCEPT_ID;
+		conceptRule.deniedId = FAVOURITE_FOOD_CONCEPT_ID;
 		String masked = obsTree();
 
 		assertFalse(masked.contains(FAVOURITE_FOOD_NAME), "a refused concept should be named nowhere, got " + masked);
@@ -125,7 +126,7 @@ public class TreeMaskingController1_9Test extends RestControllerTestUtils {
 		assertTrue(obsTree().contains(HEMATOCRIT_VALUE),
 		    "the reading should be listed when no rule refuses it, or this is testing nothing");
 
-		ObsMaskingTestRule.deniedId = HEMATOCRIT_OBS_ID;
+		obsRule.deniedId = HEMATOCRIT_OBS_ID;
 		String masked = obsTree();
 
 		assertTrue(masked.contains(HEMATOCRIT_NAME), "the concept itself is not refused, only one of its readings");
@@ -143,7 +144,7 @@ public class TreeMaskingController1_9Test extends RestControllerTestUtils {
 		assertTrue(obsTree().contains("\"value\":\"" + YES_NAME + "\""),
 		    "CIVIL STATUS should record " + YES_NAME + " as its value, or this is testing nothing");
 
-		ConceptMaskingTestRule.deniedId = YES_CONCEPT_ID;
+		conceptRule.deniedId = YES_CONCEPT_ID;
 		String masked = obsTree();
 
 		assertFalse(masked.contains("\"value\":\"" + YES_NAME + "\""),

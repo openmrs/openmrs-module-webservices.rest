@@ -14,7 +14,7 @@ import org.openmrs.Concept;
 /** Refuses one concept, for the coded condition and diagnosis cases. */
 public class ConceptMaskingTestRule extends MaskingTestRule<Concept> {
 
-	public static volatile Integer deniedId;
+	public Integer deniedId;
 
 	@Override
 	public Class<?> getTargetType() {

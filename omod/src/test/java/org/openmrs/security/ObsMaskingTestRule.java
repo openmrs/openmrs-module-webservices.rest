@@ -14,7 +14,7 @@ import org.openmrs.Obs;
 /** Refuses one observation, for the obs-group display cases. */
 public class ObsMaskingTestRule extends MaskingTestRule<Obs> {
 
-	public static volatile Integer deniedId;
+	public Integer deniedId;
 
 	@Override
 	public Class<?> getTargetType() {

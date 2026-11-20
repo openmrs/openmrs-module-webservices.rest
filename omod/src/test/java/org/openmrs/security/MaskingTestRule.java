@@ -36,7 +36,7 @@ public abstract class MaskingTestRule<T extends OpenmrsObject> implements Domain
 
 	/**
 	 * The id this rule refuses, or null to refuse nothing. Held by the subclass rather than here so a
-	 * test can set it without reaching for the registered component.
+	 * test can set it on its own instance of the rule.
 	 */
 	protected abstract Integer deniedId();
 

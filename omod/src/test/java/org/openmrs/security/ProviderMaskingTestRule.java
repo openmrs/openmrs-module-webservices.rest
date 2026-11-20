@@ -17,7 +17,7 @@ import org.openmrs.Provider;
  */
 public class ProviderMaskingTestRule extends MaskingTestRule<Provider> {
 
-	public static volatile Integer deniedId;
+	public Integer deniedId;
 
 	@Override
 	public Class<?> getTargetType() {

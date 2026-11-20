@@ -13,7 +13,7 @@ package org.openmrs.security;
 /** Refuses one {@link UnregisteredTestObject}, for the no-converter case. */
 public class UnregisteredTestObjectMaskingTestRule extends MaskingTestRule<UnregisteredTestObject> {
 
-	public static volatile Integer deniedId;
+	public Integer deniedId;
 
 	@Override
 	public Class<?> getTargetType() {
