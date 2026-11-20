@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.DateProperty;
 import io.swagger.models.properties.StringProperty;
 import org.openmrs.Cohort;
@@ -103,13 +104,13 @@ public class CohortMembershipResource2_1 extends DelegatingSubResource<CohortMem
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			model
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("startDate", new DateProperty())
-			        .property("endDate", new DateProperty())
-			        .property("patientUuid", new StringProperty());
+					.property("uuid", new StringProperty())
+					.property("display", new StringProperty())
+					.property("startDate", new DateProperty())
+					.property("endDate", new DateProperty())
+					.property("patientUuid", new StringProperty())
+					.property("voided", new BooleanProperty());
 		}
-		//FIXME missing props
 		return model;
 	}
 	

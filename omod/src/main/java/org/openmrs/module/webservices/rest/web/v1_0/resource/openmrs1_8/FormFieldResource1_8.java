@@ -97,7 +97,17 @@ public class FormFieldResource1_8 extends DelegatingSubResource<FormField, Form,
 	
 	@Override
 	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl(); //FIXME missing props
+		return new ModelImpl()
+				.property("form", new StringProperty().example("uuid"))
+				.property("field", new StringProperty().example("uuid"))
+				.property("required", new BooleanProperty()._default(false))
+				.property("parent", new StringProperty().example("uuid"))
+				.property("fieldNumber", new IntegerProperty())
+				.property("fieldPart", new StringProperty())
+				.property("pageNumber", new IntegerProperty())
+				.property("minOccurs", new IntegerProperty())
+				.property("maxOccurs", new IntegerProperty())
+				.property("sortWeight", new BooleanProperty()._default(false));
 	}
 	
 	/**
