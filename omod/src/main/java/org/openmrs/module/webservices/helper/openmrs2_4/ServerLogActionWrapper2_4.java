@@ -10,15 +10,15 @@
 package org.openmrs.module.webservices.helper.openmrs2_4;
 
 import org.openmrs.module.webservices.helper.ServerLogActionWrapper;
-import org.openmrs.util.MemoryAppender;
-import org.openmrs.util.OpenmrsUtil;
+import org.openmrs.logging.MemoryAppender;
+import org.openmrs.logging.OpenmrsLoggingUtil;
 
 public class ServerLogActionWrapper2_4 extends ServerLogActionWrapper {
 
 	@Override
 	public MemoryAppender getMemoryAppender() {
 		try {
-			return OpenmrsUtil.getMemoryAppender();
+			return OpenmrsLoggingUtil.getMemoryAppender();
 		} catch (ClassCastException | NullPointerException e) {
 			return null;
 		}
