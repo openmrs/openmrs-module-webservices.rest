@@ -119,8 +119,6 @@ public class OrderGroupController1_12Test extends MainResourceControllerTest {
 		orders.add(order2);
 		
 		orderGroup.setOrders(orders);
-		order.setOrderGroup(orderGroup);
-		order2.setOrderGroup(orderGroup);
 		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + RestTestConstants1_12.ORDER_GROUP_UUID);
 		SimpleObject response = deserialize(handle(req));
