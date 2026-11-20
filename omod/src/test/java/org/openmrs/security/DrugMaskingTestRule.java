@@ -14,16 +14,9 @@ import org.openmrs.Drug;
 /** Refuses one drug, for the displays that print a drug's name rather than a concept's. */
 public class DrugMaskingTestRule extends MaskingTestRule<Drug> {
 
-	public static volatile Integer deniedId;
-
 	@Override
 	public Class<?> getTargetType() {
 		return Drug.class;
-	}
-
-	@Override
-	protected Integer deniedId() {
-		return deniedId;
 	}
 
 	@Override

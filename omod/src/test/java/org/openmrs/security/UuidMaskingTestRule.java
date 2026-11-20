@@ -45,10 +45,10 @@ import org.springframework.security.core.Authentication;
 public class UuidMaskingTestRule implements DomainObjectAuthorizationRule {
 
 	/** The uuid this rule refuses when asked about an object, or null to refuse nothing. */
-	public static volatile String deniedUuid;
+	public String deniedUuid;
 
 	/** The uuid this rule refuses however it is asked, a service guard's id included. */
-	public static volatile String deniedUuidAtServiceGuards;
+	public String deniedUuidAtServiceGuards;
 
 	@Override
 	public Class<?> getTargetType() {

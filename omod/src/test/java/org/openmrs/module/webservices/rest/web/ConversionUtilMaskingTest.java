@@ -301,9 +301,22 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	 * {@link org.openmrs.security.MaskingTestRule} on why a rule the context holds changes which path
 	 * a read takes in every other test even while it refuses nothing.
 	 */
-	private final DomainObjectAuthorizationRule[] rules = { new PersonMaskingTestRule(), new ObsMaskingTestRule(),
-	        new ConceptMaskingTestRule(), new DrugMaskingTestRule(), new ProviderMaskingTestRule(),
-	        new UnregisteredTestObjectMaskingTestRule(), new UuidMaskingTestRule() };
+	private final PersonMaskingTestRule personRule = new PersonMaskingTestRule();
+
+	private final ObsMaskingTestRule obsRule = new ObsMaskingTestRule();
+
+	private final ConceptMaskingTestRule conceptRule = new ConceptMaskingTestRule();
+
+	private final DrugMaskingTestRule drugRule = new DrugMaskingTestRule();
+
+	private final ProviderMaskingTestRule providerRule = new ProviderMaskingTestRule();
+
+	private final UnregisteredTestObjectMaskingTestRule unregisteredRule = new UnregisteredTestObjectMaskingTestRule();
+
+	private final UuidMaskingTestRule uuidRule = new UuidMaskingTestRule();
+
+	private final DomainObjectAuthorizationRule[] rules = { personRule, obsRule, conceptRule, drugRule,
+			providerRule, unregisteredRule, uuidRule };
 
 	@Autowired
 	private OpenmrsPermissionEvaluator evaluator;
@@ -316,20 +329,12 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	@AfterEach
 	public void disarmRules() {
 		AuthorizationRules.unregister(evaluator, rules);
-		PersonMaskingTestRule.deniedId = null;
-		ObsMaskingTestRule.deniedId = null;
-		ConceptMaskingTestRule.deniedId = null;
-		DrugMaskingTestRule.deniedId = null;
-		ProviderMaskingTestRule.deniedId = null;
-		UnregisteredTestObjectMaskingTestRule.deniedId = null;
-		UuidMaskingTestRule.deniedUuid = null;
-		UuidMaskingTestRule.deniedUuidAtServiceGuards = null;
 	}
 
 	@Test
 	public void convertToRepresentation_shouldMaskAnObjectARuleRefuses() throws Exception {
 		Patient patient = Context.getPatientService().getPatient(DENIED_PATIENT_ID);
-		PersonMaskingTestRule.deniedId = DENIED_PATIENT_ID;
+		personRule.deniedId = DENIED_PATIENT_ID;
 
 		Object converted = ConversionUtil.convertToRepresentation(patient, DEFAULT);
 
@@ -340,7 +345,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	@Test
 	public void convertToRepresentation_shouldNotMaskAnObjectNoRuleRefuses() throws Exception {
 		Patient patient = Context.getPatientService().getPatient(ALLOWED_PATIENT_ID);
-		PersonMaskingTestRule.deniedId = DENIED_PATIENT_ID;
+		personRule.deniedId = DENIED_PATIENT_ID;
 
 		Object converted = ConversionUtil.convertToRepresentation(patient, DEFAULT);
 
@@ -351,7 +356,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	@Test
 	public void convertToRepresentation_shouldMaskANestedObjectARuleRefuses() throws Exception {
 		Obs obs = anObsOn(DENIED_PATIENT_ID);
-		PersonMaskingTestRule.deniedId = DENIED_PATIENT_ID;
+		personRule.deniedId = DENIED_PATIENT_ID;
 
 		Map<String, Object> converted = asMap(ConversionUtil.convertToRepresentation(obs, DEFAULT));
 
@@ -363,7 +368,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	public void convertToRepresentation_shouldKeepACollectionsSizeWhenAnElementIsMasked() throws Exception {
 		List<Person> people = Arrays.asList(Context.getPersonService().getPerson(DENIED_PATIENT_ID),
 		    Context.getPersonService().getPerson(ALLOWED_PATIENT_ID));
-		PersonMaskingTestRule.deniedId = DENIED_PATIENT_ID;
+		personRule.deniedId = DENIED_PATIENT_ID;
 
 		Object converted = ConversionUtil.convertToRepresentation(people, REF);
 
@@ -376,7 +381,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	@Test
 	public void convertToRepresentation_shouldDropRatherThanMaskWhenThePrivilegeIsMissingToo() throws Exception {
 		Person person = Context.getPersonService().getPerson(DENIED_PATIENT_ID);
-		PersonMaskingTestRule.deniedId = DENIED_PATIENT_ID;
+		personRule.deniedId = DENIED_PATIENT_ID;
 		Context.logout();
 
 		Object converted = ConversionUtil.convertToRepresentation(person, DEFAULT, new PrivilegedPersonResource());
@@ -394,7 +399,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		UnregisteredTestObject object = new UnregisteredTestObject();
 		object.setId(1);
 		object.setSecret("not for this reader");
-		UnregisteredTestObjectMaskingTestRule.deniedId = 1;
+		unregisteredRule.deniedId = 1;
 
 		Object converted = ConversionUtil.convertToRepresentation(object, DEFAULT);
 
@@ -406,7 +411,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	public void convertToRepresentation_shouldNotMaskAnObjectWithNoConverterThatNoRuleRefuses() throws Exception {
 		UnregisteredTestObject object = new UnregisteredTestObject();
 		object.setId(2);
-		UnregisteredTestObjectMaskingTestRule.deniedId = 1;
+		unregisteredRule.deniedId = 1;
 
 		assertSame(object, ConversionUtil.convertToRepresentation(object, DEFAULT));
 	}
@@ -425,7 +430,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		Obs group = Context.getObsService().getObs(OBS_GROUP_ID);
 		assertEquals("Some text", group.getValueAsString(Context.getLocale()),
 		    "the group's value should be its member's, or this is testing nothing");
-		ObsMaskingTestRule.deniedId = OBS_GROUP_MEMBER_ID;
+		obsRule.deniedId = OBS_GROUP_MEMBER_ID;
 
 		assertEquals(MASKED_DISPLAY, display(group, DEFAULT));
 		assertEquals(MASKED_DISPLAY, display(group, REF),
@@ -442,7 +447,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	public void getDisplayString_shouldMaskAnObsGroupsDisplayWhenADeeperMemberIsRefused() throws Exception {
 		executeDataSet("obsWithGroupMembers.xml");
 		Obs group = Context.getObsService().getObs(OBS_GROUP_ID);
-		ObsMaskingTestRule.deniedId = DEEPER_OBS_ID;
+		obsRule.deniedId = DEEPER_OBS_ID;
 
 		assertEquals(MASKED_DISPLAY, display(group, DEFAULT));
 	}
@@ -473,7 +478,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	public void getDisplayString_shouldStillMaskPastACycleWhenAMemberIsRefused() throws Exception {
 		executeDataSet("obsWithGroupMembers.xml");
 		Obs selfLinked = Context.getObsService().getObs(SELF_LINKED_OBS_ID);
-		ObsMaskingTestRule.deniedId = SELF_LINKED_GROUP_MEMBER_ID;
+		obsRule.deniedId = SELF_LINKED_GROUP_MEMBER_ID;
 
 		assertEquals(MASKED_DISPLAY, display(selfLinked, DISPLAY_ONLY));
 	}
@@ -482,7 +487,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	public void getDisplayString_shouldNotMaskAnObsGroupsDisplayWhenNoMemberIsRefused() throws Exception {
 		executeDataSet("obsWithGroupMembers.xml");
 		Obs group = Context.getObsService().getObs(OBS_GROUP_ID);
-		ObsMaskingTestRule.deniedId = -1;
+		obsRule.deniedId = -1;
 
 		assertEquals("FOOD CONSTRUCT: Some text", display(group, DEFAULT));
 	}
@@ -497,7 +502,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	public void getDisplayString_shouldMaskAnEncounterProvidersDisplayWhenItsPersonIsRefused() throws Exception {
 		Encounter encounter = Context.getEncounterService().getEncounterByUuid(ENCOUNTER_UUID);
 		assertNotNull(encounter);
-		PersonMaskingTestRule.deniedId = ENCOUNTER_PROVIDER_PERSON_ID;
+		personRule.deniedId = ENCOUNTER_PROVIDER_PERSON_ID;
 
 		Map<String, Object> converted = asMap(ConversionUtil.convertToRepresentation(encounter, DEFAULT));
 
@@ -516,7 +521,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	@Test
 	public void getDisplayString_shouldMaskAnEncounterProvidersDisplayWhenTheProviderIsRefused() throws Exception {
 		Encounter encounter = Context.getEncounterService().getEncounterByUuid(ENCOUNTER_UUID);
-		ProviderMaskingTestRule.deniedId = ENCOUNTER_PROVIDER_ID;
+		providerRule.deniedId = ENCOUNTER_PROVIDER_ID;
 
 		Map<String, Object> converted = asMap(ConversionUtil.convertToRepresentation(encounter, DEFAULT));
 
@@ -536,7 +541,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		Obs coded = Context.getObsService().getObs(CODED_OBS_ID);
 		assertEquals("FOOD ASSISTANCE FOR ENTIRE FAMILY: UNKNOWN", display(coded, DISPLAY_ONLY),
 		    "the answer's name should be in the display, or this is testing nothing");
-		ConceptMaskingTestRule.deniedId = CODED_OBS_ANSWER_CONCEPT_ID;
+		conceptRule.deniedId = CODED_OBS_ANSWER_CONCEPT_ID;
 
 		assertEquals(MASKED_DISPLAY, display(coded, DISPLAY_ONLY));
 	}
@@ -551,7 +556,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		Obs drugValued = Context.getObsService().getObs(DRUG_VALUED_OBS_ID);
 		assertEquals("FOOD ASSISTANCE FOR ENTIRE FAMILY: Triomune-30 (STAVUDINE LAMIVUDINE AND NEVIRAPINE)",
 		    display(drugValued, DISPLAY_ONLY), "the drug should be what the display prints, not the coded answer");
-		DrugMaskingTestRule.deniedId = DRUG_ID;
+		drugRule.deniedId = DRUG_ID;
 
 		assertEquals(MASKED_DISPLAY, display(drugValued, DISPLAY_ONLY));
 	}
@@ -564,7 +569,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	public void getDisplayString_shouldMaskADrugValuedObsDisplayWhenTheDrugsConceptIsRefused() throws Exception {
 		executeDataSet("obsWithDrugValue.xml");
 		Obs drugValued = Context.getObsService().getObs(DRUG_VALUED_OBS_ID);
-		ConceptMaskingTestRule.deniedId = DRUG_CONCEPT_ID;
+		conceptRule.deniedId = DRUG_CONCEPT_ID;
 
 		assertEquals(MASKED_DISPLAY, display(drugValued, DISPLAY_ONLY));
 	}
@@ -572,7 +577,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	@Test
 	public void getDisplayString_shouldMaskAnObsDisplayWhenTheQuestionConceptIsRefused() throws Exception {
 		Obs coded = Context.getObsService().getObs(CODED_OBS_ID);
-		ConceptMaskingTestRule.deniedId = CODED_OBS_QUESTION_CONCEPT_ID;
+		conceptRule.deniedId = CODED_OBS_QUESTION_CONCEPT_ID;
 
 		assertEquals(MASKED_DISPLAY, display(coded, DISPLAY_ONLY));
 	}
@@ -594,7 +599,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		assertNotNull(order);
 		assertEquals("CD4 COUNT", display(order, DISPLAY_ONLY),
 		    "a test order's display delegates to OrderResource1_8");
-		ConceptMaskingTestRule.deniedId = CD4_COUNT_CONCEPT_ID;
+		conceptRule.deniedId = CD4_COUNT_CONCEPT_ID;
 
 		assertEquals(MASKED_DISPLAY, display(order, DISPLAY_ONLY));
 	}
@@ -605,7 +610,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		assertNotNull(order);
 		assertTrue(((String) display(order, DISPLAY_ONLY)).contains("ASPIRIN"),
 		    "the drug's name should be in the display, got " + display(order, DISPLAY_ONLY));
-		DrugMaskingTestRule.deniedId = ASPIRIN_DRUG_ID;
+		drugRule.deniedId = ASPIRIN_DRUG_ID;
 
 		assertEquals(MASKED_DISPLAY, display(order, DISPLAY_ONLY));
 	}
@@ -613,7 +618,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	@Test
 	public void getDisplayString_shouldMaskADrugOrdersDisplayWhenItsConceptIsRefused() throws Exception {
 		Order order = Context.getOrderService().getOrderByUuid(DRUG_ORDER_UUID);
-		ConceptMaskingTestRule.deniedId = ASPIRIN_CONCEPT_ID;
+		conceptRule.deniedId = ASPIRIN_CONCEPT_ID;
 
 		assertEquals(MASKED_DISPLAY, display(order, DISPLAY_ONLY));
 	}
@@ -624,7 +629,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		        .getConceptReferenceRangeByUuid(CONCEPT_REFERENCE_RANGE_UUID);
 		assertNotNull(range);
 		assertEquals("Diastolic blood pressure", display(range, DISPLAY_ONLY));
-		ConceptMaskingTestRule.deniedId = DIASTOLIC_CONCEPT_ID;
+		conceptRule.deniedId = DIASTOLIC_CONCEPT_ID;
 
 		assertEquals(MASKED_DISPLAY, display(range, DISPLAY_ONLY));
 	}
@@ -641,7 +646,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		        .getConceptReferenceRangeByUuid(CONCEPT_REFERENCE_RANGE_UUID);
 		ConceptReferenceRangeResource2_7 resource = new ConceptReferenceRangeResource2_7();
 		assertNotEquals(MASKED_DISPLAY, resource.getConcept(range));
-		ConceptMaskingTestRule.deniedId = DIASTOLIC_CONCEPT_ID;
+		conceptRule.deniedId = DIASTOLIC_CONCEPT_ID;
 
 		assertEquals(MASKED_DISPLAY, resource.getConcept(range), "the uuid names the concept on its own");
 		assertEquals(MASKED_DISPLAY, resource.getUnits(range));
@@ -654,7 +659,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		assertNotNull(allergy);
 		PatientAllergyResource2_0 resource = new PatientAllergyResource2_0();
 		assertEquals("ASPIRIN", resource.getDisplayString(allergy));
-		ConceptMaskingTestRule.deniedId = ASPIRIN_CONCEPT_ID;
+		conceptRule.deniedId = ASPIRIN_CONCEPT_ID;
 
 		assertEquals(MASKED_DISPLAY, resource.getDisplayString(allergy));
 	}
@@ -664,7 +669,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		ConceptSearchResult result = new ConceptSearchResult("aspirin", aspirin(), null);
 		ConceptSearchResource1_9 resource = new ConceptSearchResource1_9();
 		assertEquals("ASPIRIN", resource.getDisplayString(result));
-		ConceptMaskingTestRule.deniedId = ASPIRIN_CONCEPT_ID;
+		conceptRule.deniedId = ASPIRIN_CONCEPT_ID;
 
 		assertEquals(MASKED_DISPLAY, resource.getDisplayString(result));
 	}
@@ -674,7 +679,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		ConceptSearchResult result = new ConceptSearchResult("aspirin", aspirin(), null);
 		OrderableResource1_10 resource = new OrderableResource1_10();
 		assertEquals("ASPIRIN", resource.getDisplayString(result));
-		ConceptMaskingTestRule.deniedId = ASPIRIN_CONCEPT_ID;
+		conceptRule.deniedId = ASPIRIN_CONCEPT_ID;
 
 		assertEquals(MASKED_DISPLAY, resource.getDisplayString(result));
 	}
@@ -686,7 +691,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		fieldAnswer.setConcept(aspirin());
 		FieldAnswerResource1_8 resource = new FieldAnswerResource1_8();
 		assertEquals("Null Field - ASPIRIN", resource.getDisplayString(fieldAnswer));
-		ConceptMaskingTestRule.deniedId = ASPIRIN_CONCEPT_ID;
+		conceptRule.deniedId = ASPIRIN_CONCEPT_ID;
 
 		assertEquals(MASKED_DISPLAY, resource.getDisplayString(fieldAnswer));
 	}
@@ -697,7 +702,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		assertNotNull(ingredient);
 		DrugIngredientResource1_11 resource = new DrugIngredientResource1_11();
 		assertEquals("ASPIRIN", resource.getDisplayString(ingredient));
-		ConceptMaskingTestRule.deniedId = ASPIRIN_CONCEPT_ID;
+		conceptRule.deniedId = ASPIRIN_CONCEPT_ID;
 
 		assertEquals(MASKED_DISPLAY, resource.getDisplayString(ingredient));
 	}
@@ -709,7 +714,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		DrugReferenceMapResource1_10 resource = new DrugReferenceMapResource1_10();
 		assertTrue(resource.getDisplayString(map).contains("Panadol"),
 		    "the drug's name should be in the display, got " + resource.getDisplayString(map));
-		DrugMaskingTestRule.deniedId = DRUG_ID;
+		drugRule.deniedId = DRUG_ID;
 
 		assertEquals(MASKED_DISPLAY, resource.getDisplayString(map));
 	}
@@ -723,7 +728,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		MedicationDispenseResource2_6 resource = new MedicationDispenseResource2_6();
 		assertTrue(resource.getDisplayString(dispense).contains("Test Drug"),
 		    "the concept's name should be in the display, got " + resource.getDisplayString(dispense));
-		ConceptMaskingTestRule.deniedId = MEDICATION_DISPENSE_CONCEPT_ID;
+		conceptRule.deniedId = MEDICATION_DISPENSE_CONCEPT_ID;
 
 		assertEquals(MASKED_DISPLAY, resource.getDisplayString(dispense));
 	}
@@ -747,7 +752,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	public void getDisplayString_shouldMaskARelationshipsDisplayWhenEitherPersonIsRefused() throws Exception {
 		Relationship relationship = Context.getPersonService().getRelationshipByUuid(RELATIONSHIP_UUID);
 		assertNotNull(relationship);
-		PersonMaskingTestRule.deniedId = DENIED_PATIENT_ID;
+		personRule.deniedId = DENIED_PATIENT_ID;
 
 		Map<String, Object> converted = asMap(ConversionUtil.convertToRepresentation(relationship, DEFAULT));
 		assertTrue(isMasked(converted.get("personB")), "the refused person masks as a nested object");
@@ -760,7 +765,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		executeDataSet("orderGroupTestDataset.xml");
 		OrderGroup group = Context.getOrderService().getOrderGroupByUuid(ORDER_GROUP_UUID);
 		assertNotNull(group);
-		PersonMaskingTestRule.deniedId = ORDER_GROUP_PATIENT_ID;
+		personRule.deniedId = ORDER_GROUP_PATIENT_ID;
 
 		// the identifier the display prints is a disclosure of its own, not only the name
 		assertEquals(MASKED_DISPLAY, display(group, DEFAULT));
@@ -772,7 +777,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		executeDataSet("providerTestDataset.xml");
 		Provider provider = Context.getProviderService().getProviderByUuid(PROVIDER_UUID);
 		assertNotNull(provider);
-		PersonMaskingTestRule.deniedId = PROVIDER_PERSON_ID;
+		personRule.deniedId = PROVIDER_PERSON_ID;
 
 		// Provider.getName() reads the person's name, so no rule on Provider itself is involved
 		assertEquals(MASKED_DISPLAY, display(provider, DEFAULT));
@@ -784,7 +789,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		executeDataSet("conditionTestDataset.xml");
 		Condition condition = Context.getConditionService().getConditionByUuid(CODED_CONDITION_UUID);
 		assertNotNull(condition);
-		ConceptMaskingTestRule.deniedId = CONDITION_CONCEPT_ID;
+		conceptRule.deniedId = CONDITION_CONCEPT_ID;
 
 		assertEquals(MASKED_DISPLAY, display(condition, DEFAULT));
 		assertEquals(MASKED_DISPLAY, display(condition, REF));
@@ -795,7 +800,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		executeDataSet("patientDiagnosisDataSet.xml");
 		Diagnosis diagnosis = Context.getDiagnosisService().getDiagnosisByUuid(CODED_DIAGNOSIS_UUID);
 		assertNotNull(diagnosis);
-		ConceptMaskingTestRule.deniedId = DIAGNOSIS_CONCEPT_ID;
+		conceptRule.deniedId = DIAGNOSIS_CONCEPT_ID;
 
 		assertEquals(MASKED_DISPLAY, display(diagnosis, DEFAULT));
 		assertEquals(MASKED_DISPLAY, display(diagnosis, REF));
@@ -811,7 +816,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	public void convertToRepresentation_shouldMaskARefusedCodedConceptUnderEveryRepresentation() throws Exception {
 		executeDataSet("conditionTestDataset.xml");
 		Condition condition = Context.getConditionService().getConditionByUuid(CODED_CONDITION_UUID);
-		ConceptMaskingTestRule.deniedId = CONDITION_CONCEPT_ID;
+		conceptRule.deniedId = CONDITION_CONCEPT_ID;
 
 		for (Representation rep : Arrays.asList(DEFAULT, FULL)) {
 			Map<String, Object> converted = asMap(ConversionUtil.convertToRepresentation(condition, rep));
@@ -825,7 +830,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	public void convertToRepresentation_shouldStillRenderACodedConceptNoRuleRefuses() throws Exception {
 		executeDataSet("conditionTestDataset.xml");
 		Condition condition = Context.getConditionService().getConditionByUuid(CODED_CONDITION_UUID);
-		ConceptMaskingTestRule.deniedId = -1;
+		conceptRule.deniedId = -1;
 
 		Map<String, Object> converted = asMap(ConversionUtil.convertToRepresentation(condition, DEFAULT));
 		Map<String, Object> codedOrFreeText = asMap(converted.get("condition"));
@@ -855,7 +860,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	@Test
 	public void isRefusedByARule_shouldStillAskTheRulesWithAPublishedAuthenticationAndNoSession() throws Exception {
 		Person denied = Context.getPersonService().getPerson(DENIED_PATIENT_ID);
-		PersonMaskingTestRule.deniedId = DENIED_PATIENT_ID;
+		personRule.deniedId = DENIED_PATIENT_ID;
 		Authentication published = SecurityContextHolder.getContext().getAuthentication();
 		assertNotNull(published, "the test context should publish one to hand back");
 		Context.closeSession();
@@ -888,7 +893,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		assertNotNull(visit);
 		assertTrue(((String) display(visit, DISPLAY_ONLY)).contains("Unknown Location"),
 		    "the location's name should be in the display, got " + display(visit, DISPLAY_ONLY));
-		UuidMaskingTestRule.deniedUuid = VISIT_LOCATION_UUID;
+		uuidRule.deniedUuid = VISIT_LOCATION_UUID;
 
 		assertEquals(MASKED_DISPLAY, display(visit, DEFAULT));
 		assertEquals(MASKED_DISPLAY, display(visit, REF), "ref carries display too");
@@ -899,7 +904,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		Visit visit = Context.getVisitService().getVisitByUuid(VISIT_UUID);
 		assertTrue(((String) display(visit, DISPLAY_ONLY)).contains("Initial HIV Clinic Visit"),
 		    "the visit type's name should be in the display, got " + display(visit, DISPLAY_ONLY));
-		UuidMaskingTestRule.deniedUuid = VISIT_TYPE_UUID;
+		uuidRule.deniedUuid = VISIT_TYPE_UUID;
 
 		assertEquals(MASKED_DISPLAY, display(visit, DEFAULT));
 	}
@@ -907,7 +912,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	@Test
 	public void getDisplayString_shouldNotMaskAVisitsDisplayWhenNothingItReadsIsRefused() throws Exception {
 		Visit visit = Context.getVisitService().getVisitByUuid(VISIT_UUID);
-		UuidMaskingTestRule.deniedUuid = "no-such-uuid";
+		uuidRule.deniedUuid = "no-such-uuid";
 
 		assertTrue(((String) display(visit, DEFAULT)).startsWith("Initial HIV Clinic Visit @ Unknown Location"));
 	}
@@ -917,7 +922,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		Encounter encounter = Context.getEncounterService().getEncounterByUuid(ENCOUNTER_UUID);
 		assertTrue(((String) display(encounter, DISPLAY_ONLY)).startsWith("Emergency"),
 		    "the type's name should be in the display, got " + display(encounter, DISPLAY_ONLY));
-		UuidMaskingTestRule.deniedUuid = ENCOUNTER_TYPE_UUID;
+		uuidRule.deniedUuid = ENCOUNTER_TYPE_UUID;
 
 		Map<String, Object> converted = asMap(ConversionUtil.convertToRepresentation(encounter, DEFAULT));
 		assertTrue(isMasked(converted.get("encounterType")), "the type masks as a nested object");
@@ -934,7 +939,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		assertEquals(PREFERRED_IDENTIFIER_UUID, patient.getPatientIdentifier().getUuid(),
 		    "the preferred identifier should be the one this refuses");
 		assertEquals("101-6 - Horatio Test Hornblower", display(patient, DISPLAY_ONLY));
-		UuidMaskingTestRule.deniedUuid = PREFERRED_IDENTIFIER_UUID;
+		uuidRule.deniedUuid = PREFERRED_IDENTIFIER_UUID;
 
 		assertEquals(MASKED_DISPLAY, display(patient, DEFAULT));
 		assertEquals(MASKED_DISPLAY, display(patient, REF));
@@ -943,7 +948,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	@Test
 	public void getDisplayString_shouldMaskAPatientsDisplayWhenTheNameIsRefused() throws Exception {
 		Patient patient = Context.getPatientService().getPatient(PATIENT_ID);
-		UuidMaskingTestRule.deniedUuid = PREFERRED_NAME_UUID;
+		uuidRule.deniedUuid = PREFERRED_NAME_UUID;
 
 		assertEquals(MASKED_DISPLAY, display(patient, DEFAULT));
 	}
@@ -952,7 +957,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	public void getDisplayString_shouldMaskAPersonsDisplayWhenTheNameIsRefused() throws Exception {
 		Person person = Context.getPersonService().getPerson(PROVIDER_PERSON_ID);
 		assertEquals("Bruno Otterbourg", display(person, DISPLAY_ONLY));
-		UuidMaskingTestRule.deniedUuid = NON_PATIENT_PERSON_NAME_UUID;
+		uuidRule.deniedUuid = NON_PATIENT_PERSON_NAME_UUID;
 
 		assertEquals(MASKED_DISPLAY, display(person, DEFAULT));
 		assertEquals(MASKED_DISPLAY, display(person, REF));
@@ -963,7 +968,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		PatientIdentifier identifier = Context.getPatientService().getPatientIdentifierByUuid(PREFERRED_IDENTIFIER_UUID);
 		assertNotNull(identifier);
 		assertEquals("OpenMRS Identification Number = 101-6", display(identifier, DISPLAY_ONLY));
-		UuidMaskingTestRule.deniedUuid = IDENTIFIER_TYPE_UUID;
+		uuidRule.deniedUuid = IDENTIFIER_TYPE_UUID;
 
 		assertEquals(MASKED_DISPLAY, display(identifier, DEFAULT));
 	}
@@ -973,7 +978,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		PatientProgram enrollment = Context.getProgramWorkflowService().getPatientProgramByUuid(PATIENT_PROGRAM_UUID);
 		assertNotNull(enrollment);
 		assertEquals("HIV PROGRAM", display(enrollment, DISPLAY_ONLY));
-		UuidMaskingTestRule.deniedUuid = PROGRAM_UUID;
+		uuidRule.deniedUuid = PROGRAM_UUID;
 
 		Map<String, Object> converted = asMap(ConversionUtil.convertToRepresentation(enrollment, DEFAULT));
 		assertTrue(isMasked(converted.get("program")), "the program masks as a nested object");
@@ -991,7 +996,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		assertNotNull(obs.getValueCodedName(), "obs " + VALUE_CODED_NAME_OBS_ID + " should name its coded answer");
 		assertEquals("UNKNOWN", asMap(asMap(ConversionUtil.convertToRepresentation(obs, DEFAULT)).get("valueCodedName"))
 		        .get("display"), "the name should be rendered in full, or this is testing nothing");
-		ConceptMaskingTestRule.deniedId = CODED_OBS_ANSWER_CONCEPT_ID;
+		conceptRule.deniedId = CODED_OBS_ANSWER_CONCEPT_ID;
 
 		for (Representation rep : Arrays.asList(DEFAULT, FULL)) {
 			Map<String, Object> converted = asMap(ConversionUtil.convertToRepresentation(obs, rep));
@@ -1006,7 +1011,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		executeDataSet("conditionTestDataset.xml");
 		Condition condition = Context.getConditionService().getConditionByUuid(CODED_CONDITION_UUID);
 		assertNotNull(condition.getCondition().getSpecificName(), "the condition should name its coded concept");
-		ConceptMaskingTestRule.deniedId = CONDITION_CONCEPT_ID;
+		conceptRule.deniedId = CONDITION_CONCEPT_ID;
 
 		for (Representation rep : Arrays.asList(DEFAULT, FULL)) {
 			Map<String, Object> codedOrFreeText = asMap(
@@ -1020,7 +1025,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	public void convertToRepresentation_shouldStillRenderAConceptNameWhoseConceptNoRuleRefuses() throws Exception {
 		executeDataSet("obsWithValueCodedName.xml");
 		Obs obs = Context.getObsService().getObs(VALUE_CODED_NAME_OBS_ID);
-		ConceptMaskingTestRule.deniedId = -1;
+		conceptRule.deniedId = -1;
 
 		Map<String, Object> converted = asMap(ConversionUtil.convertToRepresentation(obs, DEFAULT));
 		assertFalse(isMasked(converted.get("valueCodedName")));
@@ -1038,7 +1043,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		executeDataSet("visitAttributesWithRecordValues.xml");
 		VisitAttribute attribute = theOnlyAttributeOf(VISIT_UUID);
 		assertEquals("Primary Diagnosis: Concept #" + CODED_OBS_ANSWER_CONCEPT_ID, display(attribute, DISPLAY_ONLY));
-		ConceptMaskingTestRule.deniedId = CODED_OBS_ANSWER_CONCEPT_ID;
+		conceptRule.deniedId = CODED_OBS_ANSWER_CONCEPT_ID;
 
 		Map<String, Object> converted = asMap(ConversionUtil.convertToRepresentation(attribute, DEFAULT));
 		assertTrue(isMasked(converted.get("value")), "the concept masks as a nested object");
@@ -1049,7 +1054,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	public void getDisplayString_shouldMaskAVisitAttributesDisplayWhenItsTypeIsRefused() throws Exception {
 		executeDataSet("visitAttributesWithRecordValues.xml");
 		VisitAttribute attribute = theOnlyAttributeOf(VISIT_UUID);
-		UuidMaskingTestRule.deniedUuid = VISIT_ATTRIBUTE_TYPE_UUID;
+		uuidRule.deniedUuid = VISIT_ATTRIBUTE_TYPE_UUID;
 
 		assertEquals(MASKED_DISPLAY, display(attribute, DEFAULT));
 	}
@@ -1066,7 +1071,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		PersonAttribute attribute = Context.getPersonService().getPersonAttributeByUuid(CIVIL_STATUS_ATTRIBUTE_UUID);
 		assertNotNull(attribute);
 		assertEquals("MARRIED", display(attribute, DISPLAY_ONLY), "the concept's name should be the display");
-		ConceptMaskingTestRule.deniedId = MARRIED_CONCEPT_ID;
+		conceptRule.deniedId = MARRIED_CONCEPT_ID;
 
 		String display = (String) display(attribute, DEFAULT);
 		assertNotEquals(String.valueOf(MARRIED_CONCEPT_ID), display, "the raw value is the concept's own id");
@@ -1084,7 +1089,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		PersonAttribute attribute = aUserValuedAttribute();
 		assertEquals("Hippocrates of Cos (butch)", display(attribute, DISPLAY_ONLY),
 		    "the person's name should be in the display, or this is testing nothing");
-		PersonMaskingTestRule.deniedId = ALERT_RECIPIENT_PERSON_ID;
+		personRule.deniedId = ALERT_RECIPIENT_PERSON_ID;
 
 		assertEquals(MASKED_DISPLAY, display(attribute, DISPLAY_ONLY));
 	}
@@ -1093,7 +1098,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	@Test
 	public void getDisplayString_shouldMaskAUserValuedPersonAttributeWhenTheNameIsRefused() throws Exception {
 		PersonAttribute attribute = aUserValuedAttribute();
-		UuidMaskingTestRule.deniedUuid = ALERT_RECIPIENT_NAME_UUID;
+		uuidRule.deniedUuid = ALERT_RECIPIENT_NAME_UUID;
 
 		assertEquals(MASKED_DISPLAY, display(attribute, DISPLAY_ONLY));
 	}
@@ -1107,7 +1112,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	public void getDisplayString_shouldMaskAConceptValuedPersonAttributeWhenOnlyItsNameIsRefused() throws Exception {
 		PersonAttribute attribute = Context.getPersonService().getPersonAttributeByUuid(CIVIL_STATUS_ATTRIBUTE_UUID);
 		assertEquals("MARRIED", display(attribute, DISPLAY_ONLY));
-		UuidMaskingTestRule.deniedUuid = MARRIED_CONCEPT_NAME_UUID;
+		uuidRule.deniedUuid = MARRIED_CONCEPT_NAME_UUID;
 
 		assertEquals(MASKED_DISPLAY, display(attribute, DISPLAY_ONLY));
 	}
@@ -1131,7 +1136,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	@Test
 	public void getDisplayString_shouldMaskAPersonAttributesDisplayWhenItsTypeIsRefused() throws Exception {
 		PersonAttribute attribute = Context.getPersonService().getPersonAttributeByUuid(CIVIL_STATUS_ATTRIBUTE_UUID);
-		UuidMaskingTestRule.deniedUuid = CIVIL_STATUS_ATTRIBUTE_TYPE_UUID;
+		uuidRule.deniedUuid = CIVIL_STATUS_ATTRIBUTE_TYPE_UUID;
 
 		assertEquals(MASKED_DISPLAY, display(attribute, DEFAULT));
 	}
@@ -1145,7 +1150,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	public void getDisplayString_shouldNotMaskAPersonAttributeHoldingALiteralValue() throws Exception {
 		PersonAttribute birthplace = Context.getPersonService().getPersonAttribute(6);
 		assertEquals("java.lang.String", birthplace.getAttributeType().getFormat());
-		UuidMaskingTestRule.deniedUuid = "no-such-uuid";
+		uuidRule.deniedUuid = "no-such-uuid";
 
 		assertEquals("London", display(birthplace, DEFAULT));
 	}
@@ -1162,7 +1167,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		VisitAttribute attribute = theOnlyAttributeOf(PROVIDER_ATTRIBUTE_VISIT_UUID);
 		assertTrue(((String) display(attribute, DISPLAY_ONLY)).contains("Super User"),
 		    "the person's name should be in the display, got " + display(attribute, DISPLAY_ONLY));
-		PersonMaskingTestRule.deniedId = SUPER_USER_PERSON_ID;
+		personRule.deniedId = SUPER_USER_PERSON_ID;
 
 		assertEquals(MASKED_DISPLAY, display(attribute, DISPLAY_ONLY));
 	}
@@ -1172,7 +1177,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	public void getDisplayString_shouldMaskAProviderValuedAttributeWhenAPersonNameIsRefused() throws Exception {
 		executeDataSet("visitAttributesWithRecordValues.xml");
 		VisitAttribute attribute = theOnlyAttributeOf(PROVIDER_ATTRIBUTE_VISIT_UUID);
-		UuidMaskingTestRule.deniedUuid = SUPER_USER_NAME_UUID;
+		uuidRule.deniedUuid = SUPER_USER_NAME_UUID;
 
 		assertEquals(MASKED_DISPLAY, display(attribute, DISPLAY_ONLY));
 	}
@@ -1187,7 +1192,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		VisitAttribute attribute = theOnlyAttributeOf(PROGRAM_ATTRIBUTE_VISIT_UUID);
 		assertTrue(((String) display(attribute, DISPLAY_ONLY)).contains("concept=Concept #" + PROGRAM_CONCEPT_ID),
 		    "the concept's id should be in the display, got " + display(attribute, DISPLAY_ONLY));
-		ConceptMaskingTestRule.deniedId = PROGRAM_CONCEPT_ID;
+		conceptRule.deniedId = PROGRAM_CONCEPT_ID;
 
 		assertEquals(MASKED_DISPLAY, display(attribute, DISPLAY_ONLY));
 	}
@@ -1197,7 +1202,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	public void getDisplayString_shouldMaskAProgramValuedAttributeWhenAWorkflowIsRefused() throws Exception {
 		executeDataSet("visitAttributesWithRecordValues.xml");
 		VisitAttribute attribute = theOnlyAttributeOf(PROGRAM_ATTRIBUTE_VISIT_UUID);
-		UuidMaskingTestRule.deniedUuid = PROGRAM_WORKFLOW_UUID;
+		uuidRule.deniedUuid = PROGRAM_WORKFLOW_UUID;
 
 		assertEquals(MASKED_DISPLAY, display(attribute, DISPLAY_ONLY));
 	}
@@ -1217,7 +1222,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	public void getValue_shouldMaskAVisitAttributeValueAServiceGuardRefusesRatherThanFailing() throws Exception {
 		executeDataSet("visitAttributesWithRecordValues.xml");
 		VisitAttribute attribute = theOnlyAttributeOf(VISIT_UUID);
-		UuidMaskingTestRule.deniedUuidAtServiceGuards = UNKNOWN_CONCEPT_UUID;
+		uuidRule.deniedUuidAtServiceGuards = UNKNOWN_CONCEPT_UUID;
 
 		Map<String, Object> converted = asMap(ConversionUtil.convertToRepresentation(attribute, DEFAULT));
 
@@ -1251,7 +1256,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	public void convertToRepresentation_shouldLeaveAMaskAGetterSubstitutedAlone() throws Exception {
 		executeDataSet("visitAttributesWithRecordValues.xml");
 		VisitAttribute attribute = theOnlyAttributeOf(VISIT_UUID);
-		UuidMaskingTestRule.deniedUuidAtServiceGuards = UNKNOWN_CONCEPT_UUID;
+		uuidRule.deniedUuidAtServiceGuards = UNKNOWN_CONCEPT_UUID;
 
 		for (Representation rep : Arrays.asList(DEFAULT, FULL, new CustomRepresentation("value:(uuid)"))) {
 			Map<String, Object> converted = asMap(ConversionUtil.convertToRepresentation(attribute, rep));
@@ -1268,7 +1273,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		AlertRecipient recipient = anAlertRecipient();
 		assertEquals("Hippocrates of Cos (butch)", display(recipient, DISPLAY_ONLY),
 		    "the person's name should be in the display, or this is testing nothing");
-		PersonMaskingTestRule.deniedId = ALERT_RECIPIENT_PERSON_ID;
+		personRule.deniedId = ALERT_RECIPIENT_PERSON_ID;
 
 		assertEquals(MASKED_DISPLAY, display(recipient, DISPLAY_ONLY));
 	}
@@ -1277,7 +1282,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	@Test
 	public void getDisplayString_shouldMaskAnAlertRecipientsDisplayWhenTheUserIsRefused() throws Exception {
 		AlertRecipient recipient = anAlertRecipient();
-		UuidMaskingTestRule.deniedUuid = ALERT_RECIPIENT_USER_UUID;
+		uuidRule.deniedUuid = ALERT_RECIPIENT_USER_UUID;
 
 		assertEquals(MASKED_DISPLAY, display(recipient, DISPLAY_ONLY));
 	}
@@ -1286,7 +1291,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	@Test
 	public void getDisplayString_shouldMaskAnAlertRecipientsDisplayWhenTheNameIsRefused() throws Exception {
 		AlertRecipient recipient = anAlertRecipient();
-		UuidMaskingTestRule.deniedUuid = ALERT_RECIPIENT_NAME_UUID;
+		uuidRule.deniedUuid = ALERT_RECIPIENT_NAME_UUID;
 
 		assertEquals(MASKED_DISPLAY, display(recipient, DISPLAY_ONLY));
 	}
@@ -1321,7 +1326,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		assertEquals("ASPIRIN", display(aspirin, DISPLAY_ONLY));
 		// read off the concept rather than hardcoded: which of its names is preferred depends on the
 		// locale, and this test is about the name the display actually reads
-		UuidMaskingTestRule.deniedUuid = aspirin.getName().getUuid();
+		uuidRule.deniedUuid = aspirin.getName().getUuid();
 
 		assertEquals(MASKED_DISPLAY, display(aspirin, DEFAULT));
 		assertEquals(MASKED_DISPLAY, display(aspirin, REF));
@@ -1332,7 +1337,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		executeDataSet("providerTestDataset.xml");
 		Provider provider = Context.getProviderService().getProviderByUuid(PROVIDER_UUID);
 		assertNotNull(provider);
-		UuidMaskingTestRule.deniedUuid = NON_PATIENT_PERSON_NAME_UUID;
+		uuidRule.deniedUuid = NON_PATIENT_PERSON_NAME_UUID;
 
 		assertEquals(MASKED_DISPLAY, display(provider, DEFAULT));
 	}
@@ -1340,7 +1345,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	@Test
 	public void getDisplayString_shouldMaskAnEncounterProvidersDisplayWhenTheNameItReadsIsRefused() throws Exception {
 		Encounter encounter = Context.getEncounterService().getEncounterByUuid(ENCOUNTER_UUID);
-		UuidMaskingTestRule.deniedUuid = SUPER_USER_NAME_UUID;
+		uuidRule.deniedUuid = SUPER_USER_NAME_UUID;
 
 		assertEncounterProvidersMasked(encounter);
 	}
@@ -1349,7 +1354,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	@Test
 	public void getDisplayString_shouldMaskAnEncounterProvidersDisplayWhenItsRoleIsRefused() throws Exception {
 		Encounter encounter = Context.getEncounterService().getEncounterByUuid(ENCOUNTER_UUID);
-		UuidMaskingTestRule.deniedUuid = ENCOUNTER_ROLE_UUID;
+		uuidRule.deniedUuid = ENCOUNTER_ROLE_UUID;
 
 		assertEncounterProvidersMasked(encounter);
 	}
@@ -1358,7 +1363,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	public void getDisplayString_shouldMaskARelationshipsDisplayWhenANameItReadsIsRefused() throws Exception {
 		Relationship relationship = Context.getPersonService().getRelationshipByUuid(RELATIONSHIP_UUID);
 		assertNotNull(relationship);
-		UuidMaskingTestRule.deniedUuid = RELATIONSHIP_PERSON_B_NAME_UUID;
+		uuidRule.deniedUuid = RELATIONSHIP_PERSON_B_NAME_UUID;
 
 		assertEquals(MASKED_DISPLAY, display(relationship, DEFAULT));
 	}
@@ -1368,7 +1373,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		Relationship relationship = Context.getPersonService().getRelationshipByUuid(RELATIONSHIP_UUID);
 		assertTrue(((String) display(relationship, DISPLAY_ONLY)).contains("Doctor"),
 		    "the type should be in the display, got " + display(relationship, DISPLAY_ONLY));
-		UuidMaskingTestRule.deniedUuid = RELATIONSHIP_TYPE_UUID;
+		uuidRule.deniedUuid = RELATIONSHIP_TYPE_UUID;
 
 		assertEquals(MASKED_DISPLAY, display(relationship, DEFAULT));
 	}
@@ -1380,7 +1385,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		assertNotNull(group);
 		// orderGroupTestDataset.xml gives patient 2 its own identifier and name, so both are read off
 		// the group rather than taken from the standard dataset's
-		UuidMaskingTestRule.deniedUuid = group.getPatient().getPatientIdentifier().getUuid();
+		uuidRule.deniedUuid = group.getPatient().getPatientIdentifier().getUuid();
 
 		assertEquals(MASKED_DISPLAY, display(group, DEFAULT));
 	}
@@ -1389,7 +1394,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	public void getDisplayString_shouldMaskAnOrderGroupsDisplayWhenTheNameItReadsIsRefused() throws Exception {
 		executeDataSet("orderGroupTestDataset.xml");
 		OrderGroup group = Context.getOrderService().getOrderGroupByUuid(ORDER_GROUP_UUID);
-		UuidMaskingTestRule.deniedUuid = group.getPatient().getPersonName().getUuid();
+		uuidRule.deniedUuid = group.getPatient().getPersonName().getUuid();
 
 		assertEquals(MASKED_DISPLAY, display(group, DEFAULT));
 	}
@@ -1401,7 +1406,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		OrderGroup group = Context.getOrderService().getOrderGroupByUuid(ORDER_GROUP_UUID);
 		assertTrue(((String) display(group, DISPLAY_ONLY)).contains("Order_Set_1"),
 		    "the order set's name should be in the display, got " + display(group, DISPLAY_ONLY));
-		UuidMaskingTestRule.deniedUuid = ORDER_SET_UUID;
+		uuidRule.deniedUuid = ORDER_SET_UUID;
 
 		assertEquals(MASKED_DISPLAY, display(group, DEFAULT));
 	}
@@ -1420,7 +1425,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 		assertEquals(ORDER_FREQUENCY_CONCEPT_NAME, unmasked.get("name"),
 		    "the name should be the concept's, or this is testing nothing");
 		assertEquals(ORDER_FREQUENCY_CONCEPT_NAME, unmasked.get("display"));
-		ConceptMaskingTestRule.deniedId = ORDER_FREQUENCY_CONCEPT_ID;
+		conceptRule.deniedId = ORDER_FREQUENCY_CONCEPT_ID;
 
 		Map<String, Object> converted = asMap(ConversionUtil.convertToRepresentation(frequency, DEFAULT));
 		assertTrue(isMasked(converted.get("concept")), "the concept masks as a nested object");
@@ -1432,7 +1437,7 @@ public class ConversionUtilMaskingTest extends BaseModuleWebContextSensitiveTest
 	@Test
 	public void getName_shouldMaskAnOrderFrequencysNameWhenTheConceptNameIsRefused() throws Exception {
 		OrderFrequency frequency = Context.getOrderService().getOrderFrequencyByUuid(ORDER_FREQUENCY_UUID);
-		UuidMaskingTestRule.deniedUuid = frequency.getConcept().getName().getUuid();
+		uuidRule.deniedUuid = frequency.getConcept().getName().getUuid();
 
 		Map<String, Object> converted = asMap(ConversionUtil.convertToRepresentation(frequency, DEFAULT));
 		assertEquals(MASKED_DISPLAY, converted.get("name"));
