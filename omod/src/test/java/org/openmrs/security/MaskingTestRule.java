@@ -34,11 +34,8 @@ import org.springframework.security.core.Authentication;
  */
 public abstract class MaskingTestRule<T extends OpenmrsObject> implements DomainObjectAuthorizationRule {
 
-	/**
-	 * The id this rule refuses, or null to refuse nothing. Held by the subclass rather than here so a
-	 * test can set it without reaching for the registered component.
-	 */
-	protected abstract Integer deniedId();
+	/** The id this rule refuses, or null to refuse nothing. */
+	public Integer deniedId;
 
 	/** The id of one object of this rule's target type. */
 	protected abstract Integer idOf(T object);
@@ -46,7 +43,7 @@ public abstract class MaskingTestRule<T extends OpenmrsObject> implements Domain
 	@Override
 	@SuppressWarnings("unchecked")
 	public boolean isAuthorized(Authentication authentication, Object targetDomainObject, Object permission) {
-		Integer denied = deniedId();
+		Integer denied = deniedId;
 		if (denied == null || !getTargetType().isInstance(targetDomainObject)) {
 			return true;
 		}
@@ -56,7 +53,7 @@ public abstract class MaskingTestRule<T extends OpenmrsObject> implements Domain
 	@Override
 	public boolean isAuthorized(Authentication authentication, Serializable targetId, Class<?> targetType,
 	        Object permission) {
-		Integer denied = deniedId();
+		Integer denied = deniedId;
 		return denied == null || !denied.equals(targetId);
 	}
 }
