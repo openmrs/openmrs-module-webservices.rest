@@ -414,6 +414,29 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	protected Number getValueNumeric(Obs obs) {
 		return obs.getValueNumeric();
 	}
+
+	/**
+	 * Voiding or unvoiding an obs through the "voided" property must go through ObsService, like
+	 * DELETE and undelete do, so that group members are voided with their group and a void reason
+	 * is recorded (RESTWS-1063).
+	 */
+	@PropertySetter("voided")
+	public static void setVoided(Obs obs, Boolean voided) {
+		boolean target = voided != null && voided;
+		if (obs.getVoided() == target) {
+			return;
+		}
+		if (obs.getObsId() == null) {
+			// not persisted yet, so there is nothing to cascade
+			obs.setVoided(target);
+			return;
+		}
+		if (target) {
+			Context.getObsService().voidObs(obs, "REST web service");
+		} else {
+			Context.getObsService().unvoidObs(obs);
+		}
+	}
 	
 	/**
 	 * Sets the members of an obs group
