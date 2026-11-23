@@ -10,7 +10,7 @@
       },
       {
         "isToken": "IS_NAME_TOKEN",
-        "displayText": "PersonName.givenName",
+        "displayText": "Given",
         "codeName": "givenName",
         "displaySize": "30"
       }
@@ -22,7 +22,7 @@
       },
       {
         "isToken": "IS_NAME_TOKEN",
-        "displayText": "PersonName.middleName",
+        "displayText": "Middle",
         "codeName": "middleName",
         "displaySize": "30"
       }
@@ -34,7 +34,7 @@
       },
       {
         "isToken": "IS_NAME_TOKEN",
-        "displayText": "PersonName.familyName",
+        "displayText": "Family Name",
         "codeName": "familyName",
         "displaySize": "30"
       }
@@ -46,9 +46,9 @@
     "familyName"
   ],
   "nameMappings": {
-    "middleName": "PersonName.middleName",
-    "familyName": "PersonName.familyName",
-    "givenName": "PersonName.givenName"
+    "middleName": "Middle",
+    "familyName": "Family Name",
+    "givenName": "Given"
   },
   "sizeMappings": {
     "familyName": "30",
