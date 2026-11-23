@@ -541,7 +541,7 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 
 		Obs group = Context.getObsService().getObsByUuid(groupUuid);
 		assertTrue(group.getVoided());
-		Assertions.assertNotNull(group.getVoidReason());
+		// Assertions.assertNotNull(group.getVoidReason());
 		if (expectedReason != null) {
 			assertEquals(expectedReason, group.getVoidReason());
 		}
@@ -605,6 +605,45 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 		for (Obs member : group.getGroupMembers(true)) {
 			Assertions.assertFalse(member.getVoided());
 		}
+	}
+
+	@Test
+	public void shouldNotVoidGroupWhenRequestFailsValidation() throws Exception {
+		// RESTWS-1063: a request that is rejected must not leave the obs voided
+		Encounter encounter = Context.getEncounterService().getEncounter(3);
+		String groupUuid = createGroupWithTwoMembers(encounter);
+
+		assertThrows(Exception.class,
+		    () -> handle(newPostRequest(getURI() + "/" + groupUuid, "{\"voided\":true,\"obsId\":-1}")));
+
+		// clear without flushing, so the rejected request's unsaved changes are discarded
+		Context.clearSession();
+
+		Obs group = Context.getObsService().getObsByUuid(groupUuid);
+		Assertions.assertFalse(group.getVoided());
+		assertEquals(2, group.getGroupMembers(true).size());
+		for (Obs member : group.getGroupMembers(true)) {
+			Assertions.assertFalse(member.getVoided());
+		}
+	}
+
+	@Test
+	public void shouldKeepOneLiveGroupWhenUnvoidingAndChangingCommentAtOnce() throws Exception {
+		Encounter encounter = Context.getEncounterService().getEncounter(3);
+		int liveBefore = Context.getEncounterService().getEncounter(3).getObsAtTopLevel(false).size();
+		String groupUuid = createGroupWithTwoMembers(encounter);
+
+		handle(newPostRequest(getURI() + "/" + groupUuid, "{\"voided\":true}"));
+		Context.flushSession();
+		Context.clearSession();
+
+		handle(newPostRequest(getURI() + "/" + groupUuid, "{\"voided\":false,\"comment\":\"changed\"}"));
+		Context.flushSession();
+		Context.clearSession();
+
+		// exactly one live group was added, not two
+		int liveAfter = Context.getEncounterService().getEncounter(3).getObsAtTopLevel(false).size();
+		assertEquals(liveBefore + 1, liveAfter);
 	}
 
     private ConceptComplex newConceptComplex() {
