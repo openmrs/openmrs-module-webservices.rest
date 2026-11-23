@@ -40,7 +40,7 @@ public class ModuleFactoryWrapper {
 	public static final String STOP_MODULE_SKIP_REFRESH_EXCEPTION_MESSAGE = "Failed to stop module without WAC refresh";
 	
 	public Module parseModuleFile(MultipartFile file) throws IOException {
-		return new ModuleFileParser(file.getInputStream()).parse();
+		return new ModuleFileParser(Context.getMessageSourceService()).parse(file.getInputStream());
 	}
 	
 	public Module getModuleById(String id) {
