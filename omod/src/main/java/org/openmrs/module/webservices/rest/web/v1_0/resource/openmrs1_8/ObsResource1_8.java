@@ -269,6 +269,22 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	@Override
 	public Obs save(Obs delegate) {
 		propagateEncounterToGroupMembers(delegate);
+		if (delegate.getObsId() != null) {
+			boolean requestedVoided = delegate.getVoided();
+			boolean wasVoided = delegate.getDateVoided() != null;
+			if (requestedVoided && !wasVoided) {
+				// reset the flag so core's void handler runs and voids the group members too
+				delegate.setVoided(false);
+				Obs voided = Context.getObsService().voidObs(delegate, "REST web service");
+				return Context.getObsService().getObs(voided.getId());
+			}
+			if (!requestedVoided && wasVoided) {
+				delegate.setVoided(true);
+				Obs restored = Context.getObsService().unvoidObs(delegate);
+				// keep the returned obs, core may have created a new version
+				return Context.getObsService().getObs(restored.getId());
+			}
+		}
 		Obs savedObs = Context.getObsService().saveObs(delegate, "REST web service");
 		return Context.getObsService().getObs(savedObs.getId());
 	}
@@ -413,6 +429,60 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	 */
 	protected Number getValueNumeric(Obs obs) {
 		return obs.getValueNumeric();
+	}
+
+	/**
+	 * Only records the requested value. The actual void/unvoid happens in save(), after all properties
+	 * were applied and validated, so a request that fails validation does not void anything (RESTWS-1063).
+	 */
+	@PropertySetter("voided")
+	public static void setVoided(Obs obs, Boolean voided) {
+		boolean target = voided != null && voided;
+		if (!target && obs.getObsId() != null && obs.getDateVoided() != null) {
+			// unvoiding: also restore members voided together with the group, as core's
+			// BaseUnvoidHandler does. The group's own dateVoided is left for save() to detect a restore.
+			unmarkMembersVoided(obs, obs.getDateVoided(), new java.util.HashSet<Obs>());
+		}
+		obs.setVoided(target);
+		if (target && obs.getObsId() != null && obs.getDateVoided() == null) {
+			markVoided(obs, new java.util.HashSet<Obs>());
+		}
+	}
+
+	/**
+	 * In memory only: restores members that were voided at the same time as their group.
+	 */
+	private static void unmarkMembersVoided(Obs group, java.util.Date groupDateVoided, java.util.Set<Obs> visited) {
+		if (group == null || !visited.add(group) || group.getGroupMembers(true) == null) {
+			return;
+		}
+		for (Obs member : group.getGroupMembers(true)) {
+			if (member.getVoided() && groupDateVoided.equals(member.getDateVoided())) {
+				member.setVoided(false);
+				member.setVoidReason(null);
+				member.setVoidedBy(null);
+				member.setDateVoided(null);
+				unmarkMembersVoided(member, groupDateVoided, visited);
+			}
+		}
+	}
+
+	/**
+	 * Sets the void reason on the obs and its members in memory only. Nothing is saved here.
+	 */
+	private static void markVoided(Obs obs, java.util.Set<Obs> visited) {
+		if (obs == null || !visited.add(obs)) {
+			return;
+		}
+		obs.setVoided(true);
+		if (obs.getVoidReason() == null) {
+			obs.setVoidReason("REST web service");
+		}
+		if (obs.getGroupMembers(true) != null) {
+			for (Obs member : obs.getGroupMembers(true)) {
+				markVoided(member, visited);
+			}
+		}
 	}
 	
 	/**

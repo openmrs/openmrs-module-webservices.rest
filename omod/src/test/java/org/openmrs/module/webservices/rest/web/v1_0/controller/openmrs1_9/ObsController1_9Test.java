@@ -511,6 +511,164 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 		Assertions.assertNull(reloaded.getEncounter());
 	}
 
+	/**
+	 * Creates an obs group with two members inside encounter 3 via POST /obs, and returns the group uuid.
+	 */
+	private String createGroupWithTwoMembers(Encounter encounter) throws Exception {
+		String patientUuid = encounter.getPatient().getUuid();
+		String setConceptUuid = Context.getConceptService().getConcept(23).getUuid();
+		String numericConceptUuid = Context.getConceptService().getConcept(5089).getUuid();
+		String datetime = "2008-08-01T00:00:00.000+0000";
+
+		String json = "{\"person\":\"" + patientUuid + "\","
+		        + "\"concept\":\"" + setConceptUuid + "\","
+		        + "\"obsDatetime\":\"" + datetime + "\","
+		        + "\"encounter\":\"" + encounter.getUuid() + "\","
+		        + "\"groupMembers\":["
+		        + "{\"person\":\"" + patientUuid + "\",\"concept\":\"" + numericConceptUuid + "\",\"value\":81,\"obsDatetime\":\"" + datetime + "\"},"
+		        + "{\"person\":\"" + patientUuid + "\",\"concept\":\"" + numericConceptUuid + "\",\"value\":82,\"obsDatetime\":\"" + datetime + "\"}"
+		        + "]}";
+
+		SimpleObject created = deserialize(handle(newPostRequest(getURI(), json)));
+		Context.flushSession();
+		Context.clearSession();
+		return (String) created.get("uuid");
+	}
+
+	private void assertGroupAndMembersVoided(String groupUuid, String expectedReason) {
+		Context.flushSession();
+		Context.clearSession();
+
+		Obs group = Context.getObsService().getObsByUuid(groupUuid);
+		assertTrue(group.getVoided());
+		Assertions.assertNotNull(group.getVoidReason());
+		if (expectedReason != null) {
+			assertEquals(expectedReason, group.getVoidReason());
+		}
+		assertEquals(2, group.getGroupMembers(true).size());
+		for (Obs member : group.getGroupMembers(true)) {
+			assertTrue(member.getVoided());
+		}
+	}
+
+	@Test
+	public void shouldVoidGroupMembersWhenPostingVoidedTrue() throws Exception {
+		// RESTWS-1063
+		Encounter encounter = Context.getEncounterService().getEncounter(3);
+		String groupUuid = createGroupWithTwoMembers(encounter);
+
+		handle(newPostRequest(getURI() + "/" + groupUuid, "{\"voided\":true}"));
+
+		assertGroupAndMembersVoided(groupUuid, "REST web service");
+	}
+
+	@Test
+	public void shouldVoidGroupMembersWhenVoidingGroupThroughEncounterUpdate() throws Exception {
+		// RESTWS-1063
+		Encounter encounter = Context.getEncounterService().getEncounter(3);
+		String groupUuid = createGroupWithTwoMembers(encounter);
+
+		handle(newPostRequest("encounter/" + encounter.getUuid(),
+		    "{\"obs\":[{\"uuid\":\"" + groupUuid + "\",\"voided\":true}]}"));
+
+		assertGroupAndMembersVoided(groupUuid, "REST web service");
+	}
+
+	@Test
+	public void shouldVoidGroupAndMembersWithReasonWhenDeleting() throws Exception {
+		// regression: DELETE must keep working as before
+		Encounter encounter = Context.getEncounterService().getEncounter(3);
+		String groupUuid = createGroupWithTwoMembers(encounter);
+
+		MockHttpServletRequest deleteRequest = newDeleteRequest(getURI() + "/" + groupUuid);
+		deleteRequest.addParameter("reason", "probe");
+		handle(deleteRequest);
+
+		assertGroupAndMembersVoided(groupUuid, "probe");
+	}
+
+	@Test
+	public void shouldUnvoidGroupMembersWhenUnvoidingGroupThroughEncounterUpdate() throws Exception {
+		Encounter encounter = Context.getEncounterService().getEncounter(3);
+		String groupUuid = createGroupWithTwoMembers(encounter);
+
+		handle(newPostRequest(getURI() + "/" + groupUuid, "{\"voided\":true}"));
+		Context.flushSession();
+		Context.clearSession();
+
+		handle(newPostRequest("encounter/" + encounter.getUuid(),
+		    "{\"obs\":[{\"uuid\":\"" + groupUuid + "\",\"voided\":false}]}"));
+		Context.flushSession();
+		Context.clearSession();
+
+		Obs group = Context.getObsService().getObsByUuid(groupUuid);
+		Assertions.assertFalse(group.getVoided());
+		for (Obs member : group.getGroupMembers(true)) {
+			Assertions.assertFalse(member.getVoided());
+		}
+	}
+
+	@Test
+	public void shouldUnvoidGroupWhenPostingVoidedFalse() throws Exception {
+		Encounter encounter = Context.getEncounterService().getEncounter(3);
+		String groupUuid = createGroupWithTwoMembers(encounter);
+
+		handle(newPostRequest(getURI() + "/" + groupUuid, "{\"voided\":true}"));
+		Context.flushSession();
+		Context.clearSession();
+
+		handle(newPostRequest(getURI() + "/" + groupUuid, "{\"voided\":false}"));
+		Context.flushSession();
+		Context.clearSession();
+
+		Obs group = Context.getObsService().getObsByUuid(groupUuid);
+		Assertions.assertFalse(group.getVoided());
+		for (Obs member : group.getGroupMembers(true)) {
+			Assertions.assertFalse(member.getVoided());
+		}
+	}
+
+	@Test
+	public void shouldNotUnvoidMemberThatWasVoidedBeforeTheGroup() throws Exception {
+		Encounter encounter = Context.getEncounterService().getEncounter(3);
+		String groupUuid = createGroupWithTwoMembers(encounter);
+		Obs member = Context.getObsService().getObsByUuid(groupUuid).getGroupMembers().iterator().next();
+		// dateVoided can be saved to the second, so void the member a minute before the group
+		member.setDateVoided(new Date(System.currentTimeMillis() - 60000));
+		Context.getObsService().voidObs(member, "voided earlier");
+		Context.flushSession();
+		Context.clearSession();
+
+		handle(newPostRequest(getURI() + "/" + groupUuid, "{\"voided\":true}"));
+		Context.flushSession();
+		Context.clearSession();
+		handle(newPostRequest(getURI() + "/" + groupUuid, "{\"voided\":false}"));
+		Context.flushSession();
+		Context.clearSession();
+
+		assertTrue(Context.getObsService().getObsByUuid(member.getUuid()).getVoided());
+		assertEquals(1, Context.getObsService().getObsByUuid(groupUuid).getGroupMembers().size());
+	}
+
+	@Test
+	public void shouldKeepOneLiveGroupWhenUnvoidingAndChangingCommentAtOnce() throws Exception {
+		Encounter encounter = Context.getEncounterService().getEncounter(3);
+		int liveBefore = Context.getEncounterService().getEncounter(3).getObsAtTopLevel(false).size();
+		String groupUuid = createGroupWithTwoMembers(encounter);
+
+		handle(newPostRequest(getURI() + "/" + groupUuid, "{\"voided\":true}"));
+		Context.flushSession();
+		Context.clearSession();
+
+		handle(newPostRequest(getURI() + "/" + groupUuid, "{\"voided\":false,\"comment\":\"changed\"}"));
+		Context.flushSession();
+		Context.clearSession();
+
+		// exactly one live group was added, not two
+		int liveAfter = Context.getEncounterService().getEncounter(3).getObsAtTopLevel(false).size();
+		assertEquals(liveBefore + 1, liveAfter);
+	}
+
     private ConceptComplex newConceptComplex() {
 		setupBinaryDataHandler();
 
