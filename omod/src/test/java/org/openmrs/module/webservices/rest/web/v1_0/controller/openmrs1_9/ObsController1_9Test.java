@@ -571,7 +571,7 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 		handle(newPostRequest("encounter/" + encounter.getUuid(),
 		    "{\"obs\":[{\"uuid\":\"" + groupUuid + "\",\"voided\":true}]}"));
 
-			assertGroupAndMembersVoided(groupUuid, "REST web service");
+		assertGroupAndMembersVoided(groupUuid, "REST web service");
 	}
 
 	@Test
@@ -626,6 +626,28 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 		for (Obs member : group.getGroupMembers(true)) {
 			Assertions.assertFalse(member.getVoided());
 		}
+	}
+
+	@Test
+	public void shouldNotUnvoidMemberThatWasVoidedBeforeTheGroup() throws Exception {
+		Encounter encounter = Context.getEncounterService().getEncounter(3);
+		String groupUuid = createGroupWithTwoMembers(encounter);
+		Obs member = Context.getObsService().getObsByUuid(groupUuid).getGroupMembers().iterator().next();
+		// dateVoided can be saved to the second, so void the member a minute before the group
+		member.setDateVoided(new Date(System.currentTimeMillis() - 60000));
+		Context.getObsService().voidObs(member, "voided earlier");
+		Context.flushSession();
+		Context.clearSession();
+
+		handle(newPostRequest(getURI() + "/" + groupUuid, "{\"voided\":true}"));
+		Context.flushSession();
+		Context.clearSession();
+		handle(newPostRequest(getURI() + "/" + groupUuid, "{\"voided\":false}"));
+		Context.flushSession();
+		Context.clearSession();
+
+		assertTrue(Context.getObsService().getObsByUuid(member.getUuid()).getVoided());
+		assertEquals(1, Context.getObsService().getObsByUuid(groupUuid).getGroupMembers().size());
 	}
 
 	@Test
