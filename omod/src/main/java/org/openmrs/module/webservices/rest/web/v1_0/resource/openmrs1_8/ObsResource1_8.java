@@ -438,9 +438,32 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	@PropertySetter("voided")
 	public static void setVoided(Obs obs, Boolean voided) {
 		boolean target = voided != null && voided;
+		if (!target && obs.getObsId() != null && obs.getDateVoided() != null) {
+			// unvoiding: also restore members voided together with the group, as core's
+			// BaseUnvoidHandler does. The group's own dateVoided is left for save() to detect a restore.
+			unmarkMembersVoided(obs, obs.getDateVoided(), new java.util.HashSet<Obs>());
+		}
 		obs.setVoided(target);
 		if (target && obs.getObsId() != null && obs.getDateVoided() == null) {
 			markVoided(obs, new java.util.HashSet<Obs>());
+		}
+	}
+
+	/**
+	 * In memory only: restores members that were voided at the same time as their group.
+	 */
+	private static void unmarkMembersVoided(Obs group, java.util.Date groupDateVoided, java.util.Set<Obs> visited) {
+		if (group == null || !visited.add(group) || group.getGroupMembers(true) == null) {
+			return;
+		}
+		for (Obs member : group.getGroupMembers(true)) {
+			if (member.getVoided() && groupDateVoided.equals(member.getDateVoided())) {
+				member.setVoided(false);
+				member.setVoidReason(null);
+				member.setVoidedBy(null);
+				member.setDateVoided(null);
+				unmarkMembersVoided(member, groupDateVoided, visited);
+			}
 		}
 	}
 
