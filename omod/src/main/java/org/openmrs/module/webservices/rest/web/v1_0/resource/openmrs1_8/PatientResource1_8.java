@@ -1,3 +1,4 @@
+
 /**
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -20,6 +21,8 @@ import org.openmrs.PatientIdentifier;
 import org.openmrs.Person;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
+import org.openmrs.util.ConfigUtil;
+import org.openmrs.util.OpenmrsConstants;
 import org.openmrs.util.PrivilegeConstants;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
@@ -50,7 +53,8 @@ import java.util.Set;
 /**
  * {@link Resource} for Patients, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/patient", supportedClass = Patient.class, supportedOpenmrsVersions = { "1.8.*" })
+@Resource(name = RestConstants.VERSION_1 + "/patient", supportedClass = Patient.class, supportedOpenmrsVersions = {
+		"1.8.*" })
 public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 
 	public PatientResource1_8() {
@@ -60,43 +64,45 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 	public String getRequiredGetPrivilege() {
 		return PrivilegeConstants.GET_PATIENTS;
 	}
-	
+
 	@PropertyGetter("person")
 	public static Person getPerson(Patient instance) {
-		return new Person(instance); //Must be a Person instead of Patient to prevent infinite recursion RESTWS-273
+		return new Person(instance); // Must be a Person instead of Patient to prevent infinite recursion RESTWS-273
 	}
-	
+
 	/**
 	 * It is empty, because we set that already in the create method.
 	 * <p>
-	 * It takes String instead of Person so that the uuid is not resolved to a person, which leads
-	 * to the Hibernate exception: the object is already associated with the session.
-	 * 
+	 * It takes String instead of Person so that the uuid is not resolved to a
+	 * person, which leads to the Hibernate exception: the object is already
+	 * associated with the session.
+	 *
 	 * @param instance
 	 * @param personUuid
 	 */
 	@PropertySetter("person")
 	public static void setPerson(Patient instance, String personUuid) {
 	}
-	
+
 	@PropertyGetter("identifiers")
 	public static Set<PatientIdentifier> getIdentifiers(Patient instance) {
 		return new LinkedHashSet<PatientIdentifier>(instance.getActiveIdentifiers());
 	}
-	
+
 	@PropertySetter("identifiers")
 	public static void setIdentifiers(Patient instance, List<PatientIdentifier> identifiers)
-	        throws ResourceDoesNotSupportOperationException {
+			throws ResourceDoesNotSupportOperationException {
 		if (instance.getIdentifiers() != null && instance.getIdentifiers().containsAll(identifiers)) {
 			return;
 		}
 		if (instance.getIdentifiers() != null && !instance.getIdentifiers().isEmpty()) {
-			throw new ResourceDoesNotSupportOperationException("Identifiers can only be set for newly created objects!");
+			throw new ResourceDoesNotSupportOperationException(
+					"Identifiers can only be set for newly created objects!");
 		}
 		if (identifiers == null || identifiers.isEmpty()) {
 			throw new ResourceDoesNotSupportOperationException("At least one identifier required");
 		}
-		
+
 		boolean hasPreferred = false;
 		for (PatientIdentifier identifier : identifiers) {
 			if (identifier.isPreferred()) {
@@ -107,18 +113,18 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 				}
 			}
 		}
-		
+
 		if (!hasPreferred) {
-			//Mark the first one as preferred if none marked
+			// Mark the first one as preferred if none marked
 			identifiers.iterator().next().setPreferred(true);
 		}
-		
+
 		instance.getIdentifiers().clear();
 		for (PatientIdentifier identifier : identifiers) {
 			instance.addIdentifier(identifier);
 		}
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(Representation)
 	 */
@@ -147,51 +153,45 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		//FIXME check uuid, display in ref rep
+		// FIXME check uuid, display in ref rep
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("identifiers", new ArrayProperty(new RefProperty("#/definitions/PatientIdentifierGetRef")))
-			        .property("preferred", new BooleanProperty()._default(false))
-			        .property("voided", new BooleanProperty());
+			model.property("uuid", new StringProperty()).property("display", new StringProperty())
+					.property("identifiers",
+							new ArrayProperty(new RefProperty("#/definitions/PatientIdentifierGetRef")))
+					.property("preferred", new BooleanProperty()._default(false))
+					.property("voided", new BooleanProperty());
 		}
 		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("person", new RefProperty("#/definitions/PersonGetRef"));
+			model.property("person", new RefProperty("#/definitions/PersonGetRef"));
 		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("person", new RefProperty("#/definitions/PersonGet"));
+			model.property("person", new RefProperty("#/definitions/PersonGet"));
 		}
 		return model;
 	}
-	
+
 	@Override
 	public Model getCREATEModel(Representation rep) {
-		ModelImpl model = new ModelImpl()
-		        .property("person", new StringProperty().example("uuid"))
-		        .property("identifiers", new ArrayProperty(new RefProperty("#/definitions/PatientIdentifierCreate")))
-		        
-		        .required("person").required("identifiers");
+		ModelImpl model = new ModelImpl().property("person", new StringProperty().example("uuid"))
+				.property("identifiers", new ArrayProperty(new RefProperty("#/definitions/PatientIdentifierCreate")))
+
+				.required("person").required("identifiers");
 		if (rep instanceof FullRepresentation) {
-			model
-			        .property("person", new RefProperty("#/definitions/PersonCreate"));
+			model.property("person", new RefProperty("#/definitions/PersonCreate"));
 		}
 		return model;
 	}
-	
+
 	@Override
 	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("person", new RefProperty("#/definitions/PersonGet"))
-		        
-		        .required("person");
+		return new ModelImpl().property("person", new RefProperty("#/definitions/PersonGet"))
+
+				.required("person");
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
@@ -201,8 +201,10 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 		description.addRequiredProperty("person");
 		description.addRequiredProperty("identifiers");
 
-		// we apply these generically to resources in the DelegationCrudResource before calling setConvertedProperties,
-		// but the PatientResource calls setConvertedProperties directly in getPatient method below, so we need to add this here
+		// we apply these generically to resources in the DelegationCrudResource before
+		// calling setConvertedProperties,
+		// but the PatientResource calls setConvertedProperties directly in getPatient
+		// method below, so we need to add this here
 		if (Context.hasPrivilege(RestConstants.PRIV_SET_AUDIT_DATA)) {
 			description.addProperty("dateCreated");
 			description.addProperty("creator");
@@ -226,7 +228,7 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 
 		return description;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
@@ -236,13 +238,14 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 		description.addRequiredProperty("person");
 		return description;
 	}
-	
+
 	/**
-	 * The method is overwritten, because we need to create a patient from an existing person. In
-	 * the POST body only person and identifiers are provided and other properties must come from
-	 * the existing person. We need to promote the existing person to be a patient by overwriting it
-	 * and at the same time preserving all person properties.
-	 * 
+	 * The method is overwritten, because we need to create a patient from an
+	 * existing person. In the POST body only person and identifiers are provided
+	 * and other properties must come from the existing person. We need to promote
+	 * the existing person to be a patient by overwriting it and at the same time
+	 * preserving all person properties.
+	 *
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#create(SimpleObject,
 	 *      RequestContext)
 	 */
@@ -252,7 +255,7 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 		delegate = save(delegate);
 		return ConversionUtil.convertToRepresentation(delegate, Representation.DEFAULT);
 	}
-	
+
 	public Patient getPatient(SimpleObject propertiesToCreate) {
 		Object personProperty = propertiesToCreate.get("person");
 		Person person = null;
@@ -265,12 +268,12 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 			person = (Person) ConversionUtil.convert(personProperty, Person.class);
 			propertiesToCreate.put("person", "");
 		}
-		
+
 		Patient delegate = new Patient(person);
 		setConvertedProperties(delegate, propertiesToCreate, getCreatableProperties(), true);
 		return delegate;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#newDelegate()
 	 */
@@ -278,7 +281,7 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 	public Patient newDelegate() {
 		return new Patient();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#save(Object)
 	 */
@@ -286,7 +289,7 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 	public Patient save(Patient patient) {
 		return Context.getPatientService().savePatient(patient);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getByUniqueId(String)
 	 */
@@ -294,7 +297,7 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 	public Patient getByUniqueId(String uuid) {
 		return Context.getPatientService().getPatientByUuid(uuid);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#delete(Object,
 	 *      String, RequestContext)
@@ -307,7 +310,7 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 		}
 		Context.getPatientService().voidPatient(patient, reason);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#undelete(Object,
 	 *      RequestContext)
@@ -319,7 +322,7 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 		}
 		return patient;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(Object,
 	 *      RequestContext)
@@ -332,7 +335,7 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 		}
 		Context.getPatientService().purgePatient(patient);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(RequestContext)
 	 */
@@ -346,15 +349,40 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 				throw new IllegalRequestException("Choose a minimum of two attributes");
 			}
 
-			List<Patient> duplicatedPatientsFound = Context.getPatientService().getDuplicatePatientsByAttributes(attributes);
+			List<Patient> duplicatedPatientsFound = Context.getPatientService()
+					.getDuplicatePatientsByAttributes(attributes);
 
-			return new AlreadyPaged<Patient>(context, duplicatedPatientsFound, false, (long) duplicatedPatientsFound.size());
+			return new AlreadyPaged<Patient>(context, duplicatedPatientsFound, false,
+					(long) duplicatedPatientsFound.size());
 		}
 
-		return new ServiceSearcher<Patient>(PatientService.class, "getPatients", "getCountOfPatients").search(
-		    context.getParameter("q"), context);
+		int maxResults = OpenmrsConstants.GLOBAL_PROPERTY_PERSON_SEARCH_MAX_RESULTS_DEFAULT_VALUE;
+
+		Context.addProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
+		try {
+			String configuredMax = ConfigUtil
+					.getGlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_PERSON_SEARCH_MAX_RESULTS);
+			if (configuredMax != null) {
+				maxResults = Integer.parseInt(configuredMax);
+			}
+		} catch (NumberFormatException e) {
+			// Use the default maximum if the configured value is invalid.
+		} finally {
+			Context.removeProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
+		}
+
+		if (maxResults <= 0) {
+			maxResults = OpenmrsConstants.GLOBAL_PROPERTY_PERSON_SEARCH_MAX_RESULTS_DEFAULT_VALUE;
+		}
+
+		if (context.getLimit() > maxResults) {
+			context.setLimit(maxResults);
+		}
+
+		return new ServiceSearcher<Patient>(PatientService.class, "getPatients", "getCountOfPatients")
+				.search(context.getParameter("q"), context);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getPropertiesToExposeAsSubResources()
 	 */
@@ -362,30 +390,35 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 	public List<String> getPropertiesToExposeAsSubResources() {
 		return Arrays.asList("identifiers");
 	}
-	
+
 	/**
 	 * @param patient
 	 * @return identifier + name (for concise display purposes), or
-	 *         {@link ConversionUtil#MASKED_DISPLAY} when a rule refuses either of those two records
+	 *         {@link ConversionUtil#MASKED_DISPLAY} when a rule refuses either of
+	 *         those two records
 	 */
 	@PropertyGetter("display")
 	public String getDisplayString(Patient patient) {
 		if (patient.getPatientIdentifier() == null)
 			return "";
-		
-		// both are records of their own, each masked where the response carries it - the identifier
-		// under "identifiers", the name under the person's "preferredName" - while this printed them in
-		// full. The identifier is as much a disclosure as the name: it is what a patient is looked up by
+
+		// both are records of their own, each masked where the response carries it -
+		// the identifier
+		// under "identifiers", the name under the person's "preferredName" - while this
+		// printed them in
+		// full. The identifier is as much a disclosure as the name: it is what a
+		// patient is looked up by
 		if (ConversionUtil.isRefusedByARule(patient.getPatientIdentifier())
-		        || ConversionUtil.isRefusedByARule(patient.getPersonName())) {
+				|| ConversionUtil.isRefusedByARule(patient.getPersonName())) {
 			return ConversionUtil.MASKED_DISPLAY;
 		}
-		
+
 		return patient.getPatientIdentifier().getIdentifier() + " - " + patient.getPersonName().getFullName();
 	}
-	
+
 	@Override
-	public Object update(String uuid, SimpleObject propertiesToUpdate, RequestContext context) throws ResponseException {
+	public Object update(String uuid, SimpleObject propertiesToUpdate, RequestContext context)
+			throws ResponseException {
 		if (propertiesToUpdate.get("person") == null) {
 			return super.update(uuid, propertiesToUpdate, context);
 		}
@@ -393,14 +426,13 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 		patient = save(patient);
 		return ConversionUtil.convertToRepresentation(patient, Representation.DEFAULT);
 	}
-	
+
 	public Patient getPatientForUpdate(String uuid, Map<String, Object> propertiesToUpdate) {
 		Patient patient = getByUniqueId(uuid);
 		PersonResource1_8 personResource = (PersonResource1_8) Context.getService(RestService.class)
-		        .getResourceBySupportedClass(Person.class);
+				.getResourceBySupportedClass(Person.class);
 		personResource.setConvertedProperties(patient, (Map<String, Object>) propertiesToUpdate.get("person"),
-		    personResource.getUpdatableProperties(), false);
+				personResource.getUpdatableProperties(), false);
 		return patient;
 	}
-	
 }
